@@ -6,6 +6,7 @@ desktop.ini
 # IDEs und Editoren
 .vscode/
 .idea/
+.dev/
 *.suo
 *.ntvs*
 *.njsproj
