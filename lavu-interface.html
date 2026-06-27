@@ -62,36 +62,6 @@
             font-weight: 500;
             letter-spacing: 0.3px;
         }
-        .caller-area {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: #f2f6fa;
-            padding: 8px 20px 8px 16px;
-            border-radius: 80px;
-            border: 1px solid #cad2dc;
-        }
-        .caller-area label {
-            font-weight: 500;
-            color: #1f3a47;
-        }
-        .caller-area input {
-            border: none;
-            background: transparent;
-            font-size: 1rem;
-            padding: 6px 4px;
-            min-width: 180px;
-            font-weight: 500;
-            color: #0a202b;
-            border-bottom: 2px dotted #8b9db0;
-            transition: 0.15s;
-        }
-        .caller-area input:focus {
-            outline: none;
-            border-bottom-color: #00668c;
-            background: rgba(0,102,140,0.04);
-            border-radius: 0;
-        }
         .print-btn {
             background: #1f5d7a;
             color: white;
@@ -356,6 +326,7 @@
             white-space: pre-wrap;
             line-height: 1.6;
             color: #002b3f;
+            text-align: center;  /* zentriert den Inhalt */
         }
         .label-preview strong {
             font-weight: 700;
@@ -637,7 +608,7 @@
         // ----- search -----
         searchInput.addEventListener('input', renderMaterialList);
 
-        // ----- PRINT label (2 lines: site + items) -----
+        // ----- PRINT label (2 lines: site + items, zentriert) -----
         document.getElementById('printLabelBtn').addEventListener('click', function() {
             let itemLines = '';
             if (basket.length === 0) {
@@ -647,9 +618,8 @@
             }
             // site specific ID: ASZ Asten · 106
             const siteLine = 'ASZ Asten · Standort 106';
-            // items line (ohne Anrufer)
 
-            // Print window with 2-line emphasis (site + fracht)
+            // Print window with 2-line emphasis (site + fracht), zentriert
             const printWindow = window.open('', '_blank', 'width=450,height=300');
             if (!printWindow) {
                 alert('Bitte Popups erlauben, um das Label zu drucken.');
@@ -658,12 +628,11 @@
             printWindow.document.write(`
                 <html><head><title>LAVU Frachtlabel</title>
                 <style>
-                    body { font-family: 'Courier New', monospace; padding: 30px 20px; background: white; }
-                    .label { border: 3px solid #003b57; padding: 18px 22px; border-radius: 12px; max-width: 400px; }
-                    .line1 { font-size: 1.2rem; font-weight: 700; letter-spacing: 0.5px; }
-                    .line2 { font-size: 1rem; margin-top: 6px; border-top: 2px dashed #1f5d7a; padding-top: 10px; }
-                    .items { white-space: pre-wrap; font-size: 0.9rem; margin-top: 8px; }
-                    .footer { margin-top: 18px; font-size: 0.7rem; color: #2d5770; }
+                    body { font-family: 'Courier New', monospace; padding: 30px 20px; background: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+                    .label { border: 3px solid #003b57; padding: 24px 28px; border-radius: 16px; max-width: 420px; text-align: center; background: white; }
+                    .line1 { font-size: 1.4rem; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 12px; }
+                    .items { font-size: 1rem; white-space: pre-wrap; margin-top: 8px; line-height: 1.7; }
+                    .footer { margin-top: 20px; font-size: 0.7rem; color: #2d5770; border-top: 1px solid #ccc; padding-top: 12px; }
 </style></head><body>
     <div class="label">
         <div class="line1"><i class="fas fa-map-pin"></i> ${siteLine}</div>
