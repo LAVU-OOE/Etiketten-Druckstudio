@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ASZ Asten · Terminal</title>
+    <title>ASZ Asten · Terminal & Office</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* ----- Reset & Base ----- */
@@ -16,9 +16,9 @@
         html, body {
             height: 100%;
             overflow: hidden;
+            background: #0a1a24;
         }
         body {
-            background: #0a1a24;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -27,8 +27,8 @@
             min-height: 100dvh;
         }
 
-        /* ----- Terminal Container ----- */
-        .terminal {
+        /* ----- Main Container ----- */
+        .app-container {
             max-width: 1440px;
             width: 100%;
             height: 98vh;
@@ -45,7 +45,7 @@
         }
 
         /* ----- Header ----- */
-        .terminal-header {
+        .app-header {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
@@ -56,27 +56,26 @@
             margin-bottom: clamp(10px, 1.5vh, 20px);
             flex-shrink: 0;
         }
-        .terminal-title {
+        .app-title {
             display: flex;
             align-items: baseline;
             gap: clamp(8px, 1.5vw, 18px);
             flex-wrap: wrap;
         }
-        .terminal-title h1 {
+        .app-title h1 {
             font-weight: 700;
             font-size: clamp(1.2rem, 3vw, 2.2rem);
             letter-spacing: -0.5px;
             color: #8bc1e0;
-            text-shadow: 0 0 20px rgba(80, 180, 255, 0.1);
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        .terminal-title h1 i {
+        .app-title h1 i {
             color: #3a8aaf;
             font-size: clamp(1rem, 2vw, 1.6rem);
         }
-        .terminal-title .badge {
+        .app-title .badge {
             background: #1f5d7a;
             color: #cde5f5;
             padding: 4px clamp(10px, 1.5vw, 22px);
@@ -86,13 +85,13 @@
             border: 1px solid #3a7a9a;
             white-space: nowrap;
         }
-        .terminal-status {
+        .app-status {
             display: flex;
             align-items: center;
             gap: clamp(8px, 1.5vw, 20px);
             flex-wrap: wrap;
         }
-        .status-led {
+        .sync-status {
             display: flex;
             align-items: center;
             gap: 6px;
@@ -100,7 +99,7 @@
             font-size: clamp(0.7rem, 1vw, 0.95rem);
             font-weight: 500;
         }
-        .status-led .dot {
+        .sync-status .dot {
             width: clamp(10px, 1.2vw, 14px);
             height: clamp(10px, 1.2vw, 14px);
             border-radius: 50%;
@@ -109,50 +108,56 @@
             animation: pulse 2s infinite;
             flex-shrink: 0;
         }
+        .sync-status .dot.offline {
+            background: #e74c3c;
+            box-shadow: 0 0 20px rgba(231, 76, 60, 0.4);
+        }
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.4; }
         }
-        .report-btn {
-            background: #1f5d7a;
-            color: white;
+        .view-toggle {
+            display: flex;
+            gap: 4px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 40px;
+            padding: 4px;
+            border: 1px solid #1f3a4a;
+        }
+        .view-toggle button {
+            background: transparent;
             border: none;
-            padding: clamp(8px, 1.2vh, 14px) clamp(16px, 2.5vw, 32px);
-            border-radius: 60px;
-            font-weight: 700;
-            font-size: clamp(0.75rem, 1.2vw, 1.1rem);
-            display: inline-flex;
-            align-items: center;
-            gap: clamp(6px, 1vw, 12px);
+            padding: clamp(6px, 0.8vh, 10px) clamp(14px, 1.8vw, 24px);
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: clamp(0.75rem, 1vw, 0.95rem);
+            color: #8ab0c8;
             cursor: pointer;
             transition: 0.2s;
-            border: 1px solid #3a8aaf;
-            box-shadow: 0 4px 15px rgba(31, 93, 122, 0.3);
-            white-space: nowrap;
             touch-action: manipulation;
+            white-space: nowrap;
         }
-        .report-btn:hover {
-            background: #0f435c;
-            transform: scale(1.02);
+        .view-toggle button.active {
+            background: #1f5d7a;
+            color: white;
+            box-shadow: 0 0 20px rgba(31, 93, 122, 0.3);
         }
-        .report-btn:active {
-            transform: scale(0.97);
-        }
-        .report-btn i {
-            font-size: clamp(0.9rem, 1.2vw, 1.3rem);
+        .view-toggle button:hover:not(.active) {
+            background: rgba(255,255,255,0.05);
         }
 
-        /* ----- Main Grid (flexible) ----- */
-        .terminal-grid {
+        /* ----- Main Grid ----- */
+        .app-grid {
             display: flex;
             flex-direction: row;
             gap: clamp(12px, 2vw, 24px);
             flex: 1;
             min-height: 0;
+            overflow: hidden;
         }
 
-        /* ----- Material Panel ----- */
-        .material-panel {
+        /* ----- Terminal View (linke Seite) ----- */
+        .terminal-panel {
             flex: 2.4;
             min-width: 0;
             background: rgba(255,255,255,0.03);
@@ -163,6 +168,10 @@
             flex-direction: column;
             overflow: hidden;
         }
+        .terminal-panel.hidden {
+            display: none;
+        }
+
         .filter-bar {
             display: flex;
             flex-wrap: wrap;
@@ -314,8 +323,8 @@
             cursor: not-allowed;
         }
 
-        /* ----- Basket Panel ----- */
-        .basket-panel {
+        /* ----- Office Dashboard (rechte Seite) ----- */
+        .office-panel {
             flex: 1.4;
             min-width: 0;
             background: rgba(255,255,255,0.03);
@@ -326,7 +335,11 @@
             flex-direction: column;
             overflow: hidden;
         }
-        .basket-header {
+        .office-panel.hidden {
+            display: none;
+        }
+
+        .office-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -335,7 +348,7 @@
             margin-bottom: clamp(8px, 1vh, 12px);
             flex-shrink: 0;
         }
-        .basket-header h3 {
+        .office-header h3 {
             font-weight: 600;
             color: #8bc1e0;
             font-size: clamp(1rem, 1.5vw, 1.3rem);
@@ -343,10 +356,10 @@
             align-items: center;
             gap: 8px;
         }
-        .basket-header h3 i {
+        .office-header h3 i {
             font-size: clamp(0.9rem, 1.2vw, 1.1rem);
         }
-        .basket-header span {
+        .office-header .count-badge {
             background: #1f5d7a;
             color: white;
             border-radius: 40px;
@@ -357,35 +370,32 @@
             border: 1px solid #3a8aaf;
             flex-shrink: 0;
         }
-        .basket-list {
-            flex: 0 1 auto;
+
+        .office-list {
+            flex: 1;
             overflow-y: auto;
-            margin-bottom: clamp(8px, 1vh, 12px);
             padding-right: 4px;
-            max-height: 30vh;
-            min-height: 40px;
             -webkit-overflow-scrolling: touch;
         }
-        .basket-item {
+        .office-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: clamp(4px, 0.6vw, 10px);
-            padding: clamp(6px, 0.8vh, 10px) clamp(6px, 0.8vw, 10px) clamp(6px, 0.8vh, 10px) clamp(12px, 1.5vw, 16px);
+            padding: clamp(8px, 0.8vh, 12px) clamp(10px, 1.2vw, 16px);
             background: rgba(255,255,255,0.05);
             border-radius: 40px;
-            margin-bottom: clamp(3px, 0.4vh, 5px);
+            margin-bottom: clamp(4px, 0.4vh, 6px);
             border: 1px solid #1f3a4a;
-            font-size: clamp(0.8rem, 0.9vw, 0.95rem);
         }
-        .basket-item .b-code {
+        .office-item .o-code {
             font-weight: 700;
             color: #7ac0e0;
             flex-shrink: 0;
             min-width: 44px;
             font-size: clamp(0.85rem, 1vw, 1rem);
         }
-        .basket-item .b-desc {
+        .office-item .o-desc {
             flex: 1;
             margin: 0 clamp(4px, 0.6vw, 10px);
             font-weight: 500;
@@ -393,7 +403,7 @@
             font-size: clamp(0.75rem, 0.85vw, 0.9rem);
             min-width: 50px;
         }
-        .basket-item .b-container {
+        .office-item .o-container {
             background: rgba(31, 93, 122, 0.2);
             padding: 1px clamp(8px, 1vw, 16px);
             border-radius: 30px;
@@ -404,54 +414,22 @@
             white-space: nowrap;
             flex-shrink: 0;
         }
-        /* ----- Druck-Button in der Frachtliste ----- */
-        .basket-item .print-item-btn {
-            background: rgba(46, 204, 113, 0.15);
-            border: 1px solid #2ecc71;
-            border-radius: 40px;
-            padding: clamp(2px, 0.3vh, 4px) clamp(8px, 0.8vw, 14px);
-            font-weight: 600;
-            color: #5cdb9a;
-            cursor: pointer;
-            transition: 0.15s;
-            font-size: clamp(0.6rem, 0.7vw, 0.75rem);
-            display: inline-flex;
-            align-items: center;
-            gap: clamp(3px, 0.4vw, 6px);
-            touch-action: manipulation;
-            white-space: nowrap;
+        .office-item .o-time {
+            font-size: clamp(0.55rem, 0.6vw, 0.7rem);
+            color: #5a8a9a;
             flex-shrink: 0;
+            min-width: 60px;
+            text-align: right;
         }
-        .basket-item .print-item-btn:hover {
-            background: rgba(46, 204, 113, 0.3);
-            border-color: #2ecc71;
-            color: #8ef0b0;
-        }
-        .basket-item .print-item-btn:active {
-            transform: scale(0.93);
-        }
-        .basket-item .print-item-btn i {
-            font-size: clamp(0.5rem, 0.6vw, 0.7rem);
-        }
-        .basket-item .remove-btn {
-            background: none;
-            border: none;
-            color: #6a8a9a;
-            cursor: pointer;
-            font-size: clamp(1rem, 1.2vw, 1.3rem);
-            padding: 0 clamp(4px, 0.6vw, 8px);
-            transition: 0.15s;
-            touch-action: manipulation;
-            flex-shrink: 0;
-        }
-        .basket-item .remove-btn:hover {
-            color: #e06666;
-        }
-        .basket-item .remove-btn:active {
-            transform: scale(0.85);
+        .office-empty {
+            text-align: center;
+            color: #5a8a9a;
+            font-style: italic;
+            padding: 30px 10px;
+            font-size: clamp(0.9rem, 1.1vw, 1.1rem);
         }
 
-        /* ----- Card Stack ----- */
+        /* ----- Card Stack (im Terminal) ----- */
         .card-stack-container {
             position: relative;
             margin: clamp(6px, 0.8vh, 12px) 0 clamp(4px, 0.5vh, 8px);
@@ -567,73 +545,6 @@
             border: 1px solid #1f3a4a;
         }
 
-        /* ----- Card Navigation ----- */
-        .card-nav-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: clamp(8px, 1.2vw, 16px);
-            margin-top: clamp(4px, 0.5vh, 8px);
-            padding: 2px 0;
-            flex-shrink: 0;
-            flex-wrap: wrap;
-        }
-        .card-nav-btn {
-            background: rgba(31, 93, 122, 0.2);
-            border: 1px solid #2a5a6a;
-            border-radius: 40px;
-            padding: clamp(6px, 0.8vh, 10px) clamp(12px, 1.5vw, 20px);
-            font-weight: 700;
-            color: #8ac0da;
-            cursor: pointer;
-            transition: 0.15s;
-            font-size: clamp(0.75rem, 0.9vw, 0.95rem);
-            display: inline-flex;
-            align-items: center;
-            gap: clamp(4px, 0.6vw, 8px);
-            touch-action: manipulation;
-            white-space: nowrap;
-        }
-        .card-nav-btn:hover:not(:disabled) {
-            background: rgba(31, 93, 122, 0.4);
-            border-color: #3a8aaf;
-            color: white;
-        }
-        .card-nav-btn:active:not(:disabled) {
-            transform: scale(0.95);
-        }
-        .card-nav-btn:disabled {
-            opacity: 0.25;
-            cursor: not-allowed;
-        }
-        .card-nav .counter {
-            font-weight: 700;
-            color: #8ac0da;
-            font-size: clamp(0.9rem, 1.2vw, 1.1rem);
-            min-width: clamp(50px, 6vw, 70px);
-            text-align: center;
-            background: rgba(0,0,0,0.2);
-            padding: clamp(4px, 0.5vh, 6px) clamp(10px, 1.2vw, 16px);
-            border-radius: 30px;
-            border: 1px solid #1f3a4a;
-        }
-
-        .card-empty {
-            text-align: center;
-            color: #5a8a9a;
-            font-style: italic;
-            padding: 20px 10px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 16px;
-            border: 2px dashed #1f3a4a;
-            font-family: 'Courier New', monospace;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: clamp(0.9rem, 1.1vw, 1.1rem);
-        }
-
         .card-dots {
             display: flex;
             justify-content: center;
@@ -665,8 +576,74 @@
             transform: scale(0.85);
         }
 
-        /* ----- Basket Actions ----- */
-        .basket-actions {
+        .card-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: clamp(8px, 1.2vw, 16px);
+            margin-top: clamp(4px, 0.5vh, 8px);
+            padding: 2px 0;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+        }
+        .card-nav button {
+            background: rgba(31, 93, 122, 0.2);
+            border: 1px solid #2a5a6a;
+            border-radius: 40px;
+            padding: clamp(6px, 0.8vh, 10px) clamp(12px, 1.5vw, 20px);
+            font-weight: 700;
+            color: #8ac0da;
+            cursor: pointer;
+            transition: 0.15s;
+            font-size: clamp(0.75rem, 0.9vw, 0.95rem);
+            display: inline-flex;
+            align-items: center;
+            gap: clamp(4px, 0.6vw, 8px);
+            touch-action: manipulation;
+            white-space: nowrap;
+        }
+        .card-nav button:hover:not(:disabled) {
+            background: rgba(31, 93, 122, 0.4);
+            border-color: #3a8aaf;
+            color: white;
+        }
+        .card-nav button:active:not(:disabled) {
+            transform: scale(0.95);
+        }
+        .card-nav button:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+        }
+        .card-nav .counter {
+            font-weight: 700;
+            color: #8ac0da;
+            font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+            min-width: clamp(50px, 6vw, 70px);
+            text-align: center;
+            background: rgba(0,0,0,0.2);
+            padding: clamp(4px, 0.5vh, 6px) clamp(10px, 1.2vw, 16px);
+            border-radius: 30px;
+            border: 1px solid #1f3a4a;
+        }
+
+        .card-empty {
+            text-align: center;
+            color: #5a8a9a;
+            font-style: italic;
+            padding: 20px 10px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+            border: 2px dashed #1f3a4a;
+            font-family: 'Courier New', monospace;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(0.9rem, 1.1vw, 1.1rem);
+        }
+
+        /* ----- Terminal Actions ----- */
+        .terminal-actions {
             display: flex;
             gap: clamp(8px, 1vw, 12px);
             justify-content: flex-end;
@@ -674,7 +651,7 @@
             flex-shrink: 0;
             flex-wrap: wrap;
         }
-        .basket-actions button {
+        .terminal-actions button {
             background: transparent;
             border: 1px solid #2a5a6a;
             padding: clamp(6px, 0.8vh, 10px) clamp(14px, 1.8vw, 22px);
@@ -687,27 +664,35 @@
             touch-action: manipulation;
             white-space: nowrap;
         }
-        .basket-actions button:active {
+        .terminal-actions button:active {
             transform: scale(0.95);
         }
-        .basket-actions .clear-btn {
+        .terminal-actions .clear-btn {
             color: #cc8888;
         }
-        .basket-actions .clear-btn:hover {
+        .terminal-actions .clear-btn:hover {
             background: rgba(200, 80, 80, 0.15);
             border-color: #aa5555;
         }
-        .basket-actions .sample-btn {
+        .terminal-actions .sample-btn {
             border-color: #2a6a7a;
             background: rgba(31, 93, 122, 0.15);
             color: #8ac0da;
         }
-        .basket-actions .sample-btn:hover {
+        .terminal-actions .sample-btn:hover {
             background: rgba(31, 93, 122, 0.3);
+        }
+        .terminal-actions .sync-btn {
+            border-color: #2ecc71;
+            color: #5cdb9a;
+            background: rgba(46, 204, 113, 0.08);
+        }
+        .terminal-actions .sync-btn:hover {
+            background: rgba(46, 204, 113, 0.2);
         }
 
         /* ----- Footer ----- */
-        .footer-note {
+        .app-footer {
             margin-top: clamp(8px, 1vh, 14px);
             font-size: clamp(0.65rem, 0.7vw, 0.8rem);
             color: #4a6a7a;
@@ -721,58 +706,59 @@
             flex-wrap: wrap;
             gap: 6px;
         }
-        .footer-note .office-status {
+        .app-footer .footer-status {
             display: flex;
             align-items: center;
             gap: clamp(6px, 0.8vw, 10px);
             color: #5a8a9a;
             font-size: clamp(0.65rem, 0.7vw, 0.85rem);
         }
-        .footer-note .office-status i {
+        .app-footer .footer-status i {
             color: #2ecc71;
             font-size: clamp(0.5rem, 0.6vw, 0.7rem);
+        }
+        .app-footer .footer-status i.offline {
+            color: #e74c3c;
+        }
+        .app-footer .device-info {
+            color: #3a6a7a;
+            font-size: clamp(0.55rem, 0.6vw, 0.7rem);
         }
 
         /* ----- Scrollbar ----- */
         .material-list::-webkit-scrollbar,
-        .basket-list::-webkit-scrollbar {
+        .office-list::-webkit-scrollbar {
             width: 4px;
         }
         .material-list::-webkit-scrollbar-thumb,
-        .basket-list::-webkit-scrollbar-thumb {
+        .office-list::-webkit-scrollbar-thumb {
             background: #1f3a4a;
             border-radius: 8px;
         }
         .material-list::-webkit-scrollbar-track,
-        .basket-list::-webkit-scrollbar-track {
+        .office-list::-webkit-scrollbar-track {
             background: transparent;
         }
-        .material-list {
+        .material-list, .office-list {
             scrollbar-width: thin;
             scrollbar-color: #1f3a4a transparent;
         }
 
-        /* ----- Responsive Breakpoints ----- */
+        /* ----- Responsive ----- */
         @media (max-width: 860px) {
-            .terminal-grid {
+            .app-grid {
                 flex-direction: column;
                 gap: 10px;
             }
-            .material-panel {
+            .terminal-panel {
                 flex: 2;
                 min-height: 35vh;
                 max-height: 55vh;
             }
-            .basket-panel {
+            .office-panel {
                 flex: 1;
                 min-height: 30vh;
                 max-height: 50vh;
-            }
-            .basket-list {
-                max-height: 15vh;
-            }
-            .card-stack-container {
-                height: clamp(140px, 20vh, 180px);
             }
             .terminal {
                 height: 100vh;
@@ -781,347 +767,66 @@
                 border-radius: 20px;
                 padding: 12px;
             }
-            .terminal-header {
-                flex-direction: row;
-                flex-wrap: wrap;
-            }
-            .report-btn {
-                padding: 6px 14px;
-                font-size: 0.8rem;
-            }
-            .material-item {
-                padding: 8px 12px;
-                border-radius: 30px;
-            }
-            .material-item .desc {
-                font-size: 0.85rem;
-            }
-            .add-btn {
+            .view-toggle button {
                 padding: 4px 12px;
-                font-size: 0.8rem;
-            }
-            .filter-bar {
-                padding: 8px 12px;
-                border-radius: 30px;
-            }
-            .filter-bar input {
-                padding: 8px 14px;
-                font-size: 0.9rem;
-                min-width: 80px;
-            }
-            .block-btn {
-                padding: 4px 10px;
                 font-size: 0.7rem;
             }
-            .basket-header h3 {
-                font-size: 1rem;
-            }
-            .basket-header span {
-                font-size: 0.85rem;
-                line-height: 26px;
-                padding: 0 12px;
-            }
-            .basket-item .print-item-btn {
-                font-size: 0.6rem;
-                padding: 2px 8px;
-            }
-            .card-nav-wrapper {
-                gap: 6px;
-            }
-            .card-nav-btn {
-                padding: 4px 10px;
-                font-size: 0.7rem;
+            .card-stack-container {
+                height: clamp(140px, 20vh, 180px);
             }
         }
-
         @media (max-width: 480px) {
-            body {
-                padding: 6px;
-            }
-            .terminal {
+            body { padding: 6px; }
+            .app-container {
                 border-radius: 14px;
                 padding: 8px;
                 height: 100vh;
                 height: 100dvh;
             }
-            .terminal-title h1 {
-                font-size: 1.1rem;
-            }
-            .terminal-title .badge {
-                font-size: 0.6rem;
-                padding: 2px 10px;
-            }
-            .status-led {
-                font-size: 0.6rem;
-            }
-            .status-led .dot {
-                width: 8px;
-                height: 8px;
-            }
-            .report-btn {
-                font-size: 0.65rem;
-                padding: 4px 10px;
-                gap: 4px;
-            }
-            .report-btn i {
-                font-size: 0.7rem;
-            }
-            .material-item {
-                padding: 6px 10px;
-                border-radius: 20px;
-                flex-wrap: wrap;
-                gap: 4px;
-            }
-            .material-item .code {
-                font-size: 0.85rem;
-                min-width: 36px;
-            }
-            .material-item .desc {
-                font-size: 0.75rem;
-                min-width: 60px;
-            }
-            .material-item .container-badge {
-                font-size: 0.55rem;
-                padding: 1px 8px;
-            }
-            .add-btn {
-                font-size: 0.7rem;
-                padding: 3px 10px;
-                gap: 4px;
-            }
-            .add-btn i {
-                font-size: 0.6rem;
-            }
-            .filter-bar {
-                padding: 6px 10px;
-                border-radius: 20px;
-                gap: 4px;
-            }
-            .filter-bar input {
-                padding: 6px 10px;
-                font-size: 0.75rem;
-                min-width: 60px;
-            }
-            .block-selector span {
-                font-size: 0.6rem;
-            }
-            .block-btn {
-                font-size: 0.55rem;
-                padding: 3px 8px;
-            }
-            .basket-header h3 {
-                font-size: 0.85rem;
-            }
-            .basket-header h3 i {
-                font-size: 0.7rem;
-            }
-            .basket-header span {
-                font-size: 0.75rem;
-                line-height: 22px;
-                padding: 0 10px;
-            }
-            .basket-item {
-                padding: 4px 8px;
-                border-radius: 20px;
-                font-size: 0.7rem;
-                flex-wrap: wrap;
-                gap: 3px;
-            }
-            .basket-item .b-code {
-                font-size: 0.75rem;
-                min-width: 32px;
-            }
-            .basket-item .b-desc {
-                font-size: 0.65rem;
-                min-width: 40px;
-            }
-            .basket-item .b-container {
-                font-size: 0.5rem;
-                padding: 1px 6px;
-            }
-            .basket-item .print-item-btn {
-                font-size: 0.5rem;
-                padding: 1px 6px;
-                gap: 2px;
-            }
-            .basket-item .print-item-btn i {
-                font-size: 0.4rem;
-            }
-            .remove-btn {
-                font-size: 0.9rem;
-                padding: 0 4px;
-            }
-            .card-stack-container {
-                height: clamp(120px, 18vh, 150px);
-                min-height: 90px;
-            }
-            .card-item {
-                padding: 10px 12px;
-                border-radius: 12px;
-                font-size: 0.7rem;
-                line-height: 1.5;
-            }
-            .card-item .card-site {
-                font-size: 0.8rem;
-            }
-            .card-item .card-code {
-                font-size: 0.95rem;
-            }
-            .card-item .card-desc {
-                font-size: 0.7rem;
-            }
-            .card-item .card-index {
-                font-size: 0.5rem;
-                padding: 1px 6px;
-                top: 6px;
-                left: 8px;
-            }
-            .card-item .card-select-hint {
-                font-size: 0.45rem;
-                padding: 1px 8px;
-                bottom: 6px;
-            }
-            .card-dot {
-                width: 8px;
-                height: 8px;
-            }
-            .card-nav-wrapper {
-                gap: 4px;
-            }
-            .card-nav-btn {
-                font-size: 0.6rem;
-                padding: 3px 8px;
-                gap: 3px;
-            }
-            .card-nav-btn i {
-                font-size: 0.6rem;
-            }
-            .card-nav .counter {
-                font-size: 0.7rem;
-                min-width: 36px;
-                padding: 2px 6px;
-            }
-            .basket-actions button {
-                font-size: 0.7rem;
-                padding: 4px 12px;
-            }
-            .footer-note {
-                font-size: 0.55rem;
-                padding-top: 6px;
-                margin-top: 6px;
-            }
-            .footer-note .office-status {
-                font-size: 0.55rem;
-            }
-            .material-panel {
-                min-height: 25vh;
-                max-height: 45vh;
-                padding: 8px;
-            }
-            .basket-panel {
-                min-height: 25vh;
-                max-height: 45vh;
-                padding: 8px;
-            }
-            .basket-list {
-                max-height: 12vh;
-                min-height: 30px;
-            }
-        }
-
-        /* Landschaftsmodus auf kleinen Geräten */
-        @media (max-height: 500px) and (orientation: landscape) {
-            .terminal {
-                height: 100vh;
-                height: 100dvh;
-                max-height: none;
-                padding: 8px 12px;
-                border-radius: 14px;
-            }
-            .terminal-grid {
-                flex-direction: row;
-                gap: 8px;
-            }
-            .material-panel {
-                flex: 2;
-                min-height: 20vh;
-                max-height: 70vh;
-            }
-            .basket-panel {
-                flex: 1.2;
-                min-height: 20vh;
-                max-height: 70vh;
-            }
-            .card-stack-container {
-                height: clamp(100px, 18vh, 150px);
-                min-height: 70px;
-            }
-            .basket-list {
-                max-height: 10vh;
-            }
-            .terminal-title h1 {
-                font-size: 1rem;
-            }
-            .terminal-title .badge {
-                font-size: 0.6rem;
-                padding: 2px 10px;
-            }
-            .report-btn {
-                font-size: 0.65rem;
-                padding: 4px 12px;
-            }
-            .material-item {
-                padding: 4px 10px;
-            }
-            .material-item .desc {
-                font-size: 0.75rem;
-            }
-            .add-btn {
-                padding: 3px 10px;
-                font-size: 0.7rem;
-            }
-            .filter-bar input {
-                padding: 4px 10px;
-                font-size: 0.75rem;
-            }
-            .header {
-                padding-bottom: 6px;
-                margin-bottom: 6px;
-            }
-            .card-nav-btn {
-                padding: 3px 8px;
-                font-size: 0.65rem;
-            }
-            .basket-item .print-item-btn {
-                font-size: 0.5rem;
-                padding: 1px 6px;
-            }
+            .app-title h1 { font-size: 1.1rem; }
+            .app-title .badge { font-size: 0.6rem; padding: 2px 10px; }
+            .view-toggle button { font-size: 0.6rem; padding: 3px 8px; }
+            .sync-status { font-size: 0.6rem; }
+            .sync-status .dot { width: 8px; height: 8px; }
+            .terminal-panel { min-height: 25vh; max-height: 45vh; padding: 8px; }
+            .office-panel { min-height: 25vh; max-height: 45vh; padding: 8px; }
+            .office-item .o-time { min-width: 40px; font-size: 0.5rem; }
+            .card-stack-container { height: clamp(120px, 18vh, 150px); min-height: 90px; }
+            .card-item { padding: 10px 12px; font-size: 0.7rem; }
+            .card-item .card-site { font-size: 0.8rem; }
+            .card-item .card-code { font-size: 0.95rem; }
+            .material-item { padding: 6px 10px; flex-wrap: wrap; gap: 4px; }
+            .material-item .desc { font-size: 0.75rem; }
+            .add-btn { font-size: 0.7rem; padding: 3px 10px; }
+            .filter-bar input { font-size: 0.75rem; padding: 6px 10px; }
+            .block-btn { font-size: 0.55rem; padding: 3px 8px; }
         }
     </style>
 </head>
 <body>
-<div class="terminal" id="app">
-    <!-- Terminal Header -->
-    <div class="terminal-header">
-        <div class="terminal-title">
-            <h1><i class="fas fa-terminal"></i>ASZ Asten</h1>
+<div class="app-container" id="app">
+    <!-- Header -->
+    <div class="app-header">
+        <div class="app-title">
+            <h1><i class="fas fa-recycle"></i>ASZ Asten</h1>
             <span class="badge"><i class="fas fa-map-pin"></i> Standort 106</span>
         </div>
-        <div class="terminal-status">
-            <div class="status-led">
-                <span class="dot"></span>
-                <span class="status-label">Terminal aktiv</span>
+        <div class="app-status">
+            <div class="sync-status">
+                <span class="dot" id="syncDot"></span>
+                <span id="syncLabel">lokal · sync</span>
             </div>
-            <button class="report-btn" id="reportToOfficeBtn">
-                <i class="fas fa-desktop"></i> <span class="report-label">An Büro-PC</span>
-            </button>
+            <div class="view-toggle">
+                <button class="active" data-view="terminal" id="viewTerminalBtn"><i class="fas fa-terminal"></i> Terminal</button>
+                <button data-view="office" id="viewOfficeBtn"><i class="fas fa-desktop"></i> Büro</button>
+            </div>
         </div>
     </div>
 
     <!-- Main Grid -->
-    <div class="terminal-grid">
-        <!-- Materialauswahl -->
-        <div class="material-panel">
+    <div class="app-grid">
+        <!-- Terminal Panel -->
+        <div class="terminal-panel" id="terminalPanel">
             <div class="filter-bar">
                 <input type="text" id="materialSearch" placeholder="🔍 Suchen (Code / Name) ..." inputmode="search">
                 <div class="block-selector">
@@ -1136,48 +841,65 @@
                 </div>
             </div>
             <div class="material-list" id="materialListContainer"></div>
-        </div>
-
-        <!-- Frachtliste + Karteikärtchen -->
-        <div class="basket-panel">
-            <div class="basket-header">
-                <h3><i class="fas fa-shopping-basket"></i> Frachtliste - Entsorgung</h3>
-                <span id="basketCount">0</span>
-            </div>
-            <div class="basket-list" id="basketListContainer"></div>
 
             <div class="card-stack-container" id="cardStackContainer">
                 <div class="card-empty">Keine Karteikärtchen<br>Füge Materialien hinzu</div>
             </div>
-
             <div class="card-dots" id="cardDots"></div>
-
-            <!-- Card Navigation -->
-            <div class="card-nav-wrapper">
-                <button class="card-nav-btn" id="cardPrevBtn" disabled><i class="fas fa-chevron-left"></i></button>
+            <div class="card-nav">
+                <button id="cardPrevBtn" disabled><i class="fas fa-chevron-left"></i> Zurück</button>
                 <span class="counter" id="cardCounter">0 / 0</span>
-                <button class="card-nav-btn" id="cardNextBtn" disabled><i class="fas fa-chevron-right"></i></button>
+                <button id="cardNextBtn" disabled>Weiter <i class="fas fa-chevron-right"></i></button>
             </div>
 
-            <div class="basket-actions">
+            <div class="terminal-actions">
                 <button class="clear-btn" id="clearBasketBtn"><i class="fas fa-trash-alt"></i> Alle Leeren</button>
                 <button class="sample-btn" id="addSampleBtn"><i class="fas fa-plus-circle"></i> Beispiel</button>
+                <button class="sync-btn" id="syncNowBtn"><i class="fas fa-sync-alt"></i> Sync jetzt</button>
             </div>
+        </div>
 
-            <div class="footer-note">
-                <div class="office-status">
-                    <i class="fas fa-circle" style="font-size:0.6rem;"></i>
-                    <span id="officeStatusText">Verbunden mit Büro-PC</span>
-                </div>
-                <span><i class="fas fa-barcode"></i> LAVU-Artikel · OÖ LAVU GmbH</span>
+        <!-- Office Dashboard Panel -->
+        <div class="office-panel hidden" id="officePanel">
+            <div class="office-header">
+                <h3><i class="fas fa-clipboard-list"></i> Büro-Dashboard</h3>
+                <span class="count-badge" id="officeCount">0</span>
             </div>
+            <div class="office-list" id="officeListContainer">
+                <div class="office-empty">Warte auf Daten vom Terminal...</div>
+            </div>
+            <div style="margin-top: auto; padding-top: 10px; border-top: 1px solid #1f3a4a; flex-shrink: 0;">
+                <button class="sync-btn" id="officeClearBtn" style="background:transparent;border:1px solid #aa5555;border-radius:40px;padding:6px 16px;color:#cc8888;cursor:pointer;font-weight:600;font-size:0.8rem;touch-action:manipulation;">
+                    <i class="fas fa-trash-alt"></i> Office-Daten leeren
+                </button>
+                <span style="float:right;color:#5a8a9a;font-size:0.7rem;" id="officeLastSync">Letzte Sync: —</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="app-footer">
+        <div class="footer-status">
+            <i class="fas fa-circle" id="footerSyncIcon"></i>
+            <span id="footerSyncText">lokal · synchronisiert</span>
+        </div>
+        <div class="device-info">
+            <span id="deviceInfo">📱 Gerät: Browser · localStorage</span>
         </div>
     </div>
 </div>
 
 <script>
     (function() {
-        // ----- Material-Daten (LAVU) -----
+        // ============================================================
+        //  SERVERLOSE SYNC MIT LOCALSTORAGE
+        //  - Beide Geräte (Office-PC & Tablet) öffnen dieselbe index.html
+        //  - localStorage speichert den Frachtstand
+        //  - "Sync jetzt" simuliert die Netzwerkübertragung
+        //  - Office-Dashboard zeigt die gespeicherten Daten an
+        // ============================================================
+
+        // ----- Material-Datenbank (LAVU) -----
         const materials = [
             { code: '1501', desc: 'Großmöbel (ReVital)', block: '1000', container: 'Container 10m³' },
             { code: '1506', desc: 'Hausrat (ReVital)', block: '1000', container: 'Container 10m³' },
@@ -1235,55 +957,160 @@
         let basket = [];
         let activeBlock = 'all';
         let currentCardIndex = 0;
-        let reportHistory = [];
+        let currentView = 'terminal';
+        let syncHistory = [];
+
+        // ----- localStorage Keys -----
+        const STORAGE_KEY = 'asz_fracht_data';
+        const HISTORY_KEY = 'asz_sync_history';
 
         // ----- DOM Refs -----
         const materialListEl = document.getElementById('materialListContainer');
-        const basketListEl = document.getElementById('basketListContainer');
-        const basketCountEl = document.getElementById('basketCount');
         const cardStackContainer = document.getElementById('cardStackContainer');
         const cardDots = document.getElementById('cardDots');
         const cardCounter = document.getElementById('cardCounter');
         const cardPrevBtn = document.getElementById('cardPrevBtn');
         const cardNextBtn = document.getElementById('cardNextBtn');
         const searchInput = document.getElementById('materialSearch');
-        const officeStatusText = document.getElementById('officeStatusText');
+        const terminalPanel = document.getElementById('terminalPanel');
+        const officePanel = document.getElementById('officePanel');
+        const officeListContainer = document.getElementById('officeListContainer');
+        const officeCount = document.getElementById('officeCount');
+        const officeLastSync = document.getElementById('officeLastSync');
+        const syncDot = document.getElementById('syncDot');
+        const syncLabel = document.getElementById('syncLabel');
+        const footerSyncIcon = document.getElementById('footerSyncIcon');
+        const footerSyncText = document.getElementById('footerSyncText');
+        const deviceInfo = document.getElementById('deviceInfo');
 
-        // ----- Druckfunktion für ein einzelnes Item -----
-        function printSingleItem(item) {
-            const siteLine = 'ASZ Asten · Standort 106';
-            const printWindow = window.open('', '_blank', 'width=400,height=300');
-            if (!printWindow) {
-                alert('Bitte Popups erlauben, um das Label zu drucken.');
-                return;
+        // ============================================================
+        //  LOCAL STORAGE FUNKTIONEN
+        // ============================================================
+
+        function loadFromStorage() {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) {
+                    const data = JSON.parse(stored);
+                    basket = data.basket || [];
+                    syncHistory = data.history || [];
+                    return true;
+                }
+                return false;
+            } catch (e) {
+                console.warn('Storage read error:', e);
+                return false;
             }
-            printWindow.document.write(`
-                <html><head><title>LAVU Frachtlabel</title>
-                <style>
-                    body { font-family: 'Courier New', monospace; padding: 30px 20px; background: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-                    .label { border: 3px solid #003b57; padding: 24px 28px; border-radius: 16px; max-width: 380px; text-align: right; background: white; }
-                    .line1 { font-size: 1.4rem; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 10px; }
-                    .item-line { font-size: 1.1rem; font-weight: 600; }
-                    .desc-line { font-size: 1rem; margin-top: 4px; }
-                    .footer { margin-top: 16px; font-size: 0.7rem; color: #2d5770; border-top: 1px solid #ccc; padding-top: 10px; }
-</style></head><body>
-    <div class="label">
-        <div class="line1">${siteLine}</div>
-        <div class="item-line">${item.code} · ${item.container}</div>
-        <div class="desc-line">${item.desc}</div>
-        <div class="footer">LAVU-Artikel · OÖ LAVU GmbH</div>
-    </div>
-    <script>
-        window.print();
-        setTimeout(() => window.close(), 800);
-    <\/script>
-</body></html>
-`);
-            printWindow.document.close();
-            officeStatusText.textContent = `🖨️ Label ${item.code} gedruckt · ${new Date().toLocaleTimeString('de-DE')}`;
         }
 
-        // ----- Rendering -----
+        function saveToStorage() {
+            try {
+                const data = {
+                    basket: basket,
+                    history: syncHistory,
+                    lastUpdated: new Date().toISOString()
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+                return true;
+            } catch (e) {
+                console.warn('Storage write error:', e);
+                return false;
+            }
+        }
+
+        function loadHistory() {
+            try {
+                const stored = localStorage.getItem(HISTORY_KEY);
+                if (stored) {
+                    syncHistory = JSON.parse(stored);
+                }
+            } catch (e) {
+                syncHistory = [];
+            }
+        }
+
+        function saveHistory() {
+            try {
+                localStorage.setItem(HISTORY_KEY, JSON.stringify(syncHistory));
+            } catch (e) {
+                console.warn('History write error:', e);
+            }
+        }
+
+        // ----- Sync-Funktion (simuliert Netzwerkübertragung) -----
+        function performSync() {
+            // 1. Lade aktuelle Daten vom "Netzwerk" (localStorage)
+            const remoteData = loadFromStorage() ? { basket: basket, history: syncHistory } : null;
+
+            // 2. Lokale Daten mit Remote-Daten mergen (Terminal hat Vorrang bei Konflikten)
+            if (remoteData && remoteData.basket) {
+                // Wenn Remote-Daten existieren, aber lokal mehr Items hat -> Terminal hat Vorrang
+                if (basket.length >= remoteData.basket.length) {
+                    // Terminal-Daten sind aktueller -> Überschreibe Remote
+                    saveToStorage();
+                    addSyncHistory('sync', `Terminal → Office (${basket.length} Artikel)`);
+                } else {
+                    // Remote hat mehr Items -> Lade Remote in lokalen Basket
+                    basket = remoteData.basket;
+                    syncHistory = remoteData.history || [];
+                    saveToStorage();
+                    addSyncHistory('sync', `Office → Terminal (${basket.length} Artikel)`);
+                }
+            } else {
+                // Keine Remote-Daten -> Speichere lokale Daten
+                saveToStorage();
+                addSyncHistory('sync', `Initialer Sync (${basket.length} Artikel)`);
+            }
+
+            // 3. Beide Ansichten aktualisieren
+            renderMaterialList();
+            updateBasket();
+            renderCardStack();
+            updateOfficeDashboard();
+
+            // 4. Status aktualisieren
+            updateSyncStatus(true);
+            return true;
+        }
+
+        function addSyncHistory(action, message) {
+            const entry = {
+                timestamp: new Date().toISOString(),
+                action: action,
+                message: message,
+                count: basket.length
+            };
+            syncHistory.unshift(entry);
+            if (syncHistory.length > 100) syncHistory = syncHistory.slice(0, 100);
+            saveHistory();
+        }
+
+        // ----- Sync-Status -----
+        function updateSyncStatus(connected) {
+            const dot = document.getElementById('syncDot');
+            const label = document.getElementById('syncLabel');
+            const footerIcon = document.getElementById('footerSyncIcon');
+            const footerText = document.getElementById('footerSyncText');
+
+            if (connected) {
+                dot.className = 'dot';
+                label.textContent = 'lokal · sync';
+                footerIcon.className = 'fas fa-circle';
+                footerIcon.style.color = '#2ecc71';
+                footerText.textContent = 'lokal · synchronisiert';
+            } else {
+                dot.className = 'dot offline';
+                label.textContent = 'lokal · offline';
+                footerIcon.className = 'fas fa-circle';
+                footerIcon.style.color = '#e74c3c';
+                footerText.textContent = 'lokal · offline';
+            }
+        }
+
+        // ============================================================
+        //  RENDER FUNKTIONEN
+        // ============================================================
+
         function renderMaterialList() {
             const searchTerm = searchInput.value.toLowerCase().trim();
             let filtered = materials.filter(m => {
@@ -1322,57 +1149,27 @@
                         currentCardIndex = basket.length - 1;
                         updateBasket();
                         renderMaterialList();
-                        sendToOffice('add', mat);
+                        saveToStorage();
+                        addSyncHistory('add', `${mat.code} · ${mat.desc}`);
+                        updateOfficeDashboard();
+                        updateSyncStatus(true);
                     }
                 });
             });
         }
 
         function updateBasket() {
-            if (basket.length === 0) {
-                basketListEl.innerHTML = `<div style="padding: 24px 10px; color:#5a8a9a; text-align:center; font-style:italic;font-size:1rem;">Keine Frachtnummern</div>`;
-            } else {
-                let html = '';
-                basket.forEach((item, idx) => {
-                    html += `
-                        <div class="basket-item">
-                            <span class="b-code">${item.code}</span>
-                            <span class="b-desc">${item.desc}</span>
-                            <span class="b-container">${item.container}</span>
-                            <button class="print-item-btn" data-index="${idx}" title="Label drucken">
-                                <i class="fas fa-print"></i> Drucken
-                            </button>
-                            <button class="remove-btn" data-index="${idx}"><i class="fas fa-times-circle"></i></button>
-                        </div>
-                    `;
-                });
-                basketListEl.innerHTML = html;
-
-                // Druck-Buttons in der Frachtliste
-                document.querySelectorAll('.print-item-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const idx = parseInt(this.dataset.index);
-                        if (idx >= 0 && idx < basket.length) {
-                            printSingleItem(basket[idx]);
-                        }
-                    });
-                });
-
-                // Remove-Buttons
-                document.querySelectorAll('.remove-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const idx = parseInt(this.dataset.index);
-                        const removed = basket[idx];
-                        basket.splice(idx, 1);
-                        if (currentCardIndex >= basket.length) currentCardIndex = Math.max(0, basket.length - 1);
-                        updateBasket();
-                        renderMaterialList();
-                        sendToOffice('remove', removed);
-                    });
-                });
-            }
+            // Basket wird nur im Terminal benötigt, aber wir speichern den Zustand
             basketCountEl.textContent = basket.length;
             renderCardStack();
+            updateOfficeDashboard();
+        }
+
+        const basketCountEl = document.getElementById('basketCount') || { textContent: '' };
+        // Füge basketCount hinzu, falls nicht vorhanden
+        const headerSpan = document.querySelector('.office-header .count-badge');
+        if (headerSpan) {
+            // wird in updateOfficeDashboard aktualisiert
         }
 
         function renderCardStack() {
@@ -1445,7 +1242,42 @@
             setupCardSwipe();
         }
 
-        // ----- Swipe (Touch & Maus) -----
+        // ----- Office Dashboard -----
+        function updateOfficeDashboard() {
+            const list = document.getElementById('officeListContainer');
+            const count = document.getElementById('officeCount');
+
+            if (basket.length === 0) {
+                list.innerHTML = `<div class="office-empty">📭 Keine Fracht im System</div>`;
+                count.textContent = '0';
+                return;
+            }
+
+            let html = '';
+            basket.forEach((item, idx) => {
+                const time = new Date().toLocaleTimeString('de-DE');
+                html += `
+                    <div class="office-item">
+                        <span class="o-code">${item.code}</span>
+                        <span class="o-desc">${item.desc}</span>
+                        <span class="o-container">${item.container}</span>
+                        <span class="o-time">${time}</span>
+                    </div>
+                `;
+            });
+            list.innerHTML = html;
+            count.textContent = basket.length;
+
+            // Letzte Sync-Zeit
+            if (syncHistory.length > 0) {
+                const last = new Date(syncHistory[0].timestamp);
+                officeLastSync.textContent = `Letzte Sync: ${last.toLocaleTimeString('de-DE')}`;
+            } else {
+                officeLastSync.textContent = 'Letzte Sync: —';
+            }
+        }
+
+        // ----- Swipe -----
         let touchStartX = 0, touchStartY = 0;
         let isSwiping = false;
         let mouseDownX = 0, mouseDownY = 0;
@@ -1565,7 +1397,10 @@
             }
         }
 
-        // ----- Navigation -----
+        // ============================================================
+        //  NAVIGATION & EVENTS
+        // ============================================================
+
         cardPrevBtn.addEventListener('click', function() {
             if (currentCardIndex > 0) { currentCardIndex--; renderCardStack(); }
         });
@@ -1583,59 +1418,37 @@
             }
         });
 
-        // ----- Office-Reporting (simuliert) -----
-        function sendToOffice(action, item) {
-            const timestamp = new Date().toLocaleTimeString('de-DE');
-            const entry = {
-                timestamp,
-                action,
-                item,
-                basketCount: basket.length,
-                basketItems: basket.map(i => ({ code: i.code, desc: i.desc, container: i.container }))
-            };
-            reportHistory.push(entry);
-            if (item && typeof item === 'object' && item.code) {
-                officeStatusText.textContent = `Letzte Aktion: ${action} · ${item.code} · ${timestamp}`;
-            } else {
-                officeStatusText.textContent = `Letzte Aktion: ${action} · ${timestamp}`;
-            }
-            console.log('[Office-Report]', entry);
-        }
-
-        // ----- Report an Büro-PC (Button) -----
-        document.getElementById('reportToOfficeBtn').addEventListener('click', function() {
-            if (basket.length === 0) {
-                officeStatusText.textContent = '⚠️ Keine Fracht zum Senden';
-                setTimeout(() => {
-                    officeStatusText.textContent = 'Verbunden mit Büro-PC';
-                }, 2000);
-                return;
-            }
-            const report = {
-                timestamp: new Date().toISOString(),
-                site: 'ASZ Asten · 106',
-                terminal: 'Terminal-01',
-                items: basket.map(i => ({ code: i.code, desc: i.desc, container: i.container })),
-                total: basket.length
-            };
-            officeStatusText.textContent = '📤 Sende an Büro-PC ...';
-            setTimeout(() => {
-                officeStatusText.textContent = `✅ Gesendet: ${basket.length} Artikel an Büro-PC (${new Date().toLocaleTimeString('de-DE')})`;
-                console.log('[Office-PC] Vollständiger Report:', JSON.stringify(report, null, 2));
-            }, 800);
+        // ----- View Toggle -----
+        document.getElementById('viewTerminalBtn').addEventListener('click', function() {
+            currentView = 'terminal';
+            document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            terminalPanel.classList.remove('hidden');
+            officePanel.classList.add('hidden');
+        });
+        document.getElementById('viewOfficeBtn').addEventListener('click', function() {
+            currentView = 'office';
+            document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            terminalPanel.classList.add('hidden');
+            officePanel.classList.remove('hidden');
+            updateOfficeDashboard();
         });
 
-        // ----- Clear & Sample -----
+        // ----- Clear Basket -----
         document.getElementById('clearBasketBtn').addEventListener('click', function() {
             if (basket.length === 0) return;
-            const oldBasket = [...basket];
             basket = [];
             currentCardIndex = 0;
-            updateBasket();
+            saveToStorage();
+            addSyncHistory('clear', 'Alle Artikel entfernt');
             renderMaterialList();
-            sendToOffice('clear_all', { count: oldBasket.length });
+            renderCardStack();
+            updateOfficeDashboard();
+            updateSyncStatus(true);
         });
 
+        // ----- Add Sample -----
         document.getElementById('addSampleBtn').addEventListener('click', function() {
             const sampleCodes = ['2110', '2120', '4050'];
             let added = 0;
@@ -1648,9 +1461,41 @@
             });
             if (added > 0) {
                 currentCardIndex = basket.length - 1;
-                updateBasket();
+                saveToStorage();
+                addSyncHistory('sample', `${added} Beispiel-Artikel hinzugefügt`);
                 renderMaterialList();
-                sendToOffice('add_sample', { count: added });
+                renderCardStack();
+                updateOfficeDashboard();
+                updateSyncStatus(true);
+            }
+        });
+
+        // ----- Sync Button -----
+        document.getElementById('syncNowBtn').addEventListener('click', function() {
+            const btn = this;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Syncing...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                performSync();
+                btn.innerHTML = '<i class="fas fa-sync-alt"></i> Sync jetzt';
+                btn.disabled = false;
+                updateOfficeDashboard();
+            }, 500);
+        });
+
+        // ----- Office Clear -----
+        document.getElementById('officeClearBtn').addEventListener('click', function() {
+            if (basket.length === 0) return;
+            if (confirm('Möchten Sie wirklich alle Frachtdaten aus dem System löschen?')) {
+                basket = [];
+                currentCardIndex = 0;
+                saveToStorage();
+                addSyncHistory('clear_office', 'Office-Daten geleert');
+                renderMaterialList();
+                renderCardStack();
+                updateOfficeDashboard();
+                updateSyncStatus(true);
             }
         });
 
@@ -1667,15 +1512,54 @@
         // ----- Search -----
         searchInput.addEventListener('input', renderMaterialList);
 
-        // ----- Initial Render -----
-        renderMaterialList();
-        updateBasket();
-        renderCardStack();
+        // ============================================================
+        //  INITIALISIERUNG
+        // ============================================================
 
-        // Office-Status Initialisierung
-        setTimeout(() => {
-            officeStatusText.textContent = 'Verbunden mit Büro-PC';
-        }, 500);
+        function init() {
+            // Lade Daten aus localStorage
+            const hasData = loadFromStorage();
+            if (hasData && basket.length > 0) {
+                // Daten vorhanden
+            } else {
+                // Falls keine Daten, leeren Basket initialisieren
+                basket = [];
+                syncHistory = [];
+                saveToStorage();
+            }
+
+            // Lade History
+            loadHistory();
+
+            // Geräteinformation
+            const isMobile = window.innerWidth < 860;
+            deviceInfo.textContent = isMobile ? '📱 Tablet · localStorage' : '🖥️ Büro-PC · localStorage';
+
+            // Render
+            renderMaterialList();
+            renderCardStack();
+            updateOfficeDashboard();
+            updateSyncStatus(true);
+
+            // Automatischer Sync nach 2 Sekunden (simuliert Netzwerk)
+            setTimeout(() => {
+                performSync();
+                updateOfficeDashboard();
+            }, 1000);
+
+            // Automatischer Sync alle 30 Sekunden
+            setInterval(() => {
+                performSync();
+                updateOfficeDashboard();
+            }, 30000);
+
+            console.log('🔄 ASZ Asten System gestartet');
+            console.log(`📦 ${basket.length} Artikel im System`);
+            console.log('📡 localStorage-Sync aktiv');
+        }
+
+        // Starte die Anwendung
+        init();
     })();
 </script>
 </body>
