@@ -270,37 +270,6 @@
             50% { opacity: 0.4; }
         }
 
-        .design-toggle {
-            display: flex;
-            gap: 4px;
-            background: var(--bg-input);
-            border-radius: 40px;
-            padding: 4px;
-            border: 1px solid var(--border-color);
-        }
-        .design-toggle button {
-            background: transparent;
-            border: none;
-            padding: clamp(4px, 0.5vh, 8px) clamp(10px, 1.2vw, 16px);
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: clamp(0.65rem, 0.8vw, 0.85rem);
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: 0.2s;
-            touch-action: manipulation;
-            white-space: nowrap;
-            font-family: var(--font-family);
-        }
-        .design-toggle button.active {
-            background: #1f5d7a;
-            color: white;
-            box-shadow: 0 0 20px rgba(31, 93, 122, 0.3);
-        }
-        .design-toggle button:hover:not(.active) {
-            background: var(--bg-item-hover);
-        }
-
         .theme-toggle {
             background: var(--bg-input);
             border: 1px solid var(--border-light);
@@ -756,7 +725,7 @@
             font-size: 0.7rem;
         }
 
-        /* ----- Card Stack (Karteikärtchen) ----- */
+        /* ----- Card Stack (Karteikärtchen) - über dem Terminal bei mobile, rechts bei desktop ----- */
         .card-panel {
             flex: 0 0 auto;
             max-height: 45%;
@@ -1061,7 +1030,7 @@
             background: rgba(46, 204, 113, 0.2);
         }
 
-        /* ----- Footer ----- */
+        /* ----- Footer mit dezenter Design-Steuerung ----- */
         .app-footer {
             margin-top: clamp(8px, 1vh, 14px);
             font-size: clamp(0.65rem, 0.7vw, 0.8rem);
@@ -1077,24 +1046,77 @@
             gap: 6px;
             transition: border-color 0.3s ease, color 0.3s ease;
         }
-        .app-footer .footer-status {
+        .app-footer .footer-left {
             display: flex;
             align-items: center;
             gap: clamp(6px, 0.8vw, 10px);
             color: var(--text-muted);
             font-size: clamp(0.65rem, 0.7vw, 0.85rem);
         }
-        .app-footer .footer-status i {
+        .app-footer .footer-left i {
             color: var(--dot-color);
             font-size: clamp(0.5rem, 0.6vw, 0.7rem);
             transition: color 0.3s ease;
         }
-        .app-footer .footer-status i.offline {
+        .app-footer .footer-left i.offline {
             color: var(--dot-offline);
+        }
+        .app-footer .footer-right {
+            display: flex;
+            align-items: center;
+            gap: clamp(6px, 0.8vw, 12px);
+        }
+        .app-footer .footer-right .design-toggle {
+            display: flex;
+            gap: 3px;
+            background: var(--bg-input);
+            border-radius: 30px;
+            padding: 3px;
+            border: 1px solid var(--border-color);
+        }
+        .app-footer .footer-right .design-toggle button {
+            background: transparent;
+            border: none;
+            padding: clamp(2px, 0.3vh, 4px) clamp(6px, 0.6vw, 10px);
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: clamp(0.55rem, 0.6vw, 0.7rem);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: 0.2s;
+            touch-action: manipulation;
+            white-space: nowrap;
+            font-family: var(--font-family);
+        }
+        .app-footer .footer-right .design-toggle button.active {
+            background: #1f5d7a;
+            color: white;
+            box-shadow: 0 0 10px rgba(31, 93, 122, 0.2);
+        }
+        .app-footer .footer-right .design-toggle button:hover:not(.active) {
+            background: var(--bg-item-hover);
+        }
+        .app-footer .footer-right .theme-toggle-sm {
+            background: var(--bg-input);
+            border: 1px solid var(--border-light);
+            border-radius: 30px;
+            padding: clamp(2px, 0.3vh, 4px) clamp(6px, 0.6vw, 10px);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: clamp(0.7rem, 0.7vw, 0.8rem);
+            touch-action: manipulation;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-family: var(--font-family);
+        }
+        .app-footer .footer-right .theme-toggle-sm:hover {
+            background: var(--btn-hover);
         }
         .app-footer .device-info {
             color: var(--text-muted);
-            font-size: clamp(0.55rem, 0.6vw, 0.7rem);
+            font-size: clamp(0.5rem, 0.5vw, 0.65rem);
         }
 
         /* ----- EC-Card Größe für Druck ----- */
@@ -1174,24 +1196,29 @@
             }
         }
 
-        /* ----- Responsive ----- */
+        /* ----- Responsive: Karteikärtchen über dem Terminal bei mobile ----- */
         @media (max-width: 860px) {
             .app-grid {
                 flex-direction: column;
                 gap: 10px;
             }
             .terminal-panel {
-                flex: 2;
-                min-height: 35vh;
-                max-height: 55vh;
+                flex: 1;
+                min-height: 30vh;
+                max-height: 50vh;
             }
             .right-panel {
                 flex: 1;
                 min-height: 30vh;
                 max-height: 50vh;
+                flex-direction: column-reverse;
             }
             .card-panel {
-                max-height: 40%;
+                max-height: 45%;
+                flex: 1;
+            }
+            .office-panel {
+                flex: 1;
             }
             .app-container {
                 height: 100vh;
@@ -1203,10 +1230,6 @@
             .view-toggle button {
                 padding: 4px 12px;
                 font-size: 0.7rem;
-            }
-            .design-toggle button {
-                padding: 3px 10px;
-                font-size: 0.6rem;
             }
         }
         @media (max-width: 480px) {
@@ -1220,12 +1243,11 @@
             .app-title h1 { font-size: 1.1rem; }
             .app-title .badge { font-size: 0.6rem; padding: 2px 10px; }
             .view-toggle button { font-size: 0.6rem; padding: 3px 8px; }
-            .design-toggle button { font-size: 0.5rem; padding: 2px 6px; }
             .sync-status { font-size: 0.6rem; }
             .sync-status .dot { width: 8px; height: 8px; }
             .terminal-panel { min-height: 25vh; max-height: 45vh; padding: 8px; }
             .right-panel { min-height: 25vh; max-height: 45vh; }
-            .card-panel { max-height: 35%; padding: 8px; }
+            .card-panel { max-height: 40%; padding: 8px; }
             .office-panel { padding: 8px; }
             .office-item .o-time { min-width: 40px; font-size: 0.5rem; }
             .office-item .o-delete { font-size: 0.8rem; }
@@ -1238,6 +1260,13 @@
             .material-item .qty-btn { width: 28px; height: 28px; font-size: 0.9rem; }
             .filter-bar input { font-size: 0.75rem; padding: 6px 10px; }
             .block-btn { font-size: 0.55rem; padding: 3px 8px; }
+            .app-footer .footer-right .design-toggle button { font-size: 0.5rem; padding: 2px 5px; }
+            .app-footer .footer-right .theme-toggle-sm { font-size: 0.55rem; padding: 2px 6px; }
+        }
+        @media (max-width: 400px) {
+            .app-footer { flex-direction: column; align-items: stretch; gap: 4px; }
+            .app-footer .footer-right { justify-content: center; flex-wrap: wrap; }
+            .app-footer .footer-left { justify-content: center; }
         }
     </style>
 </head>
@@ -1254,10 +1283,6 @@
             </div>
         </div>
         <div class="app-status">
-            <div class="design-toggle">
-                <button class="active" id="designBootstrapBtn"><i class="fab fa-bootstrap"></i> Bootstrap</button>
-                <button id="designMaterialBtn"><span class="material-icons" style="font-size:1rem;">design_services</span> Material</button>
-            </div>
             <button class="theme-toggle" id="themeToggle" title="Theme umschalten">
                 <i class="fas fa-moon" id="themeIcon"></i> <span id="themeLabel">Dunkel</span>
             </button>
@@ -1315,7 +1340,7 @@
                 </div>
             </div>
 
-            <!-- Card Panel - Karteikärtchen -->
+            <!-- Card Panel - Karteikärtchen (über dem Terminal bei mobile, rechts bei desktop) -->
             <div class="card-panel" id="cardPanel">
                 <div class="card-panel-header">
                     <h4><i class="fas fa-id-card"></i> Karteikärtchen</h4>
@@ -1334,14 +1359,21 @@
         </div>
     </div>
 
-    <!-- Footer -->
+    <!-- Footer mit dezenter Design-Steuerung -->
     <div class="app-footer">
-        <div class="footer-status">
+        <div class="footer-left">
             <i class="fas fa-circle" id="footerSyncIcon"></i>
             <span id="footerSyncText">lokal · synchronisiert</span>
+            <span class="device-info" id="deviceInfo">📱 Gerät: Browser</span>
         </div>
-        <div class="device-info">
-            <span id="deviceInfo">📱 Gerät: Browser · localStorage</span>
+        <div class="footer-right">
+            <div class="design-toggle">
+                <button class="active" id="designBootstrapBtn"><i class="fab fa-bootstrap"></i> BS</button>
+                <button id="designMaterialBtn"><span class="material-icons" style="font-size:0.7rem;">design_services</span> MD</button>
+            </div>
+            <button class="theme-toggle-sm" id="themeToggleSm" title="Theme umschalten">
+                <i class="fas fa-moon" id="themeIconSm"></i>
+            </button>
         </div>
     </div>
 </div>
@@ -1413,7 +1445,7 @@
         let currentView = 'terminal';
         let syncHistory = [];
         let darkTheme = true;
-        let currentDesign = 'bootstrap'; // 'bootstrap' oder 'material'
+        let currentDesign = 'bootstrap';
 
         // ----- localStorage Keys -----
         const STORAGE_KEY = 'asz_fracht_data';
@@ -1444,6 +1476,8 @@
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
         const themeLabel = document.getElementById('themeLabel');
+        const themeToggleSm = document.getElementById('themeToggleSm');
+        const themeIconSm = document.getElementById('themeIconSm');
         const designBootstrapBtn = document.getElementById('designBootstrapBtn');
         const designMaterialBtn = document.getElementById('designMaterialBtn');
         const bootstrapCss = document.getElementById('bootstrapCss');
@@ -1468,7 +1502,6 @@
 
         function applyDesign() {
             const container = document.querySelector('.app-container');
-            const body = document.body;
             
             if (currentDesign === 'material') {
                 container.classList.add('material-design');
@@ -1477,59 +1510,30 @@
                 } else {
                     container.classList.remove('dark-theme');
                 }
-                // Material Font
                 document.documentElement.style.setProperty('--font-family', "'Roboto', 'Segoe UI', system-ui, sans-serif");
-                // Material Icons aktivieren
-                document.querySelectorAll('.title-icons i, .office-header h3 i, .card-panel-header h4 i').forEach(el => {
-                    if (el.classList.contains('fa-clipboard-list')) {
-                        el.className = 'material-icons';
-                        el.textContent = 'list_alt';
-                    } else if (el.classList.contains('fa-desktop')) {
-                        el.className = 'material-icons';
-                        el.textContent = 'desktop_windows';
-                    } else if (el.classList.contains('fa-id-card')) {
-                        el.className = 'material-icons';
-                        el.textContent = 'credit_card';
-                    }
-                });
-                // Bootstrap deaktivieren (kein Konflikt, aber wir behalten es)
-                bootstrapCss.disabled = false; // Bootstrap bleibt verfügbar
             } else {
                 container.classList.remove('material-design');
                 container.classList.remove('dark-theme');
                 document.documentElement.style.setProperty('--font-family', "'Segoe UI', Roboto, system-ui, sans-serif");
-                // Icons zurücksetzen
-                document.querySelectorAll('.material-icons').forEach(el => {
-                    if (el.textContent === 'list_alt') {
-                        el.className = 'fas fa-clipboard-list';
-                        el.textContent = '';
-                    } else if (el.textContent === 'desktop_windows') {
-                        el.className = 'fas fa-desktop';
-                        el.textContent = '';
-                    } else if (el.textContent === 'credit_card') {
-                        el.className = 'fas fa-id-card';
-                        el.textContent = '';
-                    }
-                });
                 bootstrapCss.disabled = false;
             }
             
-            // Theme-Status aktualisieren
             if (darkTheme) {
                 document.documentElement.setAttribute('data-bs-theme', 'dark');
                 themeIcon.className = 'fas fa-moon';
                 themeLabel.textContent = 'Dunkel';
+                themeIconSm.className = 'fas fa-moon';
             } else {
                 document.documentElement.setAttribute('data-bs-theme', 'light');
                 themeIcon.className = 'fas fa-sun';
                 themeLabel.textContent = 'Hell';
+                themeIconSm.className = 'fas fa-sun';
             }
             
             try {
                 localStorage.setItem(DESIGN_KEY, currentDesign);
             } catch (e) {}
             
-            // Buttons aktualisieren
             designBootstrapBtn.classList.toggle('active', currentDesign === 'bootstrap');
             designMaterialBtn.classList.toggle('active', currentDesign === 'material');
         }
@@ -1537,7 +1541,6 @@
         function setDesign(design) {
             currentDesign = design;
             applyDesign();
-            // Neu rendern für Material Icons
             renderAll();
         }
 
@@ -1552,7 +1555,7 @@
                     darkTheme = stored === 'true';
                 }
             } catch (e) {}
-            applyDesign(); // Design anwenden mit Theme
+            applyDesign();
         }
 
         function toggleTheme() {
@@ -1561,6 +1564,7 @@
         }
 
         themeToggle.addEventListener('click', toggleTheme);
+        themeToggleSm.addEventListener('click', toggleTheme);
 
         // ============================================================
         //  LOCAL STORAGE FUNKTIONEN
@@ -2140,7 +2144,7 @@
             loadHistory();
 
             const isMobile = window.innerWidth < 860;
-            deviceInfo.textContent = isMobile ? '📱 Tablet · localStorage' : '🖥️ Büro-PC · localStorage';
+            deviceInfo.textContent = isMobile ? '📱 Tablet' : '🖥️ PC';
 
             renderAll();
 
