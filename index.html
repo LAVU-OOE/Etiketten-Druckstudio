@@ -26,7 +26,6 @@
             color: #e6edf3;
         }
 
-        /* Moderner Container */
         .app-container {
             max-width: 1400px;
             margin: 0 auto;
@@ -68,7 +67,7 @@
             flex-wrap: wrap;
         }
 
-        /* Buttons modern */
+        /* Buttons */
         .btn {
             padding: 10px 20px;
             border: none;
@@ -108,15 +107,6 @@
             background: #059669;
         }
 
-        .btn-danger {
-            background: #ef4444;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #dc2626;
-        }
-
         .btn-outline {
             background: transparent;
             border: 2px solid #667eea;
@@ -146,7 +136,7 @@
             background: #ffffff;
         }
 
-        /* Stats Cards */
+        /* Stats */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -194,7 +184,7 @@
             color: #667eea;
         }
 
-        /* Hauptcards */
+        /* Cards */
         .card {
             background: white;
             border-radius: 20px;
@@ -235,7 +225,7 @@
             font-weight: 500;
         }
 
-        /* Filter / Suche */
+        /* Filter */
         .filter-bar {
             display: flex;
             gap: 12px;
@@ -243,7 +233,8 @@
             align-items: center;
         }
 
-        .filter-bar input, .filter-bar select {
+        .filter-bar input,
+        .filter-bar select {
             padding: 10px 16px;
             border: 2px solid #e2e8f0;
             border-radius: 12px;
@@ -260,13 +251,14 @@
             color: #e6edf3;
         }
 
-        .filter-bar input:focus, .filter-bar select:focus {
+        .filter-bar input:focus,
+        .filter-bar select:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
         }
 
-        /* Tabelle modern */
+        /* Tabelle */
         .table-wrapper {
             overflow-x: auto;
         }
@@ -297,7 +289,6 @@
             background: #f8fafc;
             border-radius: 12px;
             transition: all 0.2s;
-            cursor: pointer;
         }
 
         body.dark-mode tbody tr {
@@ -319,7 +310,6 @@
             border-top: 1px solid transparent;
         }
 
-        /* Status Badge */
         .status-badge {
             display: inline-flex;
             align-items: center;
@@ -351,43 +341,6 @@
             color: #34d399;
         }
 
-        /* Moderner Toggle-Switch */
-        .toggle-switch {
-            width: 44px;
-            height: 24px;
-            background: #cbd5e1;
-            border-radius: 30px;
-            display: inline-block;
-            position: relative;
-            cursor: pointer;
-            transition: all 0.3s;
-            flex-shrink: 0;
-        }
-
-        body.dark-mode .toggle-switch {
-            background: #30363d;
-        }
-
-        .toggle-switch.active {
-            background: #10b981;
-        }
-
-        .toggle-switch .toggle-knob {
-            width: 18px;
-            height: 18px;
-            background: white;
-            border-radius: 50%;
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            transition: all 0.3s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .toggle-switch.active .toggle-knob {
-            left: 23px;
-        }
-
         /* Etiketten Grid */
         .etikett-grid {
             display: grid;
@@ -401,7 +354,6 @@
             padding: 18px;
             border: 2px solid #eef2f6;
             transition: all 0.3s;
-            position: relative;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
 
@@ -475,7 +427,9 @@
             font-size: 11px;
         }
 
-        /* MODAL */
+        /* ============================================================
+           MODAL mit Autocomplete
+           ============================================================ */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -504,6 +458,8 @@
             transform: scale(0.9) translateY(20px);
             transition: all 0.35s ease;
             box-shadow: 0 40px 80px rgba(0,0,0,0.2);
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         body.dark-mode .modal {
@@ -541,19 +497,20 @@
             transform: rotate(90deg);
         }
 
-        .modal .form-group {
+        .form-group {
             margin-bottom: 18px;
+            position: relative;
         }
 
-        .modal .form-group label {
+        .form-group label {
             display: block;
             font-weight: 500;
             font-size: 14px;
             margin-bottom: 6px;
         }
 
-        .modal .form-group input,
-        .modal .form-group select {
+        .form-group input,
+        .form-group select {
             width: 100%;
             padding: 12px 16px;
             border: 2px solid #e2e8f0;
@@ -564,17 +521,95 @@
             background: white;
         }
 
-        body.dark-mode .modal .form-group input,
-        body.dark-mode .modal .form-group select {
+        body.dark-mode .form-group input,
+        body.dark-mode .form-group select {
             background: #0d1117;
             border-color: #30363d;
             color: #e6edf3;
         }
 
-        .modal .form-group input:focus {
+        .form-group input:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+        }
+
+        /* ============================================================
+           AUTOCOMPLETE SUGGESTIONS
+           ============================================================ */
+        .suggestions-box {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1001;
+            display: none;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+        }
+
+        body.dark-mode .suggestions-box {
+            background: #0d1117;
+            border-color: #30363d;
+        }
+
+        .suggestions-box.active {
+            display: block;
+        }
+
+        .suggestion-item {
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-size: 14px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        body.dark-mode .suggestion-item {
+            border-bottom-color: #1c2128;
+        }
+
+        .suggestion-item:hover,
+        .suggestion-item.active {
+            background: #f1f5f9;
+        }
+
+        body.dark-mode .suggestion-item:hover,
+        body.dark-mode .suggestion-item.active {
+            background: #1c2128;
+        }
+
+        .suggestion-item .highlight {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .suggestion-item .suggestion-badge {
+            font-size: 11px;
+            color: #6b7a8f;
+            background: #eef2f6;
+            padding: 2px 10px;
+            border-radius: 12px;
+        }
+
+        body.dark-mode .suggestion-item .suggestion-badge {
+            background: #1c2128;
+            color: #8b949e;
+        }
+
+        .suggestions-box .suggestion-empty {
+            padding: 16px;
+            text-align: center;
+            color: #6b7a8f;
+            font-size: 14px;
         }
 
         .modal-actions {
@@ -584,38 +619,86 @@
             margin-top: 24px;
         }
 
-        /* Print optimiert */
+        /* Print */
         @media print {
-            body { background: white; padding: 12px; }
-            .no-print { display: none !important; }
-            .card { box-shadow: none; border: 1px solid #ddd; background: white; }
-            .etikett-card { border-color: #999; break-inside: avoid; box-shadow: none; }
-            .table-wrapper { overflow: visible; }
-            tbody tr { background: white !important; }
-            .stats-grid { display: none; }
-            .header-actions { display: none; }
-            .filter-bar { display: none; }
-            .modal-overlay { display: none; }
+            body {
+                background: white;
+                padding: 12px;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                background: white;
+            }
+            .etikett-card {
+                border-color: #999;
+                break-inside: avoid;
+                box-shadow: none;
+            }
+            .table-wrapper {
+                overflow: visible;
+            }
+            tbody tr {
+                background: white !important;
+            }
+            .stats-grid {
+                display: none;
+            }
+            .header-actions {
+                display: none;
+            }
+            .filter-bar {
+                display: none;
+            }
+            .modal-overlay {
+                display: none;
+            }
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .header-left h1 { font-size: 20px; }
-            .stats-grid { grid-template-columns: 1fr 1fr; }
-            .stat-value { font-size: 24px; }
+            .header-left h1 {
+                font-size: 20px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .stat-value {
+                font-size: 24px;
+            }
         }
 
         @media (max-width: 480px) {
-            .stats-grid { grid-template-columns: 1fr; }
-            .btn { padding: 8px 14px; font-size: 12px; }
-            .modal { padding: 20px; }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .btn {
+                padding: 8px 14px;
+                font-size: 12px;
+            }
+            .modal {
+                padding: 20px;
+            }
         }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #eef2f6; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: #667eea; border-radius: 10px; }
-        body.dark-mode ::-webkit-scrollbar-track { background: #1c2128; }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #eef2f6;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+        body.dark-mode ::-webkit-scrollbar-track {
+            background: #1c2128;
+        }
     </style>
 </head>
 <body>
@@ -631,7 +714,7 @@
         <div class="header-actions no-print">
             <button class="btn btn-primary" onclick="openModal('add')">➕ Position hinzufügen</button>
             <button class="btn btn-success" onclick="generateSampleData()">📦 Beispieldaten</button>
-            <button class="btn btn-outline" onclick="printEtiketten()">🖨️ Etiketten drucken</button>
+            <button class="btn btn-outline" onclick="printEtiketten()">🖨️ Etiketten</button>
             <button class="btn btn-dark" onclick="toggleDarkMode()">🌙</button>
         </div>
     </div>
@@ -695,16 +778,15 @@
                 🏷️ Etiketten
                 <span class="badge-count" id="etikettBadge">0</span>
             </div>
-            <div class="no-print">
-                <button class="btn btn-outline" onclick="document.getElementById('etikettGrid').scrollIntoView({behavior:'smooth'})">⬇️ Zu Etiketten</button>
-            </div>
         </div>
         <div id="etikettGrid" class="etikett-grid"></div>
     </div>
 
 </div>
 
-<!-- MODAL -->
+<!-- ============================================================
+     MODAL mit Autocomplete
+     ============================================================ -->
 <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
         <div class="modal-header">
@@ -714,15 +796,17 @@
         <div id="modalBody">
             <div class="form-group">
                 <label>Positions-Nr.</label>
-                <input type="number" id="editNr" placeholder="z.B. 767">
+                <input type="number" id="editNr" placeholder="z.B. 1">
             </div>
             <div class="form-group">
                 <label>Fracht-ID</label>
-                <input type="text" id="editFracht" placeholder="z.B. F-2026-050">
+                <input type="text" id="editFracht" placeholder="z.B. F-2026-050" autocomplete="off">
+                <div class="suggestions-box" id="frachtSuggestions"></div>
             </div>
             <div class="form-group">
                 <label>Material / Beschreibung</label>
-                <input type="text" id="editMaterial" placeholder="z.B. Elektroschrott">
+                <input type="text" id="editMaterial" placeholder="z.B. Elektroschrott" autocomplete="off">
+                <div class="suggestions-box" id="materialSuggestions"></div>
             </div>
             <div class="form-group">
                 <label>Menge</label>
@@ -731,7 +815,7 @@
         </div>
         <div class="modal-actions">
             <button class="btn" onclick="closeModal()">Abbrechen</button>
-            <button class="btn btn-primary" id="modalSaveBtn" onclick="saveModal()">Speichern</button>
+            <button class="btn btn-primary" id="modalSaveBtn" onclick="saveModal()">Hinzufügen</button>
         </div>
     </div>
 </div>
@@ -741,8 +825,20 @@
     //  DATA LAYER
     // ============================================================
     let positions = JSON.parse(localStorage.getItem('entsorgung_positions')) || [];
-    let modalMode = 'add'; // 'add' | 'edit'
+    let modalMode = 'add';
     let editTargetNr = null;
+
+    // Vordefinierte Material-Vorschläge (erweiterbar)
+    const MATERIAL_SUGGESTIONS = [
+        'Styropor', 'Bau-Styropor', 'EPS', 'XPS',
+        'Elektroschrott', 'Kabel & Leitungen', 'Batterien',
+        'Kunststoffteile', 'Metallschrott', 'Elektronikbauteile',
+        'Verpackungsmaterial', 'Holzabfälle', 'Gipsplatten',
+        'Dämmmaterial', 'Bitumen', 'Asbest (Sonderabfall)',
+        'Leuchtstoffröhren', 'Ölfilter', 'Lacke & Farben',
+        'Lösungsmittel', 'Säuren', 'Laugen',
+        'Bauschutt', 'Erdaushub', 'Recyclingmaterial'
+    ];
 
     function save() {
         localStorage.setItem('entsorgung_positions', JSON.stringify(positions));
@@ -757,9 +853,9 @@
         const statusFilter = document.getElementById('statusFilter')?.value || 'alle';
 
         let filtered = positions.filter(p => {
-            const matchSearch = p.fracht.toLowerCase().includes(search) || 
-                               p.material.toLowerCase().includes(search) ||
-                               String(p.nr).includes(search);
+            const matchSearch = p.fracht.toLowerCase().includes(search) ||
+                p.material.toLowerCase().includes(search) ||
+                String(p.nr).includes(search);
             const matchStatus = statusFilter === 'alle' || p.status === statusFilter;
             return matchSearch && matchStatus;
         });
@@ -802,18 +898,18 @@
             const statusLabel = alleErledigt ? '✅ Erledigt' : '🔄 Offen';
 
             html += `
-                <tr>
-                    <td><strong>${fracht}</strong></td>
-                    <td>${posListe.length}</td>
-                    <td>${gesamtMenge}</td>
-                    <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
-                    <td class="no-print">
-                        <button class="btn" style="padding:4px 12px;font-size:12px;" onclick="toggleFrachtStatus('${fracht}')">
-                            ${alleErledigt ? '↩️ Wieder öffnen' : '✅ Als erledigt'}
-                        </button>
-                    </td>
-                </tr>
-            `;
+                    <tr>
+                        <td><strong>${fracht}</strong></td>
+                        <td>${posListe.length}</td>
+                        <td>${gesamtMenge}</td>
+                        <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
+                        <td class="no-print">
+                            <button class="btn" style="padding:4px 12px;font-size:12px;" onclick="toggleFrachtStatus('${fracht}')">
+                                ${alleErledigt ? '↩️ Wieder öffnen' : '✅ Als erledigt'}
+                            </button>
+                        </td>
+                    </tr>
+                `;
         }
         tbody.innerHTML = html;
     }
@@ -832,19 +928,19 @@
             const statusIcon = p.status === 'offen' ? '🔄' : '✅';
             const statusText = p.status === 'offen' ? 'offen' : 'erledigt';
             html += `
-                <div class="etikett-card">
-                    <div class="etikett-header">
-                        <span class="etikett-fracht">${p.fracht}</span>
-                        <span class="etikett-nr">#${p.nr}</span>
+                    <div class="etikett-card">
+                        <div class="etikett-header">
+                            <span class="etikett-fracht">${p.fracht}</span>
+                            <span class="etikett-nr">#${p.nr}</span>
+                        </div>
+                        <div class="etikett-material">${p.material}</div>
+                        <div class="etikett-menge">📦 Menge: ${p.menge}</div>
+                        <div class="etikett-status">
+                            <span>${statusIcon} ${statusText}</span>
+                            <span class="etikett-datum">${new Date().toLocaleDateString('de-DE')}</span>
+                        </div>
                     </div>
-                    <div class="etikett-material">${p.material}</div>
-                    <div class="etikett-menge">📦 Menge: ${p.menge}</div>
-                    <div class="etikett-status">
-                        <span>${statusIcon} ${statusText}</span>
-                        <span class="etikett-datum">${new Date().toLocaleDateString('de-DE')}</span>
-                    </div>
-                </div>
-            `;
+                `;
         });
         grid.innerHTML = html;
     }
@@ -867,9 +963,215 @@
         localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
     }
 
-    // Dark Mode laden
     if (localStorage.getItem('darkMode') === 'true') {
         document.body.classList.add('dark-mode');
+    }
+
+    // ============================================================
+    //  AUTOCOMPLETE ENGINE
+    // ============================================================
+    function getMaterialSuggestions(input) {
+        const query = input.toLowerCase().trim();
+        if (!query) return [];
+
+        // Aus vorhandenen Positionen + vordefinierter Liste
+        const existing = new Set(positions.map(p => p.material));
+        const allSources = [...new Set([...MATERIAL_SUGGESTIONS, ...existing])];
+
+        // Filtern und nach Relevanz sortieren
+        const scored = allSources.map(item => {
+            const lower = item.toLowerCase();
+            let score = 0;
+            if (lower === query) score = 100;
+            else if (lower.startsWith(query)) score = 50 + (query.length / lower.length) * 30;
+            else if (lower.includes(query)) score = 20 + (query.length / lower.length) * 20;
+            else score = 0;
+
+            // Bonus für häufig verwendete Materialien
+            const count = positions.filter(p => p.material === item).length;
+            score += count * 2;
+
+            return { item, score };
+        });
+
+        return scored
+            .filter(s => s.score > 0)
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 8)
+            .map(s => s.item);
+    }
+
+    function getFrachtSuggestions(input) {
+        const query = input.toLowerCase().trim();
+        if (!query) return [];
+
+        const existing = new Set(positions.map(p => p.fracht));
+        const suggestions = [];
+
+        // Vorhandene Fracht-IDs
+        existing.forEach(f => {
+            if (f.toLowerCase().includes(query)) {
+                suggestions.push({ value: f, type: 'existing' });
+            }
+        });
+
+        // Wenn keine passende existiert, Vorschlag für neue Fracht generieren
+        if (suggestions.length === 0 && query.length >= 1) {
+            // Muster erkennen: z.B. "F-2026" → "F-2026-001"
+            const match = query.match(/^(F-)?(\d{4})?/i);
+            if (match) {
+                const year = match[2] || new Date().getFullYear();
+                const prefix = match[1] || 'F-';
+                // Höchste Nummer für dieses Jahr finden
+                const existingNums = positions
+                    .filter(p => p.fracht.includes(`${year}`))
+                    .map(p => {
+                        const num = parseInt(p.fracht.split('-').pop());
+                        return isNaN(num) ? 0 : num;
+                    });
+                const nextNum = Math.max(0, ...existingNums) + 1;
+                const newFracht = `${prefix}${year}-${String(nextNum).padStart(3, '0')}`;
+                suggestions.push({ value: newFracht, type: 'new' });
+            }
+        }
+
+        return suggestions.slice(0, 6);
+    }
+
+    // ============================================================
+    //  SUGGESTIONS UI
+    // ============================================================
+    let activeSuggestionField = null;
+    let suggestionIndex = -1;
+
+    function showSuggestions(fieldId, suggestions, type) {
+        const box = document.getElementById(fieldId === 'editMaterial' ? 'materialSuggestions' : 'frachtSuggestions');
+        if (!box) return;
+
+        if (!suggestions || suggestions.length === 0) {
+            box.classList.remove('active');
+            return;
+        }
+
+        let html = '';
+        if (type === 'material') {
+            suggestions.forEach((item, idx) => {
+                const highlight = item;
+                html += `
+                        <div class="suggestion-item" data-index="${idx}" data-value="${item}" onclick="selectSuggestion('${fieldId}', '${item}')">
+                            <span>${highlight}</span>
+                            <span class="suggestion-badge">${positions.filter(p => p.material === item).length}×</span>
+                        </div>
+                    `;
+            });
+        } else {
+            suggestions.forEach((s, idx) => {
+                const label = s.type === 'new' ? '🆕 Neu' : '📁 Vorhanden';
+                html += `
+                        <div class="suggestion-item" data-index="${idx}" data-value="${s.value}" onclick="selectSuggestion('${fieldId}', '${s.value}')">
+                            <span>${s.value}</span>
+                            <span class="suggestion-badge">${label}</span>
+                        </div>
+                    `;
+            });
+        }
+
+        box.innerHTML = html;
+        box.classList.add('active');
+        suggestionIndex = -1;
+        activeSuggestionField = fieldId;
+    }
+
+    function selectSuggestion(fieldId, value) {
+        document.getElementById(fieldId).value = value;
+        const box = document.getElementById(fieldId === 'editMaterial' ? 'materialSuggestions' : 'frachtSuggestions');
+        if (box) box.classList.remove('active');
+        // Automatisch das andere Feld prüfen (z.B. wenn Material geändert wird, Fracht vorschlagen)
+        if (fieldId === 'editMaterial') {
+            const frachtInput = document.getElementById('editFracht');
+            if (frachtInput && !frachtInput.value) {
+                const frachtSuggest = getFrachtSuggestions(frachtInput.value || '');
+                showSuggestions('editFracht', frachtSuggest, 'fracht');
+            }
+        }
+    }
+
+    // Event-Handler für Autocomplete
+    function setupAutocomplete(fieldId, type) {
+        const input = document.getElementById(fieldId);
+        if (!input) return;
+
+        // Eingabe
+        input.addEventListener('input', function() {
+            const val = this.value;
+            let suggestions = [];
+            if (type === 'material') {
+                suggestions = getMaterialSuggestions(val);
+                showSuggestions(fieldId, suggestions, 'material');
+            } else {
+                suggestions = getFrachtSuggestions(val);
+                showSuggestions(fieldId, suggestions, 'fracht');
+            }
+        });
+
+        // Tastatur-Navigation
+        input.addEventListener('keydown', function(e) {
+            const box = document.getElementById(fieldId === 'editMaterial' ? 'materialSuggestions' : 'frachtSuggestions');
+            if (!box || !box.classList.contains('active')) return;
+
+            const items = box.querySelectorAll('.suggestion-item');
+            if (items.length === 0) return;
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                suggestionIndex = Math.min(suggestionIndex + 1, items.length - 1);
+                updateActiveSuggestion(items);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                suggestionIndex = Math.max(suggestionIndex - 1, -1);
+                updateActiveSuggestion(items);
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (suggestionIndex >= 0 && items[suggestionIndex]) {
+                    const val = items[suggestionIndex].dataset.value;
+                    selectSuggestion(fieldId, val);
+                }
+            } else if (e.key === 'Escape') {
+                box.classList.remove('active');
+            }
+        });
+
+        // Fokus verliert → Vorschläge ausblenden (mit Verzögerung für Klicks)
+        input.addEventListener('blur', function() {
+            setTimeout(() => {
+                const box = document.getElementById(fieldId === 'editMaterial' ? 'materialSuggestions' : 'frachtSuggestions');
+                if (box) box.classList.remove('active');
+            }, 200);
+        });
+
+        // Fokus → Vorschläge anzeigen, wenn bereits Text vorhanden
+        input.addEventListener('focus', function() {
+            if (this.value.trim().length > 0) {
+                const val = this.value;
+                let suggestions = [];
+                if (type === 'material') {
+                    suggestions = getMaterialSuggestions(val);
+                    showSuggestions(fieldId, suggestions, 'material');
+                } else {
+                    suggestions = getFrachtSuggestions(val);
+                    showSuggestions(fieldId, suggestions, 'fracht');
+                }
+            }
+        });
+    }
+
+    function updateActiveSuggestion(items) {
+        items.forEach((el, idx) => {
+            el.classList.toggle('active', idx === suggestionIndex);
+        });
+        if (suggestionIndex >= 0 && items[suggestionIndex]) {
+            items[suggestionIndex].scrollIntoView({ block: 'nearest' });
+        }
     }
 
     // ============================================================
@@ -889,6 +1191,14 @@
             document.getElementById('editMaterial').value = '';
             document.getElementById('editMenge').value = 1;
             editTargetNr = null;
+
+            // Vorschläge für Fracht basierend auf leerem Feld
+            setTimeout(() => {
+                const frachtSuggest = getFrachtSuggestions('');
+                if (frachtSuggest.length > 0) {
+                    showSuggestions('editFracht', frachtSuggest, 'fracht');
+                }
+            }, 300);
         } else if (mode === 'edit' && nr !== null) {
             const pos = positions.find(p => p.nr === nr);
             if (!pos) return;
@@ -903,11 +1213,20 @@
 
         overlay.classList.add('active');
         document.body.style.overflow = 'hidden';
+
+        // Autocomplete initialisieren (nachdem Modal sichtbar)
+        setTimeout(() => {
+            setupAutocomplete('editMaterial', 'material');
+            setupAutocomplete('editFracht', 'fracht');
+        }, 100);
     }
 
     function closeModal() {
         document.getElementById('modalOverlay').classList.remove('active');
         document.body.style.overflow = 'auto';
+        // Vorschläge ausblenden
+        document.getElementById('materialSuggestions').classList.remove('active');
+        document.getElementById('frachtSuggestions').classList.remove('active');
     }
 
     function saveModal() {
@@ -916,8 +1235,12 @@
         const material = document.getElementById('editMaterial').value.trim();
         const menge = parseInt(document.getElementById('editMenge').value) || 1;
 
-        if (!fracht || !material) {
-            alert('Bitte Fracht-ID und Material ausfüllen.');
+        if (!fracht) {
+            alert('Bitte eine Fracht-ID eingeben oder aus den Vorschlägen wählen.');
+            return;
+        }
+        if (!material) {
+            alert('Bitte ein Material eingeben oder aus den Vorschlägen wählen.');
             return;
         }
 
@@ -943,7 +1266,7 @@
         if (e.target === this) closeModal();
     });
 
-    // ESC schließt Modal
+    // ESC
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') closeModal();
     });
@@ -956,7 +1279,12 @@
 
         const sample = [];
         const frachten = ['F-2026-042', 'F-2026-043', 'F-2026-044', 'F-2026-045', 'F-2026-046'];
-        const materialien = ['Elektroschrott', 'Kabel & Leitungen', 'Batterien', 'Kunststoffteile', 'Metallschrott', 'Elektronikbauteile', 'Verpackungsmaterial'];
+        const materialien = [
+            'Elektroschrott', 'Kabel & Leitungen', 'Batterien',
+            'Styropor', 'Bau-Styropor', 'Kunststoffteile',
+            'Metallschrott', 'Elektronikbauteile', 'Verpackungsmaterial',
+            'Holzabfälle', 'Gipsplatten', 'Dämmmaterial'
+        ];
         for (let i = 1; i <= 50; i++) {
             sample.push({
                 nr: i,
@@ -971,7 +1299,7 @@
     }
 
     // ============================================================
-    //  PRINT / EXPORT
+    //  PRINT
     // ============================================================
     function printEtiketten() {
         window.print();
@@ -982,16 +1310,13 @@
     // ============================================================
     renderAll();
 
-    // Tastaturkürzel: Strg+N → neues Modal
+    // Strg+N → Modal öffnen
     document.addEventListener('keydown', function(e) {
         if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
             e.preventDefault();
             openModal('add');
         }
     });
-
-    // Doppelklick auf Tabellenzeile → Position bearbeiten (optional)
-    // (Wird nicht automatisch gemacht, aber man könnte es einbauen)
 </script>
 </body>
 </html>
