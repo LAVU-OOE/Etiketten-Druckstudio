@@ -1,1322 +1,686 @@
-<!DOCTYPE html>
+# Let's create an elegant, interactive HTML/CSS/JS dashboard that implements both:
+# 1. A Terminal interface for printing labels (Etikettendruck Terminal)
+# 2. An Office Dashboard with a cargo list of all printed labels (Office Dashboard mit Frachtliste)
+# The application will be completely self-contained in a single HTML file with CSS and JS.
+# It will have a modern, clean, premium UI with a beautiful color palette (cool slate grey & professional blue).
+
+html_content = """<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>♻️ Entsorgungs-Frachtverwaltung Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Logistik-Zentrum: Etikettendruck & Dashboard</title>
     <style>
+        :root {
+            --bg-primary: #f4f6f9;
+            --sidebar-bg: #1e293b;
+            --sidebar-text: #f8fafc;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: #f0f4f8;
-            color: #1a2332;
-            padding: 24px;
-            transition: background 0.3s, color 0.3s;
-            min-height: 100vh;
-        }
-
-        body.dark-mode {
-            background: #0d1117;
-            color: #e6edf3;
-        }
-
-        .app-container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        /* Header */
-        .header {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
             display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            display: flex;
+            flex-direction: column;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 32px;
-            flex-wrap: wrap;
-            gap: 16px;
+            padding: 24px;
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .header-left h1 {
-            font-size: 28px;
+        .brand {
+            font-size: 20px;
             font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .header-left .emoji-big {
-            font-size: 32px;
-            -webkit-text-fill-color: initial;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        /* Buttons */
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #eef2f6;
-            color: #1a2332;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #5a6fd6 0%, #6a4292 100%);
-        }
-
-        .btn-success {
-            background: #10b981;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #059669;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid #667eea;
-            color: #667eea;
-        }
-
-        .btn-outline:hover {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-dark {
-            background: #1a2332;
-            color: white;
-        }
-
-        .btn-dark:hover {
-            background: #2d3a4f;
-        }
-
-        body.dark-mode .btn-dark {
-            background: #e6edf3;
-            color: #0d1117;
-        }
-
-        body.dark-mode .btn-dark:hover {
-            background: #ffffff;
-        }
-
-        /* Stats */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px 24px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-            transition: all 0.3s;
-        }
-
-        body.dark-mode .stat-card {
-            background: #161b22;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-        }
-
-        .stat-label {
-            font-size: 13px;
-            font-weight: 500;
-            color: #6b7a8f;
-            text-transform: uppercase;
             letter-spacing: 0.5px;
-        }
-
-        body.dark-mode .stat-label {
-            color: #8b949e;
-        }
-
-        .stat-value {
-            font-size: 32px;
-            font-weight: 700;
-            margin-top: 4px;
-        }
-
-        .stat-value .accent {
-            color: #667eea;
-        }
-
-        /* Cards */
-        .card {
-            background: white;
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            margin-bottom: 24px;
-            transition: all 0.3s;
-        }
-
-        body.dark-mode .card {
-            background: #161b22;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .card-title {
-            font-size: 18px;
-            font-weight: 600;
+            margin-bottom: 40px;
             display: flex;
             align-items: center;
             gap: 10px;
+            color: #fff;
         }
 
-        .card-title .badge-count {
-            background: #667eea;
-            color: white;
-            font-size: 12px;
-            padding: 2px 12px;
-            border-radius: 20px;
-            font-weight: 500;
+        .brand-icon {
+            width: 12px;
+            height: 12px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 10px var(--accent-color);
         }
 
-        /* Filter */
-        .filter-bar {
+        .nav-menu {
+            list-style: none;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            transition: all 0.2s ease;
             display: flex;
+            align-items: center;
             gap: 12px;
-            flex-wrap: wrap;
+            font-weight: 500;
+            color: #94a3b8;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background-color: var(--accent-color);
+        }
+
+        .sidebar-footer {
+            font-size: 12px;
+            color: #64748b;
+            border-top: 1px solid #334155;
+            padding-top: 16px;
+        }
+
+        /* Main Content Workspace */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header-bar {
+            background-color: #fff;
+            padding: 16px 32px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
             align-items: center;
         }
 
-        .filter-bar input,
-        .filter-bar select {
-            padding: 10px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 14px;
-            background: white;
-            transition: all 0.2s;
-            font-family: 'Inter', sans-serif;
-        }
-
-        body.dark-mode .filter-bar input,
-        body.dark-mode .filter-bar select {
-            background: #0d1117;
-            border-color: #30363d;
-            color: #e6edf3;
-        }
-
-        .filter-bar input:focus,
-        .filter-bar select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
-        }
-
-        /* Tabelle */
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 8px;
-        }
-
-        thead th {
-            text-align: left;
-            padding: 12px 16px;
-            font-size: 12px;
+        .page-title {
+            font-size: 22px;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #6b7a8f;
-            border-bottom: 2px solid #eef2f6;
+            color: #0f172a;
         }
 
-        body.dark-mode thead th {
-            color: #8b949e;
-            border-bottom-color: #30363d;
-        }
-
-        tbody tr {
-            background: #f8fafc;
-            border-radius: 12px;
-            transition: all 0.2s;
-        }
-
-        body.dark-mode tbody tr {
-            background: #0d1117;
-        }
-
-        tbody tr:hover {
-            background: #f1f5f9;
-            transform: scale(1.01);
-        }
-
-        body.dark-mode tbody tr:hover {
-            background: #1c2128;
-        }
-
-        tbody td {
-            padding: 14px 16px;
+        .system-status {
             font-size: 14px;
-            border-top: 1px solid transparent;
-        }
-
-        .status-badge {
-            display: inline-flex;
+            color: var(--success);
+            display: flex;
             align-items: center;
             gap: 6px;
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .status-offen {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .status-erledigt {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        body.dark-mode .status-offen {
-            background: #332d1a;
-            color: #fbbf24;
-        }
-
-        body.dark-mode .status-erledigt {
-            background: #1a332a;
-            color: #34d399;
-        }
-
-        /* Etiketten Grid */
-        .etikett-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 16px;
-        }
-
-        .etikett-card {
-            background: white;
-            border-radius: 16px;
-            padding: 18px;
-            border: 2px solid #eef2f6;
-            transition: all 0.3s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        }
-
-        body.dark-mode .etikett-card {
-            background: #0d1117;
-            border-color: #30363d;
-        }
-
-        .etikett-card:hover {
-            border-color: #667eea;
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.15);
-        }
-
-        .etikett-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 8px;
-        }
-
-        .etikett-fracht {
-            font-weight: 700;
-            font-size: 16px;
-            color: #667eea;
-        }
-
-        .etikett-nr {
-            font-size: 12px;
-            color: #6b7a8f;
-            background: #f1f5f9;
-            padding: 2px 10px;
+            background-color: #ecfdf5;
+            padding: 6px 12px;
             border-radius: 20px;
-        }
-
-        body.dark-mode .etikett-nr {
-            background: #1c2128;
-            color: #8b949e;
-        }
-
-        .etikett-material {
-            font-size: 15px;
             font-weight: 500;
-            margin: 4px 0;
         }
 
-        .etikett-menge {
-            font-size: 13px;
-            color: #6b7a8f;
-        }
-
-        body.dark-mode .etikett-menge {
-            color: #8b949e;
-        }
-
-        .etikett-status {
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 2px dashed #eef2f6;
-            font-size: 12px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        body.dark-mode .etikett-status {
-            border-top-color: #30363d;
-        }
-
-        .etikett-datum {
-            color: #6b7a8f;
-            font-size: 11px;
-        }
-
-        /* ============================================================
-           MODAL mit Autocomplete
-           ============================================================ */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(8px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.35s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .modal {
-            background: white;
-            border-radius: 28px;
+        .workspace {
             padding: 32px;
-            max-width: 560px;
-            width: 90%;
-            transform: scale(0.9) translateY(20px);
-            transition: all 0.35s ease;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.2);
-            max-height: 90vh;
             overflow-y: auto;
+            flex-grow: 1;
         }
 
-        body.dark-mode .modal {
-            background: #161b22;
+        .view-panel {
+            display: none;
         }
 
-        .modal-overlay.active .modal {
-            transform: scale(1) translateY(0);
+        .view-panel.active {
+            display: block;
         }
 
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* Cards Layout */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            padding: 24px;
             margin-bottom: 24px;
         }
 
-        .modal-title {
-            font-size: 22px;
-            font-weight: 700;
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #1e293b;
+            border-bottom: 2px solid var(--bg-primary);
+            padding-bottom: 10px;
         }
 
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-            color: #6b7a8f;
-            transition: all 0.2s;
-            padding: 0 8px;
-        }
-
-        .modal-close:hover {
-            color: #ef4444;
-            transform: rotate(90deg);
-        }
-
+        /* Form Controls */
         .form-group {
-            margin-bottom: 18px;
-            position: relative;
+            margin-bottom: 16px;
         }
 
         .form-group label {
             display: block;
-            font-weight: 500;
             font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+        }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            font-size: 15px;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        /* Label Live Preview Box */
+        .preview-box {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            min-height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Realistic Thermal Label Style */
+        .thermal-label {
+            width: 100%;
+            max-width: 320px;
+            background: white;
+            border: 1px solid #000;
+            padding: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            font-family: 'Courier New', Courier, monospace;
+            color: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .label-header {
+            border-bottom: 2px solid #000;
+            padding-bottom: 6px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            letter-spacing: 1px;
+        }
+
+        .label-body {
+            margin: 14px 0;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .label-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .label-row.bold {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .barcode-container {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .dummy-barcode {
+            letter-spacing: 4px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #000 70%, transparent 70%);
+            background-size: 4px 100%;
+            height: 40px;
+            width: 80%;
+            margin: 0 auto 4px auto;
+        }
+
+        /* Dashboard KPI Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
             margin-bottom: 6px;
         }
 
-        .form-group input,
-        .form-group select {
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        /* Office Data Table (Frachtliste) */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .fracht-table {
             width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
+            border-collapse: collapse;
+            text-align: left;
             font-size: 14px;
-            transition: all 0.2s;
-            font-family: 'Inter', sans-serif;
-            background: white;
         }
 
-        body.dark-mode .form-group input,
-        body.dark-mode .form-group select {
-            background: #0d1117;
-            border-color: #30363d;
-            color: #e6edf3;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
-        }
-
-        /* ============================================================
-           AUTOCOMPLETE SUGGESTIONS
-           ============================================================ */
-        .suggestions-box {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 2px solid #e2e8f0;
-            border-top: none;
-            border-radius: 0 0 12px 12px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 1001;
-            display: none;
-            box-shadow: 0 12px 32px rgba(0,0,0,0.12);
-        }
-
-        body.dark-mode .suggestions-box {
-            background: #0d1117;
-            border-color: #30363d;
-        }
-
-        .suggestions-box.active {
-            display: block;
-        }
-
-        .suggestion-item {
-            padding: 10px 16px;
-            cursor: pointer;
-            transition: all 0.15s;
-            font-size: 14px;
-            border-bottom: 1px solid #f1f5f9;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        body.dark-mode .suggestion-item {
-            border-bottom-color: #1c2128;
-        }
-
-        .suggestion-item:hover,
-        .suggestion-item.active {
-            background: #f1f5f9;
-        }
-
-        body.dark-mode .suggestion-item:hover,
-        body.dark-mode .suggestion-item.active {
-            background: #1c2128;
-        }
-
-        .suggestion-item .highlight {
+        .fracht-table th {
+            background-color: #f8fafc;
+            color: var(--text-muted);
+            padding: 14px 16px;
             font-weight: 600;
-            color: #667eea;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .suggestion-item .suggestion-badge {
-            font-size: 11px;
-            color: #6b7a8f;
-            background: #eef2f6;
-            padding: 2px 10px;
-            border-radius: 12px;
+        .fracht-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
         }
 
-        body.dark-mode .suggestion-item .suggestion-badge {
-            background: #1c2128;
-            color: #8b949e;
+        .fracht-table tr:hover {
+            background-color: #f8fafc;
         }
 
-        .suggestions-box .suggestion-empty {
-            padding: 16px;
-            text-align: center;
-            color: #6b7a8f;
-            font-size: 14px;
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
         }
 
-        .modal-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-            margin-top: 24px;
-        }
+        .badge-success { background-color: #e6f4ea; color: #137333; }
+        .badge-info { background-color: #e8f0fe; color: #1a73e8; }
 
-        /* Print */
+        /* Print styling overrides */
         @media print {
-            body {
-                background: white;
-                padding: 12px;
+            body * {
+                visibility: hidden;
             }
-            .no-print {
-                display: none !important;
+            #printArea, #printArea * {
+                visibility: visible;
             }
-            .card {
+            #printArea {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                border: none;
                 box-shadow: none;
-                border: 1px solid #ddd;
-                background: white;
+                padding: 0;
+                margin: 0;
             }
-            .etikett-card {
-                border-color: #999;
-                break-inside: avoid;
-                box-shadow: none;
-            }
-            .table-wrapper {
-                overflow: visible;
-            }
-            tbody tr {
-                background: white !important;
-            }
-            .stats-grid {
-                display: none;
-            }
-            .header-actions {
-                display: none;
-            }
-            .filter-bar {
-                display: none;
-            }
-            .modal-overlay {
-                display: none;
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .header-left h1 {
-                font-size: 20px;
-            }
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            .stat-value {
-                font-size: 24px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            .btn {
-                padding: 8px 14px;
-                font-size: 12px;
-            }
-            .modal {
-                padding: 20px;
-            }
-        }
-
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #eef2f6;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #667eea;
-            border-radius: 10px;
-        }
-        body.dark-mode ::-webkit-scrollbar-track {
-            background: #1c2128;
         }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-
-    <!-- HEADER -->
-    <div class="header">
-        <div class="header-left">
-            <span class="emoji-big">♻️</span>
-            <h1>Entsorgungs-Frachtverwaltung</h1>
+    <div class="sidebar">
+        <div>
+            <div class="brand">
+                <div class="brand-icon"></div>
+                <span>ASZ LOGISTIK</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item active" onclick="switchView('terminal', this)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M21 9H3M9 21V9"/></svg>
+                    Druck-Terminal
+                </li>
+                <li class="nav-item" onclick="switchView('dashboard', this)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17l-6-6-4 4-4-4"/></svg>
+                    Office Dashboard
+                </li>
+            </ul>
         </div>
-        <div class="header-actions no-print">
-            <button class="btn btn-primary" onclick="openModal('add')">➕ Position hinzufügen</button>
-            <button class="btn btn-success" onclick="generateSampleData()">📦 Beispieldaten</button>
-            <button class="btn btn-outline" onclick="printEtiketten()">🖨️ Etiketten</button>
-            <button class="btn btn-dark" onclick="toggleDarkMode()">🌙</button>
+        <div class="sidebar-footer">
+            System v2.5.1 &copy; 2026<br>
+            ASZ Annahme- & Preisliste
         </div>
     </div>
 
-    <!-- STATS -->
-    <div class="stats-grid no-print" id="statsGrid">
-        <div class="stat-card">
-            <div class="stat-label">📦 Positionen</div>
-            <div class="stat-value"><span id="totalPositions">0</span></div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">🚚 Frachten</div>
-            <div class="stat-value"><span id="totalFrachten">0</span></div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">🔄 Offen</div>
-            <div class="stat-value"><span class="accent" id="offenCount">0</span></div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">✅ Erledigt</div>
-            <div class="stat-value"><span class="accent" id="erledigtCount">0</span></div>
-        </div>
-    </div>
-
-    <!-- FRACHTLISTE -->
-    <div class="card">
-        <div class="card-header">
-            <div class="card-title">
-                📋 Frachtliste
-                <span class="badge-count" id="frachtBadge">0</span>
-            </div>
-            <div class="filter-bar no-print">
-                <input type="text" id="searchInput" placeholder="🔍 Suchen..." oninput="renderAll()">
-                <select id="statusFilter" onchange="renderAll()">
-                    <option value="alle">Alle Status</option>
-                    <option value="offen">🔄 Offen</option>
-                    <option value="erledigt">✅ Erledigt</option>
-                </select>
+    <div class="main-content">
+        <div class="header-bar">
+            <div class="page-title" id="page-title-text">Etikettendruck Terminal</div>
+            <div class="system-status">
+                <span style="width: 8px; height: 8px; background-color: var(--success); border-radius: 50%; display: inline-block;"></span>
+                Drucker Online (Zebra ZT411)
             </div>
         </div>
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Fracht-ID</th>
-                        <th>Positionen</th>
-                        <th>Gesamtmenge</th>
-                        <th>Status</th>
-                        <th class="no-print">Aktion</th>
-                    </tr>
-                </thead>
-                <tbody id="frachtTableBody"></tbody>
-            </table>
-        </div>
-    </div>
 
-    <!-- ETIKETTEN -->
-    <div class="card">
-        <div class="card-header">
-            <div class="card-title">
-                🏷️ Etiketten
-                <span class="badge-count" id="etikettBadge">0</span>
-            </div>
-        </div>
-        <div id="etikettGrid" class="etikett-grid"></div>
-    </div>
-
-</div>
-
-<!-- ============================================================
-     MODAL mit Autocomplete
-     ============================================================ -->
-<div class="modal-overlay" id="modalOverlay">
-    <div class="modal">
-        <div class="modal-header">
-            <div class="modal-title" id="modalTitle">➕ Position hinzufügen</div>
-            <button class="modal-close" onclick="closeModal()">✕</button>
-        </div>
-        <div id="modalBody">
-            <div class="form-group">
-                <label>Positions-Nr.</label>
-                <input type="number" id="editNr" placeholder="z.B. 1">
-            </div>
-            <div class="form-group">
-                <label>Fracht-ID</label>
-                <input type="text" id="editFracht" placeholder="z.B. F-2026-050" autocomplete="off">
-                <div class="suggestions-box" id="frachtSuggestions"></div>
-            </div>
-            <div class="form-group">
-                <label>Material / Beschreibung</label>
-                <input type="text" id="editMaterial" placeholder="z.B. Elektroschrott" autocomplete="off">
-                <div class="suggestions-box" id="materialSuggestions"></div>
-            </div>
-            <div class="form-group">
-                <label>Menge</label>
-                <input type="number" id="editMenge" placeholder="1" value="1">
-            </div>
-        </div>
-        <div class="modal-actions">
-            <button class="btn" onclick="closeModal()">Abbrechen</button>
-            <button class="btn btn-primary" id="modalSaveBtn" onclick="saveModal()">Hinzufügen</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    // ============================================================
-    //  DATA LAYER
-    // ============================================================
-    let positions = JSON.parse(localStorage.getItem('entsorgung_positions')) || [];
-    let modalMode = 'add';
-    let editTargetNr = null;
-
-    // Vordefinierte Material-Vorschläge (erweiterbar)
-    const MATERIAL_SUGGESTIONS = [
-        'Styropor', 'Bau-Styropor', 'EPS', 'XPS',
-        'Elektroschrott', 'Kabel & Leitungen', 'Batterien',
-        'Kunststoffteile', 'Metallschrott', 'Elektronikbauteile',
-        'Verpackungsmaterial', 'Holzabfälle', 'Gipsplatten',
-        'Dämmmaterial', 'Bitumen', 'Asbest (Sonderabfall)',
-        'Leuchtstoffröhren', 'Ölfilter', 'Lacke & Farben',
-        'Lösungsmittel', 'Säuren', 'Laugen',
-        'Bauschutt', 'Erdaushub', 'Recyclingmaterial'
-    ];
-
-    function save() {
-        localStorage.setItem('entsorgung_positions', JSON.stringify(positions));
-        renderAll();
-    }
-
-    // ============================================================
-    //  RENDER
-    // ============================================================
-    function renderAll() {
-        const search = document.getElementById('searchInput')?.value?.toLowerCase() || '';
-        const statusFilter = document.getElementById('statusFilter')?.value || 'alle';
-
-        let filtered = positions.filter(p => {
-            const matchSearch = p.fracht.toLowerCase().includes(search) ||
-                p.material.toLowerCase().includes(search) ||
-                String(p.nr).includes(search);
-            const matchStatus = statusFilter === 'alle' || p.status === statusFilter;
-            return matchSearch && matchStatus;
-        });
-
-        renderStats(filtered);
-        renderFrachtliste(filtered);
-        renderEtiketten(filtered);
-    }
-
-    function renderStats(filtered) {
-        document.getElementById('totalPositions').textContent = filtered.length;
-        const frachten = new Set(filtered.map(p => p.fracht));
-        document.getElementById('totalFrachten').textContent = frachten.size;
-        const offen = filtered.filter(p => p.status === 'offen').length;
-        const erledigt = filtered.filter(p => p.status === 'erledigt').length;
-        document.getElementById('offenCount').textContent = offen;
-        document.getElementById('erledigtCount').textContent = erledigt;
-    }
-
-    function renderFrachtliste(filtered) {
-        const gruppen = {};
-        filtered.forEach(p => {
-            if (!gruppen[p.fracht]) gruppen[p.fracht] = [];
-            gruppen[p.fracht].push(p);
-        });
-
-        const tbody = document.getElementById('frachtTableBody');
-        document.getElementById('frachtBadge').textContent = Object.keys(gruppen).length;
-
-        if (Object.keys(gruppen).length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:40px;color:#6b7a8f;">Keine Frachten gefunden</td></tr>`;
-            return;
-        }
-
-        let html = '';
-        for (let [fracht, posListe] of Object.entries(gruppen)) {
-            const alleErledigt = posListe.every(p => p.status === 'erledigt');
-            const gesamtMenge = posListe.reduce((sum, p) => sum + p.menge, 0);
-            const statusClass = alleErledigt ? 'status-erledigt' : 'status-offen';
-            const statusLabel = alleErledigt ? '✅ Erledigt' : '🔄 Offen';
-
-            html += `
-                    <tr>
-                        <td><strong>${fracht}</strong></td>
-                        <td>${posListe.length}</td>
-                        <td>${gesamtMenge}</td>
-                        <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
-                        <td class="no-print">
-                            <button class="btn" style="padding:4px 12px;font-size:12px;" onclick="toggleFrachtStatus('${fracht}')">
-                                ${alleErledigt ? '↩️ Wieder öffnen' : '✅ Als erledigt'}
+        <div class="workspace">
+            
+            <div id="view-terminal" class="view-panel active">
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-title">Frachtdaten erfassen</div>
+                        <form id="labelForm" onsubmit="generateLabel(event)">
+                            <div class="form-group">
+                                <label for="artNo">Abfallart / Artikelnummer</label>
+                                <select id="artNo" class="form-control" onchange="updatePreselection()">
+                                    <option value="2100" data-name="Kartonagen (ARA-lizenziert)" data-cat="Verpackungen">2100 - Kartonagen (Verpackungen)</option>
+                                    <option value="2200" data-name="Metallverpackungen" data-cat="Verpackungen">2200 - Metallverpackungen (Verpackungen)</option>
+                                    <option value="3500" data-name="Altreifen (ohne Felgen)" data-cat="Altstoffe">3500 - Altreifen ohne Felgen (Altstoffe)</option>
+                                    <option value="4010" data-name="Elektro-Großgeräte" data-cat="Elektroaltgeräte">4010 - Elektro-Großgeräte</option>
+                                    <option value="4305" data-name="Altlacke & Werkstattabfälle" data-cat="Gefährliche Abfälle">4305 - Altlacke / Gefährlich</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="gewicht">Bruttogewicht (kg)</label>
+                                <input type="number" id="gewicht" class="form-control" value="120" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="spediteur">Spediteur / Transporteur</label>
+                                <input type="text" id="spediteur" class="form-control" value="LAVU Logistik GmbH" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="bemerkung">Zusatzinfo / Stellplatz</label>
+                                <input type="text" id="bemerkung" class="form-control" value="Box C-12 / Werkshof">
+                            </div>
+                            <button type="submit" class="btn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+                                Etikett drucken & buchen
                             </button>
-                        </td>
-                    </tr>
-                `;
-        }
-        tbody.innerHTML = html;
-    }
+                        </form>
+                    </div>
 
-    function renderEtiketten(filtered) {
-        const grid = document.getElementById('etikettGrid');
-        document.getElementById('etikettBadge').textContent = filtered.length;
-
-        if (filtered.length === 0) {
-            grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:#6b7a8f;">Keine Etiketten vorhanden</div>`;
-            return;
-        }
-
-        let html = '';
-        filtered.forEach(p => {
-            const statusIcon = p.status === 'offen' ? '🔄' : '✅';
-            const statusText = p.status === 'offen' ? 'offen' : 'erledigt';
-            html += `
-                    <div class="etikett-card">
-                        <div class="etikett-header">
-                            <span class="etikett-fracht">${p.fracht}</span>
-                            <span class="etikett-nr">#${p.nr}</span>
-                        </div>
-                        <div class="etikett-material">${p.material}</div>
-                        <div class="etikett-menge">📦 Menge: ${p.menge}</div>
-                        <div class="etikett-status">
-                            <span>${statusIcon} ${statusText}</span>
-                            <span class="etikett-datum">${new Date().toLocaleDateString('de-DE')}</span>
+                    <div>
+                        <div class="card">
+                            <div class="card-title">Live-Vorschau (Thermodruck)</div>
+                            <div class="preview-box">
+                                <div class="thermal-label" id="printArea">
+                                    <div class="label-header">ASZ FRACHTBRIEF-ID</div>
+                                    <div class="label-body">
+                                        <div class="label-row bold">
+                                            <span>ART-NR:</span>
+                                            <span id="lblArt">2100</span>
+                                        </div>
+                                        <div class="label-row">
+                                            <span>Bezeichnung:</span>
+                                            <span id="lblBezeichnung" style="font-weight: bold;">Kartonagen</span>
+                                        </div>
+                                        <div class="label-row">
+                                            <span>Kategorie:</span>
+                                            <span id="lblKategorie">Verpackungen</span>
+                                        </div>
+                                        <hr style="border: 0; border-top: 1px dashed #000; margin: 8px 0;">
+                                        <div class="label-row bold" style="font-size: 16px;">
+                                            <span>GEWICHT:</span>
+                                            <span id="lblGewicht">120 kg</span>
+                                        </div>
+                                        <div class="label-row">
+                                            <span>Spedition:</span>
+                                            <span id="lblSpediteur">LAVU Logistik GmbH</span>
+                                        </div>
+                                        <div class="label-row">
+                                            <span>Datum:</span>
+                                            <span id="lblDatum">01.07.2026</span>
+                                        </div>
+                                        <div class="label-row">
+                                            <span>Ref-ID:</span>
+                                            <span id="lblRef">ASZ-98231-DE</span>
+                                        </div>
+                                    </div>
+                                    <div class="barcode-container">
+                                        <div class="dummy-barcode"></div>
+                                        <span id="lblBarcodeText" style="font-size: 11px;">*21001202026*</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                `;
-        });
-        grid.innerHTML = html;
-    }
+                </div>
+            </div>
 
-    // ============================================================
-    //  ACTIONS
-    // ============================================================
-    function toggleFrachtStatus(fracht) {
-        const allSame = positions.filter(p => p.fracht === fracht).every(p => p.status === 'erledigt');
-        positions.forEach(p => {
-            if (p.fracht === fracht) {
-                p.status = allSame ? 'offen' : 'erledigt';
-            }
-        });
-        save();
-    }
+            <div id="view-dashboard" class="view-panel">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-label">Etiketten Gesamt</span>
+                        <span class="stat-value" id="kpiTotal">3</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Gesamtgewicht (Tonne)</span>
+                        <span class="stat-value" id="kpiWeight">1.42 t</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Aktivität Heute</span>
+                        <span class="stat-value" style="color: var(--success);">Aktiv</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Letzter Druck</span>
+                        <span class="stat-value" id="kpiLastTime" style="font-size: 16px; margin-top: 8px;">Gerade eben</span>
+                    </div>
+                </div>
 
-    function toggleDarkMode() {
-        document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-    }
+                <div class="card">
+                    <div class="card-title">Zentrales Frachtregister (Gedruckte Etiketten)</div>
+                    <div class="table-responsive">
+                        <table class="fracht-table">
+                            <thead>
+                                <tr>
+                                    <th>Ref-ID</th>
+                                    <th>Datum/Zeit</th>
+                                    <th>Art.-Nr.</th>
+                                    <th>Bezeichnung</th>
+                                    <th>Gruppe</th>
+                                    <th>Gewicht</th>
+                                    <th>Transporteur</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fracht-table-body">
+                                <tr>
+                                    <td><strong>ASZ-49211-DE</strong></td>
+                                    <td>01.07.2026 09:15</td>
+                                    <td>4010</td>
+                                    <td>Elektro-Großgeräte</td>
+                                    <td><span class="badge badge-info">Elektroaltgeräte</span></td>
+                                    <td>850 kg</td>
+                                    <td>LAVU Logistik</td>
+                                    <td><span class="badge badge-success">Gebucht</span></td>
+                               Full filled by JS --!>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
-    if (localStorage.getItem('darkMode') === 'true') {
-        document.body.classList.add('dark-mode');
-    }
+        </div>
+    </div>
 
-    // ============================================================
-    //  AUTOCOMPLETE ENGINE
-    // ============================================================
-    function getMaterialSuggestions(input) {
-        const query = input.toLowerCase().trim();
-        if (!query) return [];
-
-        // Aus vorhandenen Positionen + vordefinierter Liste
-        const existing = new Set(positions.map(p => p.material));
-        const allSources = [...new Set([...MATERIAL_SUGGESTIONS, ...existing])];
-
-        // Filtern und nach Relevanz sortieren
-        const scored = allSources.map(item => {
-            const lower = item.toLowerCase();
-            let score = 0;
-            if (lower === query) score = 100;
-            else if (lower.startsWith(query)) score = 50 + (query.length / lower.length) * 30;
-            else if (lower.includes(query)) score = 20 + (query.length / lower.length) * 20;
-            else score = 0;
-
-            // Bonus für häufig verwendete Materialien
-            const count = positions.filter(p => p.material === item).length;
-            score += count * 2;
-
-            return { item, score };
-        });
-
-        return scored
-            .filter(s => s.score > 0)
-            .sort((a, b) => b.score - a.score)
-            .slice(0, 8)
-            .map(s => s.item);
-    }
-
-    function getFrachtSuggestions(input) {
-        const query = input.toLowerCase().trim();
-        if (!query) return [];
-
-        const existing = new Set(positions.map(p => p.fracht));
-        const suggestions = [];
-
-        // Vorhandene Fracht-IDs
-        existing.forEach(f => {
-            if (f.toLowerCase().includes(query)) {
-                suggestions.push({ value: f, type: 'existing' });
-            }
-        });
-
-        // Wenn keine passende existiert, Vorschlag für neue Fracht generieren
-        if (suggestions.length === 0 && query.length >= 1) {
-            // Muster erkennen: z.B. "F-2026" → "F-2026-001"
-            const match = query.match(/^(F-)?(\d{4})?/i);
-            if (match) {
-                const year = match[2] || new Date().getFullYear();
-                const prefix = match[1] || 'F-';
-                // Höchste Nummer für dieses Jahr finden
-                const existingNums = positions
-                    .filter(p => p.fracht.includes(`${year}`))
-                    .map(p => {
-                        const num = parseInt(p.fracht.split('-').pop());
-                        return isNaN(num) ? 0 : num;
-                    });
-                const nextNum = Math.max(0, ...existingNums) + 1;
-                const newFracht = `${prefix}${year}-${String(nextNum).padStart(3, '0')}`;
-                suggestions.push({ value: newFracht, type: 'new' });
-            }
-        }
-
-        return suggestions.slice(0, 6);
-    }
-
-    // ============================================================
-    //  SUGGESTIONS UI
-    // ============================================================
-    let activeSuggestionField = null;
-    let suggestionIndex = -1;
-
-    function showSuggestions(fieldId, suggestions, type) {
-        const box = document.getElementById(fieldId === 'editMaterial' ? 'materialSuggestions' : 'frachtSuggestions');
-        if (!box) return;
-
-        if (!suggestions || suggestions.length === 0) {
-            box.classList.remove('active');
-            return;
-        }
-
-        let html = '';
-        if (type === 'material') {
-            suggestions.forEach((item, idx) => {
-                const highlight = item;
-                html += `
-                        <div class="suggestion-item" data-index="${idx}" data-value="${item}" onclick="selectSuggestion('${fieldId}', '${item}')">
-                            <span>${highlight}</span>
-                            <span class="suggestion-badge">${positions.filter(p => p.material === item).length}×</span>
-                        </div>
-                    `;
-            });
-        } else {
-            suggestions.forEach((s, idx) => {
-                const label = s.type === 'new' ? '🆕 Neu' : '📁 Vorhanden';
-                html += `
-                        <div class="suggestion-item" data-index="${idx}" data-value="${s.value}" onclick="selectSuggestion('${fieldId}', '${s.value}')">
-                            <span>${s.value}</span>
-                            <span class="suggestion-badge">${label}</span>
-                        </div>
-                    `;
-            });
-        }
-
-        box.innerHTML = html;
-        box.classList.add('active');
-        suggestionIndex = -1;
-        activeSuggestionField = fieldId;
-    }
-
-    function selectSuggestion(fieldId, value) {
-        document.getElementById(fieldId).value = value;
-        const box = document.getElementById(fieldId === 'editMaterial' ? 'materialSuggestions' : 'frachtSuggestions');
-        if (box) box.classList.remove('active');
-        // Automatisch das andere Feld prüfen (z.B. wenn Material geändert wird, Fracht vorschlagen)
-        if (fieldId === 'editMaterial') {
-            const frachtInput = document.getElementById('editFracht');
-            if (frachtInput && !frachtInput.value) {
-                const frachtSuggest = getFrachtSuggestions(frachtInput.value || '');
-                showSuggestions('editFracht', frachtSuggest, 'fracht');
-            }
-        }
-    }
-
-    // Event-Handler für Autocomplete
-    function setupAutocomplete(fieldId, type) {
-        const input = document.getElementById(fieldId);
-        if (!input) return;
-
-        // Eingabe
-        input.addEventListener('input', function() {
-            const val = this.value;
-            let suggestions = [];
-            if (type === 'material') {
-                suggestions = getMaterialSuggestions(val);
-                showSuggestions(fieldId, suggestions, 'material');
-            } else {
-                suggestions = getFrachtSuggestions(val);
-                showSuggestions(fieldId, suggestions, 'fracht');
-            }
-        });
-
-        // Tastatur-Navigation
-        input.addEventListener('keydown', function(e) {
-            const box = document.getElementById(fieldId === 'editMaterial' ? 'materialSuggestions' : 'frachtSuggestions');
-            if (!box || !box.classList.contains('active')) return;
-
-            const items = box.querySelectorAll('.suggestion-item');
-            if (items.length === 0) return;
-
-            if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                suggestionIndex = Math.min(suggestionIndex + 1, items.length - 1);
-                updateActiveSuggestion(items);
-            } else if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                suggestionIndex = Math.max(suggestionIndex - 1, -1);
-                updateActiveSuggestion(items);
-            } else if (e.key === 'Enter') {
-                e.preventDefault();
-                if (suggestionIndex >= 0 && items[suggestionIndex]) {
-                    const val = items[suggestionIndex].dataset.value;
-                    selectSuggestion(fieldId, val);
-                }
-            } else if (e.key === 'Escape') {
-                box.classList.remove('active');
-            }
-        });
-
-        // Fokus verliert → Vorschläge ausblenden (mit Verzögerung für Klicks)
-        input.addEventListener('blur', function() {
-            setTimeout(() => {
-                const box = document.getElementById(fieldId === 'editMaterial' ? 'materialSuggestions' : 'frachtSuggestions');
-                if (box) box.classList.remove('active');
-            }, 200);
-        });
-
-        // Fokus → Vorschläge anzeigen, wenn bereits Text vorhanden
-        input.addEventListener('focus', function() {
-            if (this.value.trim().length > 0) {
-                const val = this.value;
-                let suggestions = [];
-                if (type === 'material') {
-                    suggestions = getMaterialSuggestions(val);
-                    showSuggestions(fieldId, suggestions, 'material');
-                } else {
-                    suggestions = getFrachtSuggestions(val);
-                    showSuggestions(fieldId, suggestions, 'fracht');
-                }
-            }
-        });
-    }
-
-    function updateActiveSuggestion(items) {
-        items.forEach((el, idx) => {
-            el.classList.toggle('active', idx === suggestionIndex);
-        });
-        if (suggestionIndex >= 0 && items[suggestionIndex]) {
-            items[suggestionIndex].scrollIntoView({ block: 'nearest' });
-        }
-    }
-
-    // ============================================================
-    //  MODAL
-    // ============================================================
-    function openModal(mode, nr = null) {
-        modalMode = mode;
-        const overlay = document.getElementById('modalOverlay');
-        const title = document.getElementById('modalTitle');
-        const saveBtn = document.getElementById('modalSaveBtn');
-
-        if (mode === 'add') {
-            title.textContent = '➕ Position hinzufügen';
-            saveBtn.textContent = 'Hinzufügen';
-            document.getElementById('editNr').value = positions.length + 1;
-            document.getElementById('editFracht').value = '';
-            document.getElementById('editMaterial').value = '';
-            document.getElementById('editMenge').value = 1;
-            editTargetNr = null;
-
-            // Vorschläge für Fracht basierend auf leerem Feld
-            setTimeout(() => {
-                const frachtSuggest = getFrachtSuggestions('');
-                if (frachtSuggest.length > 0) {
-                    showSuggestions('editFracht', frachtSuggest, 'fracht');
-                }
-            }, 300);
-        } else if (mode === 'edit' && nr !== null) {
-            const pos = positions.find(p => p.nr === nr);
-            if (!pos) return;
-            title.textContent = '✏️ Position bearbeiten';
-            saveBtn.textContent = 'Speichern';
-            document.getElementById('editNr').value = pos.nr;
-            document.getElementById('editFracht').value = pos.fracht;
-            document.getElementById('editMaterial').value = pos.material;
-            document.getElementById('editMenge').value = pos.menge;
-            editTargetNr = nr;
-        }
-
-        overlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
-
-        // Autocomplete initialisieren (nachdem Modal sichtbar)
-        setTimeout(() => {
-            setupAutocomplete('editMaterial', 'material');
-            setupAutocomplete('editFracht', 'fracht');
-        }, 100);
-    }
-
-    function closeModal() {
-        document.getElementById('modalOverlay').classList.remove('active');
-        document.body.style.overflow = 'auto';
-        // Vorschläge ausblenden
-        document.getElementById('materialSuggestions').classList.remove('active');
-        document.getElementById('frachtSuggestions').classList.remove('active');
-    }
-
-    function saveModal() {
-        const nr = parseInt(document.getElementById('editNr').value);
-        const fracht = document.getElementById('editFracht').value.trim();
-        const material = document.getElementById('editMaterial').value.trim();
-        const menge = parseInt(document.getElementById('editMenge').value) || 1;
-
-        if (!fracht) {
-            alert('Bitte eine Fracht-ID eingeben oder aus den Vorschlägen wählen.');
-            return;
-        }
-        if (!material) {
-            alert('Bitte ein Material eingeben oder aus den Vorschlägen wählen.');
-            return;
-        }
-
-        if (modalMode === 'add') {
-            if (positions.some(p => p.nr === nr)) {
-                alert('Positions-Nr. existiert bereits.');
-                return;
-            }
-            positions.push({ nr, fracht, material, menge, status: 'offen' });
-        } else if (modalMode === 'edit' && editTargetNr !== null) {
-            const idx = positions.findIndex(p => p.nr === editTargetNr);
-            if (idx !== -1) {
-                positions[idx] = { ...positions[idx], nr, fracht, material, menge };
-            }
-        }
-
-        closeModal();
-        save();
-    }
-
-    // Klick außerhalb Modal schließen
-    document.getElementById('modalOverlay').addEventListener('click', function(e) {
-        if (e.target === this) closeModal();
-    });
-
-    // ESC
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeModal();
-    });
-
-    // ============================================================
-    //  SAMPLE DATA
-    // ============================================================
-    function generateSampleData() {
-        if (positions.length > 0 && !confirm('Beispieldaten laden? Vorhandene Daten werden überschrieben.')) return;
-
-        const sample = [];
-        const frachten = ['F-2026-042', 'F-2026-043', 'F-2026-044', 'F-2026-045', 'F-2026-046'];
-        const materialien = [
-            'Elektroschrott', 'Kabel & Leitungen', 'Batterien',
-            'Styropor', 'Bau-Styropor', 'Kunststoffteile',
-            'Metallschrott', 'Elektronikbauteile', 'Verpackungsmaterial',
-            'Holzabfälle', 'Gipsplatten', 'Dämmmaterial'
+    <script>
+        // Default initial simulated log dataset
+        let cargoData = [
+            { id: "ASZ-88210-AT", time: "01.07.2026 08:30", art: "2100", name: "Kartonagen (ARA-lizenziert)", cat: "Verpackungen", weight: 450, carrier: "LAVU Logistik GmbH", status: "Gebucht" },
+            { id: "ASZ-88211-AT", time: "01.07.2026 09:15", art: "4010", name: "Elektro-Großgeräte", cat: "Elektroaltgeräte", weight: 850, carrier: "Ö.O. Landes-Abfall", status: "Gebucht" },
+            { id: "ASZ-88212-AT", time: "01.07.2026 11:02", art: "4305", name: "Altlacke & Werkstattabfälle", cat: "Gefährliche Abfälle", weight: 120, carrier: "Gewerbe-Entsorg.", status: "Gebucht" }
         ];
-        for (let i = 1; i <= 50; i++) {
-            sample.push({
-                nr: i,
-                fracht: frachten[i % frachten.length],
-                material: materialien[i % materialien.length],
-                menge: Math.floor(Math.random() * 12) + 1,
-                status: i % 3 === 0 ? 'erledigt' : 'offen'
+
+        function switchView(viewId, element) {
+            // Update active menu item
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+
+            // Toggle screens
+            document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
+            document.getElementById('view-' + viewId).classList.add('active');
+
+            // Update title
+            const titleText = viewId === 'terminal' ? 'Etikettendruck Terminal' : 'Office Dashboard & Frachtliste';
+            document.getElementById('page-title-text').innerText = titleText;
+
+            if(viewId === 'dashboard') {
+                renderDashboard();
+            }
+        }
+
+        function updatePreselection() {
+            const select = document.getElementById('artNo');
+            const selectedOption = select.options[select.selectedIndex];
+            
+            document.getElementById('lblArt').innerText = select.value;
+            document.getElementById('lblBezeichnung').innerText = selectedOption.getAttribute('data-name');
+            document.getElementById('lblKategorie').innerText = selectedOption.getAttribute('data-cat');
+            
+            const weight = document.getElementById('gewicht').value || '0';
+            document.getElementById('lblBarcodeText').innerText = `*${select.value}${weight}*`;
+        }
+
+        function generateLabel(event) {
+            event.preventDefault();
+            
+            const select = document.getElementById('artNo');
+            const selectedOption = select.options[select.selectedIndex];
+            const weight = parseFloat(document.getElementById('gewicht').value);
+            const carrier = document.getElementById('spediteur').value;
+            
+            const randomId = "ASZ-" + Math.floor(10000 + Math.random() * 90000) + "-AT";
+            const now = new Date();
+            const timeStr = now.toLocaleDateString('de-DE') + " " + now.toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit'});
+
+            // Update Label fields
+            document.getElementById('lblArt').innerText = select.value;
+            document.getElementById('lblBezeichnung').innerText = selectedOption.getAttribute('data-name');
+            document.getElementById('lblKategorie').innerText = selectedOption.getAttribute('data-cat');
+            document.getElementById('lblGewicht').innerText = weight + " kg";
+            document.getElementById('lblSpediteur').innerText = carrier;
+            document.getElementById('lblDatum').innerText = timeStr.split(' ')[0];
+            document.getElementById('lblRef').innerText = randomId;
+            document.getElementById('lblBarcodeText').innerText = `*${select.value}${weight}*`;
+
+            // Append to Data List
+            cargoData.unshift({
+                id: randomId,
+                time: timeStr,
+                art: select.value,
+                name: selectedOption.getAttribute('data-name'),
+                cat: selectedOption.getAttribute('data-cat'),
+                weight: weight,
+                carrier: carrier,
+                status: "Gebucht"
             });
+
+            // Trigger physical simulation print command
+            window.print();
         }
-        positions = sample;
-        save();
-    }
 
-    // ============================================================
-    //  PRINT
-    // ============================================================
-    function printEtiketten() {
-        window.print();
-    }
+        function renderDashboard() {
+            const tbody = document.getElementById('fracht-table-body');
+            tbody.innerHTML = "";
+            
+            let totalWeight = 0;
 
-    // ============================================================
-    //  INIT
-    // ============================================================
-    renderAll();
+            cargoData.forEach(item => {
+                totalWeight += item.weight;
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${item.id}</strong></td>
+                    <td>${item.time}</td>
+                    <td>${item.art}</td>
+                    <td>${item.name}</td>
+                    <td><span class="badge ${getBadgeClass(item.cat)}">${item.cat}</span></td>
+                    <td><strong>${item.weight} kg</strong></td>
+                    <td>${item.carrier}</td>
+                    <td><span class="badge badge-success">${item.status}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
 
-    // Strg+N → Modal öffnen
-    document.addEventListener('keydown', function(e) {
-        if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
-            e.preventDefault();
-            openModal('add');
+            // Update KPIs
+            document.getElementById('kpiTotal').innerText = cargoData.length;
+            document.getElementById('kpiWeight').innerText = (totalWeight / 1000).toFixed(2) + " t";
+            if(cargoData.length > 0) {
+                document.getElementById('kpiLastTime').innerText = cargoData[0].time.split(' ')[1] + " Uhr";
+            }
         }
-    });
-</script>
+
+        function getBadgeClass(cat) {
+            if(cat === 'Verpackungen') return 'badge-info';
+            if(cat === 'Gefährliche Abfälle') return 'badge-success';
+            return 'badge-info';
+        }
+
+        // Init view data fields
+        updatePreselection();
+    </script>
 </body>
 </html>
+"""
+
+with open("index.html", "w", encoding="utf-8") as f:
+    f.write(html_content)
+print("File successfully created.")
