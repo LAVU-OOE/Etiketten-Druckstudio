@@ -601,7 +601,6 @@
             }
         }
 
-        /* FIXES APPLIED BELOW */
         @media print {
             body > *:not(#hiddenPrintContainer) {
                 display: none !important;
@@ -629,9 +628,7 @@
                 width: 210mm !important;
                 height: 297mm !important;
             }
-            .label {
-                border: none !important;
-            }
+            /* Borders kept unformatted/visible for now as requested */
             @page {
                 size: A4;
                 margin: 0;
