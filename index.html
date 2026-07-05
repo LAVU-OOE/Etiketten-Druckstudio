@@ -1,4 +1,3 @@
-<!--bigsk7-->
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -344,34 +343,6 @@
             overflow-y: auto;
         }
 
-        .preview-modal-content {
-            max-width: 230mm;
-            max-height: 94vh;
-            display: flex;
-            flex-direction: column;
-            padding: 20px 30px;
-            width: 100%;
-        }
-
-        .modal-body-scroll {
-            overflow-y: auto;
-            overflow-x: auto;
-            flex: 1;
-            padding: 25px;
-            background: #f1f5f9;
-            border-radius: 12px;
-            display: flex;
-            justify-content: flex-start;
-            align-items: flex-start;
-            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        @media (min-width: 900px) {
-            .modal-body-scroll {
-                justify-content: center;
-            }
-        }
-
         .modal-header {
             font-size: 1.35rem;
             font-weight: bold;
@@ -521,6 +492,60 @@
         }
 
         /* ==========================================
+           OPTIMIERTE RESPONSIVE MODAL- & BLATTSKALIERUNG
+           ========================================== */
+        .preview-modal-content {
+            max-width: 90vw;
+            width: 600px;
+            max-height: 95vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 30px;
+        }
+
+        .modal-body-scroll {
+            flex: 1;
+            padding: 25px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow: hidden;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+            container-type: inline-size;
+        }
+
+        .page-container {
+            background: #ffffff;
+            width: 210mm;
+            height: 297mm;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.12);
+            box-sizing: border-box;
+            flex-shrink: 0;
+            transform-origin: top center;
+            transform: scale(calc(100cqw / 794));
+        }
+
+        .print-sheet {
+            width: 210mm;
+            height: 297mm;
+            box-sizing: border-box;
+            padding: 5mm 0mm 5mm 0mm;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(7, 1fr);
+            gap: 0;
+            background: white;
+        }
+
+        @container (min-width: 794px) {
+            .page-container {
+                transform: scale(1);
+            }
+        }
+
+        /* ==========================================
            RESPONSIVE BREAKPOINTS (UI Optimierung)
            ========================================== */
         @media (max-width: 768px) {
@@ -568,27 +593,6 @@
         /* ==========================================
            DRUCK-LAYOUT – HERMA 4473 (70 x 41 mm)
            ========================================== */
-        .page-container {
-            background: #ffffff;
-            width: 210mm;
-            height: 297mm;
-            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.12);
-            box-sizing: border-box;
-            flex-shrink: 0;
-        }
-
-        .print-sheet {
-            width: 210mm;
-            height: 297mm;
-            box-sizing: border-box;
-            padding: 5mm 0mm 5mm 0mm;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(7, 1fr);
-            gap: 0;
-            background: white;
-        }
-
         .label {
             width: 100%;
             height: 100%;
@@ -679,6 +683,12 @@
             
             #labelSheetDirect {
                 display: grid !important;
+            }
+
+            .page-container, .print-sheet {
+                transform: none !important;
+                width: 210mm !important;
+                height: 297mm !important;
             }
 
             .label {
@@ -894,16 +904,15 @@
 
             <label style="margin-top: 20px; margin-bottom: 10px; display: flex; align-items: center; gap: 5px;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-                Zentrale Sortiment-URL (z.B. GitHub Raw Link):
+                Netzwerk-Synchronisation (Option A):
             </label>
-            <div style="display: flex; gap: 8px; margin-bottom: 15px;">
-                <input type="url" id="inputSortimentUrl" placeholder="https://raw.githubusercontent.com/.../sortiment.json" style="flex: 1;" />
-                <button class="btn-crud" style="background: #27ae60; color: white; white-space: nowrap; padding: 11px 16px;" onclick="speichereUndLadeUrl()">
-                    Verlinken & Laden
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+                <button class="btn-crud" style="background: #34495e; color: white; width: 100%;" onclick="verbindeNetzwerkDatei()">
+                    🔗 Zentrale Sortiment-Datei auswählen...
                 </button>
-            </div>
-            <div id="netzwerkStatus" style="font-size: 0.8rem; color: #7f8c8d; text-align: center; font-style: italic;">
-                Status: Rein lokaler Modus (localStorage)
+                <div id="netzwerkStatus" style="font-size: 0.8rem; color: #7f8c8d; text-align: center; font-style: italic;">
+                    Status: Rein lokaler Modus (localStorage)
+                </div>
             </div>
 
             <div class="modal-footer">
@@ -947,6 +956,9 @@
         // ============================================================
         // GLOBALE VARIABLEN & NETZWERK-LOGIK
         // ============================================================
+        let fileHandle = null;
+        let lastModifiedTime = 0;
+
         let defaultSortiment = [
             { artNr: "4040", bez: "Elektro-Kleingeräte (ohne Akku)", zusatzMitte: "QR-Box" },
             { artNr: "4010", bez: "Elektro-Großgeräte", zusatzMitte: "Gitterbox" },
@@ -969,45 +981,32 @@
         let aktuellerModus = 'select';
 
         window.onload = function() {
-            // URL-Feld mit gespeichertem Wert vorausfüllen, falls vorhanden
-            const gespeicherteUrl = localStorage.getItem('lavu_sortiment_url');
-            if (gespeicherteUrl) {
-                document.getElementById('inputSortimentUrl').value = gespeicherteUrl;
-            }
-
             loadSortiment().then(() => {
                 loadDefaults();
             });
         };
 
-        // Geteilte Ladefunktion von externer URL oder LocalStorage
+        // Geteilte Speicher- und Ladefunktionen
         async function loadSortiment() {
-            const url = localStorage.getItem('lavu_sortiment_url');
-            
-            if (url) {
+            if (fileHandle) {
                 try {
-                    const response = await fetch(url);
-                    if (!response.ok) throw new Error("Netzwerk-Antwort war nicht OK");
+                    const file = await fileHandle.getFile();
+                    if (file.lastModified === lastModifiedTime) return; 
                     
-                    const text = await response.text();
+                    const text = await file.text();
                     if (text.trim()) {
                         sortimentData = JSON.parse(text);
+                        lastModifiedTime = file.lastModified;
                         initDropdown();
                         handlePresetSelection();
-                        
-                        document.getElementById('netzwerkStatus').innerHTML = `🟢 Synchronisiert mit externer URL`;
-                        document.getElementById('netzwerkStatus').style.color = '#27ae60';
-                        console.log("Sortiment erfolgreich von URL geladen.");
-                        return;
+                        console.log("Sortiment automatisch aus Netzwerkdatei aktualisiert.");
                     }
+                    return;
                 } catch (e) {
-                    console.warn("Fehler beim Laden der URL, weiche auf cache/localStorage aus.", e);
-                    document.getElementById('netzwerkStatus').innerHTML = `🔴 Fehler beim Laden! Benutze Offline-Cache.`;
-                    document.getElementById('netzwerkStatus').style.color = '#e74c3c';
+                    console.warn("Netzwerkdatei konnte nicht gelesen werden, weiche auf localStorage aus.", e);
                 }
             }
 
-            // Fallback auf lokalen Speicher oder Defaults
             const savedSortiment = localStorage.getItem('lavu_studio_sortiment_v8');
             if (savedSortiment) {
                 try { sortimentData = JSON.parse(savedSortiment); } 
@@ -1018,47 +1017,54 @@
             initDropdown();
         }
 
-        // Funktion um eine neue URL zu sichern und sofort abzurufen
-        async function speichereUndLadeUrl() {
-            const urlInput = document.getElementById('inputSortimentUrl').value.trim();
+        async function saveSortimentToStorage() {
+            localStorage.setItem('lavu_studio_sortiment_v8', JSON.stringify(sortimentData));
             
-            if (!urlInput) {
-                localStorage.removeItem('lavu_sortiment_url');
-                document.getElementById('netzwerkStatus').innerHTML = `Status: Rein lokaler Modus (localStorage)`;
-                document.getElementById('netzwerkStatus').style.color = '#7f8c8d';
-                sortimentData = [...defaultSortiment];
-                initDropdown();
-                handlePresetSelection();
-                alert("Verlinkung entfernt. Standard-Sortiment geladen.");
-                return;
-            }
-
-            // GitHub URL-Korrektur (Falls ein normaler GitHub Link anstatt des "Raw" Links kopiert wurde)
-            let finalUrl = urlInput;
-            if (finalUrl.includes("github.com") && !finalUrl.includes("raw.githubusercontent.com")) {
-                finalUrl = finalUrl.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/");
-                document.getElementById('inputSortimentUrl').value = finalUrl;
-            }
-
-            localStorage.setItem('lavu_sortiment_url', finalUrl);
-            document.getElementById('netzwerkStatus').innerHTML = `⏳ Verbinde...`;
-            document.getElementById('netzwerkStatus').style.color = '#f39c12';
-            
-            await loadSortiment();
-            
-            // Backup des aktuell geladenen Sortiments lokal sichern für Offline-Verfügbarkeit
-            if (sortimentData.length > 0) {
-                localStorage.setItem('lavu_studio_sortiment_v8', JSON.stringify(sortimentData));
+            if (fileHandle) {
+                try {
+                    const writable = await fileHandle.createWritable();
+                    await writable.write(JSON.stringify(sortimentData, null, 2));
+                    await writable.close();
+                    
+                    const file = await fileHandle.getFile();
+                    lastModifiedTime = file.lastModified;
+                } catch (e) {
+                    alert("Fehler beim Schreiben in die Netzwerk-Datei. Berechtigungen prüfen!");
+                }
             }
         }
 
-        // Automatischer Check im Hintergrund alle 30 Sekunden auf Aktualisierungen
+        async function verbindeNetzwerkDatei() {
+            try {
+                fileHandle = await window.showSaveFilePicker({
+                    suggestedName: 'lavu_sortiment_zentral.json',
+                    types: [{
+                        description: 'JSON-Datei für LAVU Sortiment',
+                        accept: {'application/json': ['.json']},
+                    }],
+                });
+
+                const file = await fileHandle.getFile();
+                const text = await file.text();
+                if (!text.trim()) {
+                    await saveSortimentToStorage();
+                }
+
+                document.getElementById('netzwerkStatus').innerHTML = `🟢 Gekoppelt mit: <b>${file.name}</b>`;
+                document.getElementById('netzwerkStatus').style.color = '#27ae60';
+                
+                await loadSortiment();
+            } catch (e) {
+                console.log("Auswahl abgebrochen oder vom Browser blockiert", e);
+            }
+        }
+
+        // Automatischer Check im Hintergrund alle 5 Sekunden
         setInterval(() => {
-            const url = localStorage.getItem('lavu_sortiment_url');
-            if (url) {
+            if (fileHandle) {
                 loadSortiment();
             }
-        }, 30000);
+        }, 5000);
 
         // Dropdown initialisieren
         function initDropdown() {
@@ -1149,6 +1155,7 @@
             }, 1800);
         }
 
+        // Defaults laden
         function loadDefaults() {
             const saved = localStorage.getItem('lavu_studio_defaults_v8');
             if (saved) {
