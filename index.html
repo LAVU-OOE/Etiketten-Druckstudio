@@ -1400,7 +1400,7 @@
             updatePreview();
         }
 
-        // Dynamically scales the preview sheet container inside the modal to fit the exact viewport dimensions
+// Dynamically scales the preview sheet container inside the modal to fit the exact viewport dimensions
         function scalePreviewToFit() {
             const container = document.querySelector('.modal-body-scroll');
             const target = document.getElementById('modalPageContainer');
@@ -1423,12 +1423,13 @@
             const scaleY = availableHeight / targetHeight;
             const scale = Math.min(scaleX, scaleY, 1); // Clamp to 1 so small viewports don't upscale/blur layout details
 
-            // FIX: Absolute position decouples it from flexbox overflow alignment constraints
+            // FIX: Absolut zentrieren und Skalierung sauber anwenden
             target.style.position = 'absolute';
+            target.style.top = '50%';
+            target.style.left = '50%';
             target.style.transformOrigin = 'center center';
-            target.style.transform = `scale(${scale})`;
+            target.style.transform = `translate(-50%, -50%) scale(${scale})`;
         }
-
         // ============================================================
         // MODALS MANAGEMENT
         // ============================================================
