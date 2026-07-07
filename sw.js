@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lavu-studio-v8-cache-v1';
+const CACHE_NAME = 'lavu-studio-v8-cache-v2';
 const ASSETS = [
     './',
     './index.html',
@@ -28,9 +28,10 @@ self.addEventListener('activate', (event) => {
                     }
                 })
             );
-        })
+        }).then(() => self.clients.claim()) // Claim clients immediately so the new worker controls the open page
     );
 });
+
 // Fetch-Event: Netzwerk-Anfragen abfangen und aus dem Cache bedienen (Offline-Support)
 self.addEventListener('fetch', (event) => {
     event.respondWith(
@@ -41,4 +42,11 @@ self.addEventListener('fetch', (event) => {
             return fetch(event.request);
         })
     );
+});
+
+// Listen for messages from the client to skip the waiting sequence
+self.addEventListener('message', (event) => {
+    if (event.data && event.data.action === 'skipWaiting') {
+        self.skipWaiting();
+    }
 });
