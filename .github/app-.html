@@ -4,9 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LAVU OÖ - Etiketten-Druckstudio v8 (HERMA 4473)</title>
-    <link class="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="manifest" href="manifest.json" />
     <meta name="theme-color" content="#1a4b60" />
+    <link class="icon" type="image/svg+xml" href="favicon.svg" />
     <style>
         /* ==========================================
            BENUTZEROBERFLÄCHE (Wird nicht gedruckt)
@@ -19,12 +19,11 @@
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
             background-color: #f4f7f9;
             margin: 0;
-            padding: 20px;
+            padding: 10px 20px 20px 20px; /* Änderung 1: Padding oben von 20px auf 10px reduziert */
             color: #2c3e50;
             display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center; /* Zentriert die .main-card und den Footer horizontal */
+            justify-content: center;
+            align-items: flex-start; /* Änderung 1: Von center auf flex-start geändert, um leeren Platz nach oben zu entfernen */
             min-height: 100vh;
         }
 
@@ -318,21 +317,6 @@
             border: none;
             cursor: pointer;
             transition: background 0.2s;
-        }
-
-        /* App-Footer */
-        .app-footer {
-            margin-top: 30px;
-            font-size: 0.85rem;
-            color: #7f8c8d;
-            text-align: center;
-            font-weight: 500;
-            width: 100%;
-            max-width: 750px;
-        }
-
-        .app-footer span {
-            color: #e74c3c;
         }
 
         /* Modals */
@@ -754,7 +738,7 @@
                 margin: 0 !important;
                 padding: 0 !important;
             }
-            .main-card, .modal-backdrop, #pwaBanner, .app-footer {
+            .main-card, .modal-backdrop, #pwaBanner {
                 display: none !important;
             }
             #hiddenPrintContainer {
@@ -858,10 +842,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="app-footer">
-        Built with <span>&hearts;</span> by 7Pub
     </div>
 
     <div id="settingsModal" class="modal-backdrop" onclick="closeSettingsViaBackdrop(event)">
@@ -1016,7 +996,7 @@
     <div id="previewModal" class="modal-backdrop" onclick="closePreviewModalViaBackdrop(event)">
         <div class="modal-content preview-modal-content">
             <div class="modal-header">
-                <span>Interaktiver A4-Druckbogen<br/>(HERMA 4473, 21 Etiketten)</span>
+                <span>Interaktiver A4-Druckbogen<br/>(HERMA 4473, 21 Etiketten – Klicken zum Einrichten)</span>
                 <button class="btn-close-x" onclick="closePreviewModal()">&times;</button>
             </div>
             <div class="modal-body-scroll">
@@ -1082,6 +1062,7 @@
         window.addEventListener('DOMContentLoaded', async () => {
             loadDefaults();
             
+            // Wenn kein Eintrag im localStorage vorhanden ist, die neue GitHub-URL als Standard festlegen
             let savedUrl = localStorage.getItem('lavu_sortiment_url');
             if (!savedUrl) {
                 savedUrl = "https://raw.githubusercontent.com/LAVU-OOE/Etiketten-Druckstudio/refs/heads/main/sortiment.json";
@@ -1525,36 +1506,14 @@
         }
 
         // ============================================================
-        // SERVICE WORKER & PWA SYSTEM INSTALLER (FORCED CACHE BYPASS)
+        // SERVICE WORKER & PWA SYSTEM INSTALLER
         // ============================================================
         let deferredPrompt;
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
-                    .then(registration => {
-                        console.log('Service Worker erfolgreich registriert!', registration);
-                        registration.update();
-
-                        registration.addEventListener('updatefound', () => {
-                            const newWorker = registration.installing;
-                            newWorker.addEventListener('statechange', () => {
-                                if (newWorker.state === 'installed') {
-                                    if (navigator.serviceWorker.controller) {
-                                        newWorker.postMessage({ action: 'skipWaiting' });
-                                    }
-                                }
-                            });
-                        });
-                    })
+                    .then(reg => console.log('Service Worker erfolgreich registriert!', reg))
                     .catch(err => console.error('Service Worker Registrierung fehlgeschlagen:', err));
-            });
-
-            let refreshing = false;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (!refreshing) {
-                    refreshing = true;
-                    window.location.reload(true);
-                }
             });
         }
 

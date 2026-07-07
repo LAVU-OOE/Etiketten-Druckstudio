@@ -19,11 +19,12 @@
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
             background-color: #f4f7f9;
             margin: 0;
-            padding: 10px 20px 20px 20px; /* Änderung 1: Padding oben von 20px auf 10px reduziert */
+            padding: 20px;
             color: #2c3e50;
             display: flex;
-            justify-content: center;
-            align-items: flex-start; /* Änderung 1: Von center auf flex-start geändert, um leeren Platz nach oben zu entfernen */
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center; /* Zentriert die .main-card und den Footer horizontal */
             min-height: 100vh;
         }
 
@@ -858,9 +859,11 @@
             </div>
         </div>
     </div>
+
     <div class="app-footer">
-        Built with <span>&hearts;</span> Cali Run | <a href="https://github.com/7pub" target="_blank">(7pub)</a>
+        Built with <span>&hearts;</span> by 7Pub
     </div>
+
     <div id="settingsModal" class="modal-backdrop" onclick="closeSettingsViaBackdrop(event)">
         <div class="modal-content">
             <div class="modal-header">
@@ -1079,7 +1082,6 @@
         window.addEventListener('DOMContentLoaded', async () => {
             loadDefaults();
             
-            // Wenn kein Eintrag im localStorage vorhanden ist, die neue GitHub-URL als Standard festlegen
             let savedUrl = localStorage.getItem('lavu_sortiment_url');
             if (!savedUrl) {
                 savedUrl = "https://raw.githubusercontent.com/LAVU-OOE/Etiketten-Druckstudio/refs/heads/main/sortiment.json";
@@ -1531,8 +1533,6 @@
                 navigator.serviceWorker.register('./sw.js')
                     .then(registration => {
                         console.log('Service Worker erfolgreich registriert!', registration);
-                        
-                        // Force check for updates from the server directly
                         registration.update();
 
                         registration.addEventListener('updatefound', () => {
@@ -1540,7 +1540,6 @@
                             newWorker.addEventListener('statechange', () => {
                                 if (newWorker.state === 'installed') {
                                     if (navigator.serviceWorker.controller) {
-                                        // Send message to skip waiting phase and activate immediately
                                         newWorker.postMessage({ action: 'skipWaiting' });
                                     }
                                 }
@@ -1550,7 +1549,6 @@
                     .catch(err => console.error('Service Worker Registrierung fehlgeschlagen:', err));
             });
 
-            // Reload page automatically when the newly activated worker takes control
             let refreshing = false;
             navigator.serviceWorker.addEventListener('controllerchange', () => {
                 if (!refreshing) {

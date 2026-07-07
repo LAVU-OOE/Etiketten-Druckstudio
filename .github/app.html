@@ -4,9 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LAVU OÖ - Etiketten-Druckstudio v8 (HERMA 4473)</title>
+    <link class="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="manifest" href="manifest.json" />
     <meta name="theme-color" content="#1a4b60" />
-    <link class="icon" type="image/svg+xml" href="favicon.svg" />
     <style>
         /* ==========================================
            BENUTZEROBERFLÄCHE (Wird nicht gedruckt)
@@ -317,6 +317,21 @@
             border: none;
             cursor: pointer;
             transition: background 0.2s;
+        }
+
+        /* App-Footer */
+        .app-footer {
+            margin-top: 30px;
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            text-align: center;
+            font-weight: 500;
+            width: 100%;
+            max-width: 750px;
+        }
+
+        .app-footer span {
+            color: #e74c3c;
         }
 
         /* Modals */
@@ -738,7 +753,7 @@
                 margin: 0 !important;
                 padding: 0 !important;
             }
-            .main-card, .modal-backdrop, #pwaBanner {
+            .main-card, .modal-backdrop, #pwaBanner, .app-footer {
                 display: none !important;
             }
             #hiddenPrintContainer {
@@ -843,7 +858,9 @@
             </div>
         </div>
     </div>
-
+    <div class="app-footer">
+        Built with <span>&hearts;</span> Cali Run | <a href="https://github.com/7pub" target="_blank">(7pub)</a>
+    </div>
     <div id="settingsModal" class="modal-backdrop" onclick="closeSettingsViaBackdrop(event)">
         <div class="modal-content">
             <div class="modal-header">
@@ -996,7 +1013,7 @@
     <div id="previewModal" class="modal-backdrop" onclick="closePreviewModalViaBackdrop(event)">
         <div class="modal-content preview-modal-content">
             <div class="modal-header">
-                <span>Interaktiver A4-Druckbogen<br/>(HERMA 4473, 21 Etiketten – Klicken zum Einrichten)</span>
+                <span>Interaktiver A4-Druckbogen<br/>(HERMA 4473, 21 Etiketten)</span>
                 <button class="btn-close-x" onclick="closePreviewModal()">&times;</button>
             </div>
             <div class="modal-body-scroll">
@@ -1506,14 +1523,40 @@
         }
 
         // ============================================================
-        // SERVICE WORKER & PWA SYSTEM INSTALLER
+        // SERVICE WORKER & PWA SYSTEM INSTALLER (FORCED CACHE BYPASS)
         // ============================================================
         let deferredPrompt;
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service Worker erfolgreich registriert!', reg))
+                    .then(registration => {
+                        console.log('Service Worker erfolgreich registriert!', registration);
+                        
+                        // Force check for updates from the server directly
+                        registration.update();
+
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed') {
+                                    if (navigator.serviceWorker.controller) {
+                                        // Send message to skip waiting phase and activate immediately
+                                        newWorker.postMessage({ action: 'skipWaiting' });
+                                    }
+                                }
+                            });
+                        });
+                    })
                     .catch(err => console.error('Service Worker Registrierung fehlgeschlagen:', err));
+            });
+
+            // Reload page automatically when the newly activated worker takes control
+            let refreshing = false;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (!refreshing) {
+                    refreshing = true;
+                    window.location.reload(true);
+                }
             });
         }
 
