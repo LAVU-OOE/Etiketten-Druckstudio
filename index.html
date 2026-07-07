@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wird geladen...</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .container { max-width: 800px; margin: 40px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .loader { text-align: center; margin-top: 10vh; }
+        pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="loader" class="loader">
+        <h2>Prüfe Systemkomponenten...</h2>
+        <p>Bitte warten, Sie werden gleich weitergeleitet.</p>
+    </div>
+
+    <div id="readme-fallback" class="container hidden">
+        <h1>ℹ️ Dokumentation (Fallback)</h1>
+        <p>Die Hauptanwendung (<code>app.html</code>) konnte nicht geladen werden. Nachfolgend finden Sie die System-Dokumentation:</p>
+        <hr>
+        <pre id="readme-content">Lade Dokumentation...</pre>
+    </div>
+
+    <script>
+        const targetFile = 'app.html';
+        const fallbackFile = 'README.md';
+
+        // Step 1: Check if the main application file exists
+        fetch(targetFile, { method: 'HEAD' })
+            .then(response => {
+                if (response.ok) {
+                    // Success: Redirect without breaking the browser history back-button
+                    window.location.replace(targetFile);
+                } else {
+                    loadFallback();
+                }
+            })
+            .catch(() => {
+                loadFallback();
+            });
+
+        // Step 2: If app.html is missing, fetch and print the README.md
+        function loadFallback() {
+            document.getElementById('loader').classList.add('hidden');
+            document.getElementById('readme-fallback').classList.remove('hidden');
+            
+            fetch(fallbackFile)
+                .then(res => {
+                    if (res.ok) return res.text();
+                    return "Die README.md Datei konnte ebenfalls nicht im Root-Verzeichnis gefunden werden.";
+                })
+                .then(text => {
+                    document.getElementById('readme-content').textContent = text;
+                })
+                .catch(() => {
+                    document.getElementById('readme-content').textContent = "Fehler beim Laden der README.md.";
+                });
+        }
+    </script>
+</body>
+</html>
