@@ -807,6 +807,9 @@
             max-width: 500px;
             margin: 0 auto;
             animation: fdin 0.4s ease;
+            /* Added smooth transitions for opacity fade out */
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
         }
     </style>
 </head>
@@ -1099,8 +1102,9 @@
             </div>
         </div>
         <div style="display: flex; gap: 8px;">
-            <button id="b3" style="background: white; color: #1a4b60; padding: 8px 14px; font-size: 0.85rem; border-radius: 6px;">Installieren</button>
-            <button onclick="document.getElementById('pwaBanner').style.display='none'" style="background: transparent; color: white; padding: 4px; font-size: 1.2rem;">&times;</button>
+            <!-- Added id="btnPwaInstall" as requested -->
+            <button id="btnPwaInstall" style="background: white; color: #1a4b60; padding: 8px 14px; font-size: 0.85rem; border-radius: 6px;">Installieren</button>
+            <button onclick="document.getElementById('pwaBanner').style.opacity='0'; setTimeout(() => document.getElementById('pwaBanner').style.display='none', 400);" style="background: transparent; color: white; padding: 4px; font-size: 1.2rem;">&times;</button>
         </div>
     </div>
 
@@ -1624,10 +1628,13 @@
             a62.preventDefault();
             a57 = a62;
             const a63 = document.getElementById('pwaBanner');
-            if (a63) a63.style.display = 'flex';
+            if (a63) {
+                a63.style.opacity = '1';
+                a63.style.display = 'flex';
+            }
         });
 
-        const a64 = document.getElementById('b3');
+        const a64 = document.getElementById('btnPwaInstall');
         if (a64) {
             a64.addEventListener('click', () => {
                 if (a57) {
@@ -1637,7 +1644,10 @@
                             console.log('User hat die Installation von LAVU Etiketten-Druckstudio akzeptiert.');
                         }
                         const a63 = document.getElementById('pwaBanner');
-                        if (a63) a63.style.display = 'none';
+                        if (a63) {
+                            a63.style.opacity = '0';
+                            setTimeout(() => a63.style.display = 'none', 400);
+                        }
                         a57 = null;
                     });
                 }
@@ -1646,7 +1656,29 @@
         window.addEventListener('appinstalled', () => {
             console.log('LAVU Etiketten-Druckstudio wurde erfolgreich installiert.');
             const a63 = document.getElementById('pwaBanner');
-            if (a63) a63.style.display = 'none';
+            if (a63) {
+                a63.style.opacity = '0';
+                setTimeout(() => a63.style.display = 'none', 400);
+            }
+        });
+
+        // Intercept all link clicks on the document to smoothly trigger the PWA banner fade out
+        document.addEventListener('click', (event) => {
+            const banner = document.getElementById('pwaBanner');
+            // If banner is already hidden or fading out, do nothing
+            if (!banner || banner.style.display === 'none' || banner.style.opacity === '0') return;
+
+            // Check if clicked element or its parent is a valid <a> link tag
+            const targetLink = event.target.closest('a');
+
+            // If a link was hit, confirm it is not the PWA install button trigger itself
+            if (targetLink && event.target.id !== 'btnPwaInstall' && !targetLink.contains(a64)) {
+                banner.style.opacity = '0';
+                // Remove from rendering stream completely once CSS transition completes (400ms)
+                setTimeout(() => {
+                    banner.style.display = 'none';
+                }, 400);
+            }
         });
     </script>
 </body>
