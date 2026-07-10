@@ -807,7 +807,7 @@
             max-width: 500px;
             margin: 0 auto;
             animation: fdin 0.4s ease;
-            transition: opacity 0.5s ease; /* Added transition for fade out effect */
+            transition: opacity 0.5s ease;
         }
     </style>
 </head>
@@ -909,6 +909,7 @@
         </div>
     </div>
 
+    <!-- PWA Banner -->
     <div id="pwaBanner" class="pwb">
         <div style="display: flex; align-items: center; gap: 10px;">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
@@ -920,6 +921,7 @@
         <button id="b3" style="background: #27ae60; color: white; padding: 8px 16px; font-size: 0.85rem; border-radius: 6px; box-shadow: 0 4px 10px rgba(39, 174, 96, 0.2);">Jetzt installieren</button>
     </div>
 
+    <!-- Großansicht Modal -->
     <div id="m2" class="mb">
         <div class="mc mpc">
             <div class="mh">
@@ -944,6 +946,7 @@
         </div>
     </div>
 
+    <!-- Einstellungen Modal -->
     <div id="m1" class="mb">
         <div class="mc">
             <div class="mh">
@@ -959,6 +962,7 @@
                 <div id="t3" class="mt" onclick="m2('input')">Hinzufügen / Bearbeiten</div>
             </div>
 
+            <!-- TAB 1: Suchen / Verwalten -->
             <div id="s3" class="fs a">
                 <div class="fv" style="margin-bottom: 15px;">
                     <label for="i4">Artikelliste durchsuchen:</label>
@@ -967,6 +971,7 @@
                 <div id="c4" style="max-height: 250px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 6px; background: #fff;"></div>
             </div>
 
+            <!-- TAB 2: Artikel anlegen / bearbeiten -->
             <div id="s4" class="fs">
                 <div class="fg">
                     <div class="fv">
@@ -994,6 +999,7 @@
         </div>
     </div>
 
+    <!-- Verstecktes Element für A4-Druckausgabe -->
     <div id="hpc">
         <div class="pc">
             <div class="psh" id="p2"></div>
@@ -1330,17 +1336,25 @@
             if (a63) a63.style.display = 'none';
         });
 
-        // Global click event listener to fade out pwaBanner when clicking any other button
+        // Global event listener to fade out pwaBanner when interacting with buttons, modals, close symbols, or dropdown selections
         document.addEventListener('click', (event) => {
-            const clickedButton = event.target.closest('button');
-            if (clickedButton && clickedButton.id !== 'b3') {
+            const target = event.target;
+            
+            // Check if the user interacted with any designated interface elements
+            const clickedButton = target.closest('button');
+            const clickedDropdown = target.closest('select');
+            const clickedModalLayer = target.closest('.mb');
+            const clickedCloseBtn = target.closest('.bx');
+
+            // Trigger fade out if an element was clicked, provided it wasn't the PWA installation button
+            if ((clickedButton && clickedButton.id !== 'b3') || clickedDropdown || clickedModalLayer || clickedCloseBtn) {
                 const banner = document.getElementById('pwaBanner');
                 if (banner && banner.style.display === 'flex') {
                     banner.style.opacity = '0';
                     setTimeout(() => {
                         banner.style.display = 'none';
-                        banner.style.opacity = ''; // Reset opacity style rule for subsequent display triggers
-                    }, 500); // Wait for the 500ms CSS opacity transition to complete
+                        banner.style.opacity = ''; // Reset opacity configuration for potential next dynamic call
+                    }, 500); // Synchronized with the 0.5s CSS opacity transition
                 }
             }
         });
