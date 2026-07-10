@@ -21,3 +21,5 @@ __pycache__/
 # Lokale Datenbanken (Sicherheitskopien/Live-Daten nicht mit-committen)
 *.db
 *.sqlite
+
+*.code-workspace
