@@ -120,8 +120,13 @@
             display: grid;
             grid-template-columns: 240px 1fr;
             gap: 35px;
-            align-items: center;
+            align-items: start;
             margin-bottom: 30px;
+        }
+
+        .ps-wrapper {
+            display: flex;
+            flex-direction: column;
         }
 
         .ps {
@@ -136,15 +141,16 @@
         }
 
         .ps-ttl {
-            font-size: 0.75rem;
-            font-weight: bold;
-            color: #64748b;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #475569;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
             display: flex;
             align-items: center;
             gap: 5px;
+            height: 16px;
         }
 
         .tw {
@@ -214,7 +220,7 @@
         .ip {
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             height: 100%;
             width: 100%;
         }
@@ -223,15 +229,6 @@
             margin-bottom: 20px;
             display: flex;
             flex-direction: column;
-        }
-
-        .fps label {
-            font-size: 0.8rem;
-            font-weight: 700;
-            margin-bottom: 6px;
-            color: #475569;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         .fps select {
@@ -587,7 +584,7 @@
                 grid-template-columns: 1fr;
                 gap: 25px;
             }
-            .ps {
+            .ps-wrapper {
                 order: -1;
             }
         }
@@ -856,31 +853,32 @@
         </div>
 
         <div class="db">
-            <div class="ps">
+            <div class="ps-wrapper">
                 <div class="ps-ttl" id="fmt-overlay">
                     Format wird geladen...
                 </div>
-                <div class="tw" onclick="o1()" title="Klicken für vollständige A4-Großansicht">
-                    <div class="sc">
-                        <div class="psh" id="t1"></div>
-                    </div>
-                    <div class="to">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 2px;"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                        Druck-Layout
+                <div class="ps">
+                    <div class="tw" onclick="o1()" title="Klicken für vollständige A4-Großansicht">
+                        <div class="sc">
+                            <div class="psh" id="t1"></div>
+                        </div>
+                        <div class="to">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 2px;"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                            Druck-Layout
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="ip">
                 <div class="fps">
-                    <label>Abfallart aus Sortiment wählen:</label>
                     <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px; width: 100%;">
                         <div>
-                            <span style="font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 4px;">Art.Nr.</span>
+                            <span style="font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 4px; height: 16px; line-height: 16px;">Art.Nr.</span>
                             <select id="s2_art" onchange="syncDropdowns(this.value)"></select>
                         </div>
                         <div>
-                            <span style="font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 4px;">Bezeichnung</span>
+                            <span style="font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 4px; height: 16px; line-height: 16px;">Bezeichnung</span>
                             <select id="s2_name" onchange="syncDropdowns(this.value)"></select>
                         </div>
                     </div>
@@ -1048,7 +1046,7 @@
     <div class="pwb" id="pwaBanner">
         <div style="display: flex; align-items: center; gap: 12px;">
             <div style="background: rgba(255,255,255,0.1); padding: 8px; border-radius: 8px;">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             </div>
             <div>
                 <div style="font-weight: bold; font-size: 0.95rem;">Als App installieren</div>
@@ -1283,17 +1281,6 @@
             }
         }
 
-        function syncDropdowns(selectedIndex) {
-            const selectArt = document.getElementById('s2_art');
-            const selectName = document.getElementById('s2_name');
-            
-            if(selectArt) selectArt.value = selectedIndex;
-            if(selectName) selectName.value = selectedIndex;
-            
-            p1();
-            s7();
-        }
-
         function x1(a15) {
             document.getElementById('i1').value = a15;
             u1();
@@ -1417,20 +1404,6 @@
             } catch (a28) {
                 console.error("Fehler beim Exportieren:", a28);
                 alert("Export fehlgeschlagen: " + a28.message);
-            }
-        }
-
-        function p1() {
-            const selectArt = document.getElementById('s2_art');
-            if (!selectArt || selectArt.value === "") return;
-
-            const a13 = parseInt(selectArt.value);
-            const a12 = a2[a13];
-            if (a12) {
-                document.getElementById('i5').value = a12.artNr;
-                document.getElementById('i6').value = a12.geb || "";
-                document.getElementById('i7').value = a12.bez;
-                u1();
             }
         }
 
