@@ -1205,8 +1205,16 @@
             const selectName = document.getElementById('s2_name');
             if (!selectArt || !selectName) return;
 
-            // Sortiert das Array a2 alphabetisch nach der Bezeichnung (bez)
-            a2.sort((a, b) => a.bez.localeCompare(b.bez, 'de', { sensitivity: 'base' }));
+            // Sortiert primär alphabetisch nach Bezeichnung. Bei gleicher Bezeichnung nach Artikelnummer (aufsteigend).
+            a2.sort((a, b) => {
+                const compBez = a.bez.localeCompare(b.bez, 'de', { sensitivity: 'base' });
+                if (compBez !== 0) return compBez;
+                
+                // Fallback: Numerischer Vergleich der ArtNr von niedrig nach hoch
+                const numA = parseInt(a.artNr) || 0;
+                const numB = parseInt(b.artNr) || 0;
+                return numA - numB;
+            });
 
             const currentVal = selectArt.value || "0";
 
