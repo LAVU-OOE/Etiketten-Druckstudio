@@ -255,6 +255,7 @@
             box-shadow: 0 0 0 3px rgba(26, 75, 96, 0.15);
         }
 
+        /* Angepasste Vorschaubox passend zum realen Screenshot */
         .sb {
             background: #ffffff;
             border: 1px solid #d8e2ec;
@@ -268,21 +269,7 @@
             min-height: 170px;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
         }
-        
-/*        .sb {
-            background: #ffffff;
-            border: 1px solid #cbd5e1;
-            padding: 16px 20px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            min-height: 145px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-        }
-*/
+
         .si {
             margin-bottom: 8px;
             font-size: 1rem;
@@ -883,8 +870,17 @@
 
             <div class="ip">
                 <div class="fps">
-                    <label for="s2">Abfallart aus Sortiment wählen:</label>
-                    <select id="s2" onchange="p1()"></select>
+                    <label>Abfallart aus Sortiment wählen:</label>
+                    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px; width: 100%;">
+                        <div>
+                            <span style="font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 4px;">Art.Nr.</span>
+                            <select id="s2_art" onchange="syncDropdowns(this.value)"></select>
+                        </div>
+                        <div>
+                            <span style="font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 4px;">Bezeichnung</span>
+                            <select id="s2_name" onchange="syncDropdowns(this.value)"></select>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="sb">
@@ -933,43 +929,13 @@
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                     Standort (ASZ Niederlassung OÖ):
                 </label>
-                <select id="i1" onchange="x2(this.value)" style="width: 100%;">
-                    <optgroup label="Linz-Land & Linz Stadt">
-                        <option value="106 - ASZ Asten" selected>106 - ASZ Asten</option>
-                        <option value="ASZ Ansfelden">ASZ Ansfelden</option>
-                        <option value="ASZ Enns">ASZ Enns</option>
-                        <option value="ASZ Hörsching">ASZ Hörsching</option>
-                        <option value="ASZ Leonding">ASZ Leonding</option>
-                        <option value="ASZ Neuhofen">ASZ Neuhofen</option>
-                        <option value="ASZ Pasching">ASZ Pasching</option>
-                        <option value="ASZ St. Florian">ASZ St. Florian</option>
-                        <option value="ASZ Traun">ASZ Traun</option>
-                        <option value="ASZ Wilhering">ASZ Wilhering</option>
-                        <option value="ASZ Linz-Nebingerstraße">ASZ Linz-Nebingerstraße</option>
-                        <option value="ASZ Linz-Mostnnystraße">ASZ Linz-Mostnnystraße</option>
-                        <option value="ASZ Linz-Wiener Straße">ASZ Linz-Wiener Straße</option>
-                        <option value="ASZ Linz-Dornach">ASZ Linz-Dornach</option>
-                    </optgroup>
-                    <optgroup label="Wels & Wels-Land">
-                        <option value="ASZ Wels-Nord">ASZ Wels-Nord</option>
-                        <option value="ASZ Wels-Kenten">ASZ Wels-Kenten</option>
-                        <option value="ASZ Marchtrenk">ASZ Marchtrenk</option>
-                        <option value="ASZ Gunskirchen">ASZ Gunskirchen</option>
-                        <option value="ASZ Thalheim">ASZ Thalheim</option>
-                    </optgroup>
-                    <optgroup label="Steyr & Steyr-Land">
-                        <option value="ASZ Steyr">ASZ Steyr</option>
-                        <option value="ASZ Bad Hall">ASZ Bad Hall</option>
-                        <option value="ASZ Garsten">ASZ Garsten</option>
-                        <option value="ASZ Sierning">ASZ Sierning</option>
-                    </optgroup>
-                </select>
+                <select id="i1" onchange="x2(this.value)"></select>
             </div>
 
-            <div class="fv" style="margin-bottom: 20px;">
+            <div class="fv" style="margin-bottom: 15px;">
                 <label for="labelFormatSelect">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
-                    Etiketten-Format wählen:
+                    Etiketten-Hersteller & Format:
                 </label>
                 <select id="labelFormatSelect" onchange="changeFormat(this.value)"></select>
             </div>
@@ -1003,63 +969,42 @@
                         Zentrale Sortiment-URL (GitHub Raw JSON):
                     </label>
                     <div style="display: flex; gap: 8px;">
-                        <input type="url" id="i4" value="" placeholder="Lokale sortiment.json oder GitHub-Link" style="flex: 1;" />
-                        <button class="bc" style="background: #27ae60; color: white; padding: 0 16px;" onclick="f1()">Laden</button>
+                        <input type="text" id="i4" placeholder="https://..." style="flex: 1;" />
+                        <button class="bc bsd" style="padding: 11px 16px;" onclick="localStorage.setItem('lavu_sortiment_url', document.getElementById('i4').value.trim()); f2();">Aktualisieren</button>
                     </div>
-                </div>
-                <div id="n1" style="font-size: 0.8rem; color: #7f8c8d; text-align: center; font-style: italic; margin-bottom: 15px;">
-                    Status: Rein lokaler Modus (localStorage)
-                </div>
-
-                <div style="border-top: 1px solid #f1f5f9; padding-top: 15px; margin-top: 15px;">
-                    <div style="font-size: 0.75rem; font-weight: bold; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Manuelle Eingabe (Überschreiben)</div>
-                    <div class="fg" style="margin-bottom: 10px;">
-                        <div class="fv">
-                            <label for="i5">Artikel-Nr.:</label>
-                            <input type="text" id="i5" oninput="u1()" placeholder="z.B. 4040" />
-                        </div>
-                        <div class="fv">
-                            <label for="i6">Lademittel:</label>
-                            <input type="text" id="i6" oninput="u1()" placeholder="z.B. QR-Box" />
-                        </div>
-                    </div>
-                    <div class="fv">
-                        <label for="i7">Abfallbezeichnung:</label>
-                        <input type="text" id="i7" oninput="u1()" placeholder="z.B. Elektro-Kleingeräte" />
-                    </div>
+                    <span id="n1" style="font-size: 0.8rem; font-weight: bold; margin-top: 6px; display: block;"></span>
                 </div>
             </div>
 
             <div id="s4" class="fs">
-                <input type="hidden" id="e1" value="-1" />
-                <div class="fg" style="margin-bottom: 12px;">
+                <div class="fg" style="margin-gap: 12px; margin-bottom: 15px;">
+                    <input type="hidden" id="e1" value="" />
                     <div class="fv">
-                        <label for="c1">Artikel-Nr.:</label>
+                        <label for="c1">Art.Nr.:</label>
                         <input type="text" id="c1" placeholder="z.B. 4040" />
                     </div>
                     <div class="fv">
-                        <label for="c2">Lademittel:</label>
+                        <label for="c2">Gebinde / Suffix:</label>
                         <input type="text" id="c2" placeholder="z.B. QR-Box" />
                     </div>
-                </div>
-                <div class="fv" style="margin-bottom: 12px;">
-                    <label for="c3">Abfallbezeichnung:</label>
-                    <input type="text" id="c3" placeholder="z.B. Elektro-Kleingeräte" />
-                </div>
-                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                    <button class="bc" style="background: #27ae60; color: white; flex: 1;" onclick="s5()">💾 Artikel speichern</button>
-                    <button id="b1" class="bc" style="background: #7f8c8d; color: white; display: none;" onclick="c3()">Abbrechen</button>
+                    <div class="fv fw">
+                        <label for="c3">Bezeichnung:</label>
+                        <input type="text" id="c3" placeholder="z.B. Elektro-Kleingeräte" />
+                    </div>
                 </div>
 
-                <div style="margin-top: 15px; margin-bottom: 15px; padding-top: 12px; border-top: 1px dashed #cbd5e1;">
-                    <button class="bc" style="background: #34495e; color: white; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px;" onclick="e2()">
-                        📥 Aktuelle Datenbank als JSON herunterladen
-                    </button>
+                <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+                    <button id="b1" class="bc bsd" style="display: none; background: #e67e22;" onclick="s4()">💾 Ändern</button>
+                    <button class="bc bsd" style="background: #27ae60; flex: 1;" onclick="s3()">➕ Neu hinzufügen</button>
+                    <button class="bc bcn" onclick="e1()">Abbrechen</button>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <button class="bc" style="background: #2c3e50; color: white; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px;" onclick="e2()"> 📥 Aktuelle Datenbank als JSON herunterladen </button>
                 </div>
 
                 <label>Aktuelle Einträge im lokalen Workspace:</label>
-                <div id="c4" style="max-height: 180px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 6px; background: #f8fafc; padding: 5px;">
-                </div>
+                <div id="c4" style="max-height: 180px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 6px; background: #f8fafc; padding: 5px;"> </div>
             </div>
 
             <div class="mf">
@@ -1086,7 +1031,7 @@
             <div class="mf">
                 <button class="bp" onclick="window.print()">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                    Jetzt Drucken
+                    Drucken
                 </button>
                 <button class="bcn" onclick="c5()">Schließen</button>
             </div>
@@ -1094,59 +1039,35 @@
     </div>
 
     <div id="hpc">
-        <div class="pc">
-            <div class="psh" id="d5"></div>
-        </div>
+        <div class="pc" id="d5"></div>
     </div>
 
-    <div id="pwaBanner" class="pwb">
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <span style="font-size: 1.5rem;">📱</span>
+    <div class="pwb" id="pwaBanner">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="background: rgba(255,255,255,0.1); padding: 8px; border-radius: 8px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            </div>
             <div>
-                <b style="display: block;">LAVU Studio v9 installieren</b>
-                <span style="font-size: 0.8rem; opacity: 0.9;">Für eine schnellere Nutzung direkt in deiner App Übersicht.</span>
+                <div style="font-weight: bold; font-size: 0.95rem;">Als App installieren</div>
+                <div style="font-size: 0.8rem; color: #a5cddd; margin-top: 2px;">Schnellerer Zugriff & Offline-Nutzung</div>
             </div>
         </div>
-        <div style="display: flex; gap: 8px;">
-            <button id="b3" style="background: white; color: #1a4b60; padding: 8px 14px; font-size: 0.85rem; border-radius: 6px;">Installieren</button>
-            <button onclick="document.getElementById('pwaBanner').style.display='none'" style="background: transparent; color: white; padding: 4px; font-size: 1.2rem;">&times;</button>
-        </div>
+        <button id="b3" style="background: #27ae60; color: white; padding: 8px 16px; font-size: 0.85rem; border-radius: 6px; box-shadow: 0 4px 10px rgba(39,174,96,0.3);">Installieren</button>
     </div>
 
     <script>
+        let a2 = [];
+        let a3 = 'select';
         const formats = {
-            "4473": { cols: 3, rows: 7, name: "HERMA 4473 (70 x 41 mm)" },
-            "4429": { cols: 3, rows: 8, name: "HERMA 4429 (70 x 35 mm)" },
-            "4450": { cols: 3, rows: 9, name: "HERMA 4450 (70 x 32 mm)" },
-            "8638": { cols: 3, rows: 8, name: "HERMA 8638 (70 x 36 mm)" },
-            "4633": { cols: 3, rows: 8, name: "HERMA 4633 (70 x 36 mm)" },
-            "4453": { cols: 3, rows: 8, name: "HERMA 4453 (70 x 36 mm)" },
-            "4263": { cols: 3, rows: 8, name: "HERMA 4263 (70 x 33,8 mm)" },
-            "4618": { cols: 3, rows: 5, name: "HERMA 4618 (70 x 50,8 mm)" },
-            "4612": { cols: 3, rows: 10, name: "HERMA 4612 (70 x 29,7 mm)" },
-            "4426": { cols: 2, rows: 4, name: "HERMA 4426 (105 x 70 mm)" },
-            "4472": { cols: 2, rows: 2, name: "HERMA 4472 (78,7 x 139,7 mm)" },
-            "4634": { cols: 3, rows: 7, name: "HERMA 4634 (70 x 41 mm)" },
-            "4624": { cols: 2, rows: 4, name: "HERMA 4624 (97 x 67,7 mm)" },
-            "4451": { cols: 3, rows: 7, name: "HERMA 4451 (70 x 42 mm)" },
-            "4414": { cols: 3, rows: 8, name: "HERMA 4414 (70 x 36 mm)" },
-            "8634": { cols: 3, rows: 7, name: "HERMA 8634 (70 x 42,3 mm)" },
-            "5054": { cols: 3, rows: 7, name: "HERMA 5054 (70 x 42,3 mm)" },
-            "4668": { cols: 3, rows: 7, name: "HERMA 4668 (70 x 42,3 mm)" },
-            "4616": { cols: 3, rows: 7, name: "HERMA 4616 (70 x 42,3 mm)" },
-            "8644": { cols: 3, rows: 8, name: "HERMA 8644 (70 x 37 mm)" },
-            "4615": { cols: 3, rows: 8, name: "HERMA 4615 (70 x 37 mm)" },
-            "4657": { cols: 3, rows: 1, name: "HERMA 4657 (70 x 297 mm)" },
-            "4455": { cols: 3, rows: 11, name: "HERMA 4455 (70 x 25,4 mm)" },
-            "4443": { cols: 3, rows: 8, name: "HERMA 4443 (70 x 36 mm)" },
-            "4415": { cols: 3, rows: 7, name: "HERMA 4415 (70 x 42 mm)" },
-            "4475": { cols: 2, rows: 7, name: "HERMA 4475 (105 x 41 mm)" },
-            "4361": { cols: 3, rows: 7, name: "HERMA 4361 (70 x 42 mm)" },
-            "4390": { cols: 3, rows: 8, name: "HERMA 4390 (70 x 37 mm)" },
-            "4617": { cols: 3, rows: 4, name: "HERMA 4617 (70 x 67,7 mm)" },
-            "4360": { cols: 3, rows: 8, name: "HERMA 4360 (70 x 36 mm)" },
-            "4279": { cols: 3, rows: 4, name: "HERMA 4279 (70 x 67,7 mm)" },
-            "4464": { cols: 3, rows: 8, name: "HERMA 4464 (70 x 37 mm)" },
+            "4473": { cols: 3, rows: 8, name: "HERMA 4473 (70 x 36 mm)" },
+            "4273": { cols: 3, rows: 8, name: "HERMA 4273 (70 x 36 mm)" },
+            "4676": { cols: 3, rows: 8, name: "HERMA 4676 (70 x 36 mm)" },
+            "5074": { cols: 3, rows: 8, name: "HERMA 5074 (70 x 36 mm)" },
+            "4428": { cols: 2, rows: 4, name: "HERMA 4428 (105 x 68 mm)" },
+            "4282": { cols: 2, rows: 4, name: "HERMA 4282 (105 x 68 mm)" },
+            "4463": { cols: 2, rows: 4, name: "HERMA 4463 (105 x 68 mm)" },
+            "4276": { cols: 2, rows: 6, name: "HERMA 4276 (99,1 x 42,3 mm)" },
+            "4465": { cols: 2, rows: 6, name: "HERMA 4465 (99,1 x 42,3 mm)" },
             "5077": { cols: 2, rows: 4, name: "HERMA 5077 (99,1 x 67,7 mm)" },
             "4269": { cols: 2, rows: 4, name: "HERMA 4269 (99,1 x 67,7 mm)" },
             "4459": { cols: 3, rows: 17, name: "HERMA 4459 (70 x 16,9 mm)" },
@@ -1162,46 +1083,34 @@
             "4462": { cols: 2, rows: 8, name: "HERMA 4462 (105 x 37 mm)" },
             "4359": { cols: 2, rows: 4, name: "HERMA 4359 (97 x 67,7 mm)" }
         };
-
         let currentFormatKey = "4473";
 
-        // Vordefiniertes lokales Fallback-Sortiment, falls sortiment.json offline/nicht erreichbar ist
         let fallbackSortiment = [
             { artNr: "4040", bez: "Elektro-Kleingeräte (ohne Akku)", geb: "QR-Box" },
             { artNr: "4010", bez: "Elektro-Großgeräte", geb: "Gitterbox" },
-            { artNr: "4020", bez: "Kühlgeräte", geb: "Kühlgeräte" },
-            { artNr: "4030", bez: "Bildschirmgeräte / TV", geb: "TV-Box" },
-            { artNr: "1550", bez: "Bauschutt (Kleinmengen)", geb: "Mulde" },
-            { artNr: "1610", bez: "Altholz (Stofflich)", geb: "Holzbox" },
-            { artNr: "1620", bez: "Altholz (Thermisch)", geb: "Holzbox" },
-            { artNr: "1210", bez: "Altmetall / Schrott", geb: "Schrottbox" },
-            { artNr: "1720", bez: "Verpackungshohlglas", geb: "Glas-Hub" },
-            { artNr: "1730", bez: "Flachglas", geb: "Gestell" },
+            { artNr: "3120", bez: "Altholz thermisch (beschichtet)", geb: "Mulde" },
+            { artNr: "3110", bez: "Altholz stofflich (unbeschichtet)", geb: "Container" },
+            { artNr: "1720", bez: "Altmetall / Schrott", geb: "Mulde" },
+            { artNr: "1610", bez: "Verpackungsholz (Paletten)", geb: "Stapel" },
             { artNr: "1410", bez: "Altpapier (Kartonagen)", geb: "Presse" },
-            { artNr: "5110", bez: "Problemstoffe (Haushalt)", geb: "Problo-Box" },
-            { artNr: "1820", bez: "Altreifen (mit Felgen)", geb: "Reifenlager" },
-            { artNr: "1810", bez: "Altreifen (ohne Felgen)", geb: "Reifenlager" },
-            { artNr: "4050", bez: "Gasentladungslampen", geb: "Lampen-Box" }
+            { artNr: "1420", bez: "Altpapier (Mischpapier)", geb: "Umleersystem" },
+            { artNr: "5510", bez: "Bauschutt rein", geb: "Mulde" },
+            { artNr: "5530", bez: "Baustellenabfälle gemischt", geb: "Großcontainer" }
         ];
-
-        let a2 = [];
-        let a3 = 'select';
 
         window.addEventListener('DOMContentLoaded', async () => {
             initFormatSelect();
-            s7();
-            
+            initHeaderSelects();
+            l1();
+
             let a4 = localStorage.getItem('lavu_sortiment_url');
             if (a4 === null) {
-                // Wenn noch nie gesetzt, versuchen wir standardmäßig die lokale sortiment.json abzufragen
                 a4 = "sortiment.json";
                 localStorage.setItem('lavu_sortiment_url', a4);
             }
-            
             document.getElementById('i4').value = a4;
             document.getElementById('n1').innerHTML = `⏳ Verbinde...`;
             document.getElementById('n1').style.color = '#f39c12';
-            
             await f2();
             u1();
         });
@@ -1218,29 +1127,30 @@
             }
         }
 
+        function initHeaderSelects() {
+            const s1 = document.getElementById('s1');
+            const i1 = document.getElementById('i1');
+            i1.innerHTML = s1.innerHTML;
+            i1.value = s1.value;
+        }
+
         function changeFormat(key) {
             currentFormatKey = key;
             const f = formats[key];
             const maxLabels = f.cols * f.rows;
-            
             const i2 = document.getElementById('i2');
             const i3 = document.getElementById('i3');
-            
             document.getElementById('lblCount').textContent = `Anzahl Etiketten (max. ${maxLabels}):`;
             document.getElementById('lblStartPos').textContent = `Start-Position (1-${maxLabels}):`;
-            
             i2.max = maxLabels;
             i3.max = maxLabels;
-            
             if (parseInt(i2.value) > maxLabels) i2.value = maxLabels;
             if (parseInt(i3.value) > maxLabels) i3.value = 1;
-            
             u1();
         }
 
         async function f2() {
             let a4 = localStorage.getItem('lavu_sortiment_url') || "sortiment.json";
-            
             try {
                 const a5 = await fetch(a4, { cache: "no-store" });
                 if (!a5.ok) throw new Error("Netzwerkantwort war fehlerhaft");
@@ -1267,7 +1177,6 @@
                 document.getElementById('n1').style.color = '#e74c3c';
             }
 
-            // Fallback-Hierarchie: localStorage -> Hardcoded fallbackSortiment Array
             const a7 = localStorage.getItem('lavu_studio_sortiment_v8');
             if (a7) {
                 try {
@@ -1281,30 +1190,6 @@
             i1();
         }
 
-        async function f1() {
-            const a8 = document.getElementById('i4').value.trim();
-            if (!a8) {
-                // Wenn die URL gelöscht wird, setzen wir auf die lokale Datei standardmäßig zurück
-                localStorage.setItem('lavu_sortiment_url', 'sortiment.json');
-                document.getElementById('i4').value = 'sortiment.json';
-                await f2();
-                p1();
-                alert("Verlinkung zurückgesetzt auf lokale sortiment.json.");
-                return;
-            }
-
-            let a9 = a8;
-            if (a9.includes("github.com") && !a9.includes("raw.githubusercontent.com")) {
-                a9 = a9.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/");
-                document.getElementById('i4').value = a9;
-            }
-
-            localStorage.setItem('lavu_sortiment_url', a9);
-            document.getElementById('n1').innerHTML = `⏳ Verbinde...`;
-            document.getElementById('n1').style.color = '#f39c12';
-            await f2();
-        }
-
         setInterval(() => {
             const a4 = localStorage.getItem('lavu_sortiment_url');
             if (a4 && a3 === 'select') {
@@ -1312,25 +1197,49 @@
             }
         }, 30000);
 
+        // Befüllt beide getrennten Dropdowns
         function i1() {
-            const a10 = document.getElementById('s2');
-            const a11 = a10.value;
-            a10.innerHTML = '';
+            const selectArt = document.getElementById('s2_art');
+            const selectName = document.getElementById('s2_name');
+            if (!selectArt || !selectName) return;
 
-            a2.forEach((a12, a13) => {
-                const a14 = document.createElement('option');
-                a14.value = a13;
-                a14.textContent = `${a12.artNr} - ${a12.bez}`;
-                a10.appendChild(a14);
+            const currentVal = selectArt.value || "0";
+
+            selectArt.innerHTML = '';
+            selectName.innerHTML = '';
+
+            a2.forEach((item, index) => {
+                const optArt = document.createElement('option');
+                optArt.value = index;
+                optArt.textContent = item.artNr;
+                selectArt.appendChild(optArt);
+
+                const optName = document.createElement('option');
+                optName.value = index;
+                optName.textContent = item.bez;
+                selectName.appendChild(optName);
             });
 
-            if (a11 !== "" && a11 < a2.length) {
-                a10.value = a11;
+            if (currentVal !== "" && parseInt(currentVal) < a2.length) {
+                selectArt.value = currentVal;
+                selectName.value = currentVal;
             } else {
-                a10.value = "0";
+                selectArt.value = "0";
+                selectName.value = "0";
             }
-            
             r1();
+            p1();
+        }
+
+        // Synchronisiert die beiden Dropdowns miteinander
+        function syncDropdowns(selectedIndex) {
+            const selectArt = document.getElementById('s2_art');
+            const selectName = document.getElementById('s2_name');
+            
+            if(selectArt) selectArt.value = selectedIndex;
+            if(selectName) selectName.value = selectedIndex;
+            
+            p1();
         }
 
         function x1(a15) {
@@ -1338,9 +1247,17 @@
             u1();
         }
 
+        document.getElementById('s1').addEventListener('change', function() {
+            s7();
+        });
+        document.getElementById('labelFormatSelect').addEventListener('change', function() {
+            s7();
+        });
+
         function x2(a15) {
             document.getElementById('s1').value = a15;
             u1();
+            s7();
         }
 
         function m2(a16) {
@@ -1355,7 +1272,6 @@
             const a17 = document.getElementById('c4');
             if (!a17) return;
             a17.innerHTML = '';
-
             a2.forEach((a12, a13) => {
                 const a18 = document.createElement('div');
                 a18.className = 'cir';
@@ -1382,64 +1298,67 @@
         }
 
         function d1(a13) {
-            if (confirm(`Möchten Sie den Artikel "${a2[a13].bez}" wirklich aus der Datenbank löschen?`)) {
+            if (confirm("Möchten Sie diesen Eintrag wirklich löschen?")) {
                 a2.splice(a13, 1);
                 localStorage.setItem('lavu_studio_sortiment_v8', JSON.stringify(a2));
                 i1();
-                p1();
+                s7();
             }
         }
 
-        function c3() {
-            document.getElementById('e1').value = "-1";
+        function e1() {
+            document.getElementById('e1').value = "";
             document.getElementById('c1').value = "";
             document.getElementById('c2').value = "";
             document.getElementById('c3').value = "";
             document.getElementById('b1').style.display = 'none';
         }
 
-        function s5() {
-            const a19 = document.getElementById('c1').value.trim();
-            const a20 = document.getElementById('c2').value.trim();
-            const a21 = document.getElementById('c3').value.trim();
-            const a22 = parseInt(document.getElementById('e1').value);
+        function s3() {
+            const c1 = document.getElementById('c1').value.trim();
+            const c2 = document.getElementById('c2').value.trim();
+            const c3 = document.getElementById('c3').value.trim();
 
-            if (!a19 || !a21) {
-                alert("Artikel-Nr. und Bezeichnung sind erforderlich!");
+            if (!c1 || !c3) {
+                alert("Bitte zumindest Art.Nr. und Bezeichnung ausfüllen.");
                 return;
             }
 
-            const a23 = { artNr: a19, bez: a21, geb: a20 };
-
-            if (a22 > -1) {
-                a2[a22] = a23;
-            } else {
-                a2.push(a23);
-            }
-
+            a2.push({ artNr: c1, geb: c2, bez: c3 });
             localStorage.setItem('lavu_studio_sortiment_v8', JSON.stringify(a2));
             i1();
-            c3();
-            p1();
+            e1();
+            s7();
+        }
+
+        function s4() {
+            const index = document.getElementById('e1').value;
+            const c1 = document.getElementById('c1').value.trim();
+            const c2 = document.getElementById('c2').value.trim();
+            const c3 = document.getElementById('c3').value.trim();
+
+            if (index === "" || !c1 || !c3) {
+                alert("Fehler beim Ändern.");
+                return;
+            }
+
+            a2[index] = { artNr: c1, geb: c2, bez: c3 };
+            localStorage.setItem('lavu_studio_sortiment_v8', JSON.stringify(a2));
+            i1();
+            e1();
+            s7();
         }
 
         function e2() {
-            if (!a2 || a2.length === 0) {
-                alert("Es sind keine Sortimentsdaten zum Exportieren vorhanden.");
-                return;
-            }
             try {
                 const a24 = JSON.stringify(a2, null, 2);
-                const a25 = new Blob([a24], { type: "application/json;charset=utf-8;" });
+                const a25 = new Blob([a24], { type: "application/json" });
                 const a26 = URL.createObjectURL(a25);
-                
-                const a27 = document.createElement("a");
+                const a27 = document.createElement('a');
                 a27.href = a26;
-                a27.download = "sortiment.json";
-                
+                a27.download = "sortiment_export.json";
                 document.body.appendChild(a27);
                 a27.click();
-                
                 document.body.removeChild(a27);
                 URL.revokeObjectURL(a26);
             } catch (a28) {
@@ -1448,13 +1367,13 @@
             }
         }
 
+        // Liest den Wert aus dem synchronisierten Dropdown aus
         function p1() {
-            const a10 = document.getElementById('s2');
-            if (!a10 || a10.value === "") return;
+            const selectArt = document.getElementById('s2_art');
+            if (!selectArt || selectArt.value === "") return;
 
-            const a13 = parseInt(a10.value);
+            const a13 = parseInt(selectArt.value);
             const a12 = a2[a13];
-
             if (a12) {
                 document.getElementById('i5').value = a12.artNr;
                 document.getElementById('i6').value = a12.geb || "";
@@ -1464,24 +1383,24 @@
         }
 
         function g1() {
+            const selectArt = document.getElementById('s2_art');
             return {
                 topText: document.getElementById('i1').value,
                 artNr: document.getElementById('i5').value.trim(),
                 suffix: document.getElementById('i6').value.trim(),
                 bezeichnung: document.getElementById('i7').value.trim(),
                 count: parseInt(document.getElementById('i2').value) || 0,
-                startPos: parseInt(document.getElementById('i3').value) || 1
+                startPos: parseInt(document.getElementById('i3').value) || 1,
+                sortimentIndex: selectArt ? selectArt.value : "0"
             };
         }
 
         function u1() {
             const a29 = g1();
             const f = formats[currentFormatKey];
-
             document.getElementById('d0').textContent = a29.topText || '-';
             document.getElementById('d1').textContent = a29.bezeichnung || '-';
             document.getElementById('d2').textContent = a29.artNr || '-';
-            
             const badge = document.getElementById('d3');
             if (a29.suffix) {
                 badge.textContent = a29.suffix;
@@ -1489,23 +1408,16 @@
             } else {
                 badge.style.display = 'none';
             }
-
             document.getElementById('d4').textContent = `Druck-Layout: ${a29.count}x ab Position ${a29.startPos}`;
-            
             document.getElementById('s1').value = a29.topText;
             document.getElementById('i1').value = a29.topText;
-
             document.getElementById('fmt-overlay').innerHTML = `
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                ${f.name}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> ${f.name}
             `;
-            
             document.getElementById('modalTitle').innerHTML = `Interaktiver A4-Druckbogen<br/><small style="font-size:0.85rem; font-weight:normal; color:#64748b;">${f.name}</small>`;
-
             r2('t1', a29);
             r2('mdl', a29);
             r2('d5', a29);
-            
             if (document.getElementById('m2').style.display === 'flex') {
                 s8();
             }
@@ -1515,133 +1427,129 @@
             const a31 = document.getElementById(a30);
             if (!a31) return;
             a31.innerHTML = '';
-
             const f = formats[currentFormatKey];
-            const maxLabels = f.cols * f.rows;
-            
             a31.style.gridTemplateColumns = `repeat(${f.cols}, 1fr)`;
             a31.style.gridTemplateRows = `repeat(${f.rows}, 1fr)`;
 
-            const a33 = a29.startPos - 1;
-            const a34 = a33 + a29.count;
+            const a32 = f.cols * f.rows;
+            const a33 = a29.startPos;
+            const a34 = a29.count;
 
-            for (let a35 = 0; a35 < maxLabels; a35++) {
-                const a36 = document.createElement('div');
-
-                if (a35 >= a33 && a35 < a34) {
-                    a36.className = 'lb';
-                    a36.innerHTML = `
-                        <div class="lbt">${a29.topText}</div>
+            for (let i = 1; i <= a32; i++) {
+                const a35 = document.createElement('div');
+                if (i >= a33 && i < a33 + a34) {
+                    a35.className = 'lb';
+                    a35.innerHTML = `
+                        <div class="lbt">${a29.topText || '&nbsp;'}</div>
                         <div class="lbm">
-                            <div class="lba">${a29.artNr}</div>
+                            <div class="lba">${a29.artNr || '&nbsp;'}</div>
                             ${a29.suffix ? `<div class="lbs">${a29.suffix}</div>` : ''}
                         </div>
-                        <div class="lbb">${a29.bezeichnung}</div>
+                        <div class="lbb">${a29.bezeichnung || '&nbsp;'}</div>
                     `;
-                    
-                    if (a30 === 'mdl') {
-                        a36.addEventListener('click', () => {
-                            h1(a35 + 1, 'remove');
-                        });
-                    }
                 } else {
-                    a36.className = 'lb e';
-                    
-                    if (a30 === 'mdl') {
-                        a36.addEventListener('click', () => {
-                            h1(a35 + 1, 'add');
-                        });
-                    }
+                    a35.className = 'lb e';
                 }
-                a31.appendChild(a36);
+                if (a30 === 'mdl') {
+                    a35.setAttribute('data-index', i);
+                    a35.addEventListener('click', function(e) {
+                        const a36 = parseInt(this.getAttribute('data-index'));
+                        let a37 = a36;
+                        let a38 = 'add';
+                        if (this.classList.contains('e')) {
+                            a38 = 'add';
+                        } else {
+                            a38 = 'remove';
+                        }
+                        s5(a37, a38);
+                    });
+                }
+                a31.appendChild(a35);
             }
         }
 
-        function h1(a37, a38) {
+        function s5(a37, a38) {
             const f = formats[currentFormatKey];
             const maxLabels = f.cols * f.rows;
-            
             const a39 = document.getElementById('i2');
             const a40 = document.getElementById('i3');
-            
             let a41 = parseInt(a39.value) || 0;
             let a42 = parseInt(a40.value) || 1;
             let a43 = a42 + a41 - 1;
 
-            if (a38 === 'add') {
-                if (a41 === 0) {
-                    a42 = a37;
-                    a41 = 1;
-                } else if (a37 < a42) {
-                    a42 = a37;
-                    a41 = a43 - a42 + 1;
-                } else if (a37 > a43) {
-                    a41 = a37 - a42 + 1;
-                }
-            } else if (a38 === 'remove') {
-                if (a37 === a42) {
-                    a42++;
-                    a41--;
-                } else if (a37 === a43) {
-                    a41--;
-                } else {
-                    a41 = a37 - a42;
+            if (a41 === 0) {
+                a42 = a37;
+                a41 = 1;
+            } else {
+                if (a38 === 'add') {
+                    if (a37 < a42) {
+                        a41 = a43 - a37 + 1;
+                        a42 = a37;
+                    } else if (a37 > a43) {
+                        a41 = a37 - a42 + 1;
+                    }
+                } else if (a38 === 'remove') {
+                    if (a37 === a42) {
+                        a42++;
+                        a41--;
+                    } else if (a37 === a43) {
+                        a41--;
+                    } else {
+                        a41 = a37 - a42;
+                    }
                 }
             }
-
             a41 = Math.max(0, Math.min(maxLabels, a41));
             a42 = Math.max(1, Math.min(maxLabels, a42));
-
             a39.value = a41;
             a40.value = a42;
-            
             u1();
+            s7();
         }
 
         function s8() {
             const a44 = document.querySelector('.mbs');
             const a45 = document.getElementById('p1');
-            
             if (!a44 || !a45) return;
-
             a45.style.transform = 'none';
             a45.style.position = 'static';
-
             const a46 = a45.offsetWidth;
             const a47 = a45.offsetHeight;
-
             const a48 = a44.clientWidth - 40;
             const a49 = a44.clientHeight - 40;
-
             const a50 = a48 / a46;
             const a51 = a49 / a47;
             const a52 = Math.min(a50, a51, 1);
-
             a45.style.position = 'absolute';
             a45.style.top = '50%';
             a45.style.left = '50%';
             a45.style.transformOrigin = 'center center';
             a45.style.transform = `translate(-50%, -50%) scale(${a52})`;
         }
-        
+
         function o2() {
             document.getElementById('m1').style.display = 'flex';
             r1();
         }
+
         function c2() {
             document.getElementById('m1').style.display = 'none';
         }
+
         function c1(a53) {
             if (a53.target.id === 'm1') c2();
         }
+
         function o1() {
             u1();
             document.getElementById('m2').style.display = 'flex';
             setTimeout(s8, 50);
         }
+
         function c5() {
             document.getElementById('m2').style.display = 'none';
         }
+
         function c4(a53) {
             if (a53.target.id === 'm2') c5();
         }
@@ -1655,42 +1563,41 @@
         function s6() {
             const f = formats[currentFormatKey];
             const maxLabels = f.cols * f.rows;
-            
-            const a54 = {
-                topText: document.getElementById('i1').value,
-                count: Math.min(maxLabels, document.getElementById('i2').value),
-                startPos: Math.min(maxLabels, document.getElementById('i3').value),
-                sortimentIndex: document.getElementById('s2').value,
-                artNr: document.getElementById('i5').value,
-                suffix: document.getElementById('i6').value,
-                bezeichnung: document.getElementById('i7').value,
-                formatKey: currentFormatKey
-            };
+            const i2 = document.getElementById('i2');
+            const i3 = document.getElementById('i3');
+            if (parseInt(i2.value) > maxLabels) i2.value = maxLabels;
+            if (parseInt(i3.value) > maxLabels) i3.value = 1;
 
-            localStorage.setItem('lavu_studio_defaults_v9', JSON.stringify(a54));
-            const a55 = document.getElementById('b2');
-            a55.innerHTML = '✓ Gespeichert!';
-            a55.style.backgroundColor = '#27ae60';
-
-            setTimeout(() => {
-                a55.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Standard sichern';
-                a55.style.backgroundColor = '#3498db';
-            }, 1800);
+            s7();
+            alert("Aktuelle Einstellungen wurden als Standard im Browser gespeichert!");
         }
 
         function s7() {
-            const a56 = localStorage.getItem('lavu_studio_defaults_v9') || localStorage.getItem('lavu_studio_defaults_v8');
-            if (a56) {
+            const data = g1();
+            const config = {
+                formatKey: currentFormatKey,
+                topText: data.topText,
+                count: data.count,
+                startPos: data.startPos,
+                artNr: data.artNr,
+                suffix: data.suffix,
+                bezeichnung: data.bezeichnung,
+                sortimentIndex: data.sortimentIndex
+            };
+            localStorage.setItem('lavu_studio_defaults_v8', JSON.stringify(config));
+        }
+
+        function l1() {
+            const a54Str = localStorage.getItem('lavu_studio_defaults_v8');
+            if (a54Str) {
                 try {
-                    const a54 = JSON.parse(a56);
+                    const a54 = JSON.parse(a54Str);
                     if (a54.formatKey !== undefined && formats[a54.formatKey]) {
                         currentFormatKey = a54.formatKey;
                         document.getElementById('labelFormatSelect').value = currentFormatKey;
                     }
-                    
                     const f = formats[currentFormatKey];
                     const maxLabels = f.cols * f.rows;
-                    
                     if (a54.topText !== undefined) {
                         document.getElementById('i1').value = a54.topText;
                         document.getElementById('s1').value = a54.topText;
@@ -1702,11 +1609,9 @@
                     if (a54.bezeichnung !== undefined) document.getElementById('i7').value = a54.bezeichnung;
                     if (a54.sortimentIndex !== undefined) {
                         setTimeout(() => {
-                            document.getElementById('s2').value = a54.sortimentIndex;
-                            p1();
+                            syncDropdowns(a54.sortimentIndex);
                         }, 100);
                     }
-                    
                     changeFormat(currentFormatKey);
                 } catch (e) {
                     console.warn("Fehler beim Verarbeiten lokaler Defaults.", e);
@@ -1719,53 +1624,28 @@
         let a57;
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(a58 => {
-                        console.log('Service Worker erfolgreich registriert!', a58);
-                        a58.update();
-
-                        a58.addEventListener('updatefound', () => {
-                            const a59 = a58.installing;
-                            a59.addEventListener('statechange', () => {
-                                if (a59.state === 'installed') {
-                                    if (navigator.serviceWorker.controller) {
-                                        a59.postMessage({ action: 'skipWaiting' });
-                                    }
-                                }
-                            });
-                        });
-                    })
-                    .catch(a60 => console.error('Service Worker Registrierung fehlgeschlagen:', a60));
-            });
-
-            let a61 = false;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (!a61) {
-                    a61 = true;
-                    window.location.reload(true);
-                }
+                navigator.serviceWorker.register('sw.js').then((a58) => {
+                    console.log('LAVU ServiceWorker erfolgreich registriert mit Scope: ', a58.scope);
+                }, (a59) => {
+                    console.log('LAVU ServiceWorker Registrierung fehlgeschlagen: ', a59);
+                });
             });
         }
 
-        window.addEventListener('beforeinstallprompt', (a62) => {
-            a62.preventDefault();
-            a57 = a62;
-
-            let refreshCount = parseInt(sessionStorage.getItem('pwa_refresh_count') || '0');
-            const navEntries = performance.getEntriesByType('navigation');
-            const isReload = navEntries.length > 0 && navEntries[0].type === 'reload';
-
-            if (isReload) {
-                refreshCount++;
-            } else {
-                refreshCount = 0;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            a57 = e;
+            const a60Str = localStorage.getItem('lavu_studio_defaults_v8');
+            let a61 = true;
+            if (a60Str) {
+                try {
+                    const a62 = JSON.parse(a60Str);
+                    if (a62.count && parseInt(a62.count) > 0) {
+                        a61 = false;
+                    }
+                } catch(err){}
             }
-            sessionStorage.setItem('pwa_refresh_count', refreshCount);
-
-            const isTargetReferrer = document.referrer === 'https://lavu-ooe.github.io/Etiketten-Druckstudio/app';
-            const shouldShow = !isTargetReferrer || refreshCount >= 2;
-
-            if (shouldShow) {
+            if (a61) {
                 const a63 = document.getElementById('pwaBanner');
                 if (a63) {
                     a63.style.display = 'flex';
