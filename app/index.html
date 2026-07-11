@@ -882,7 +882,7 @@
                         <div class="lbs" id="d3">-</div>
                     </div>
                     <div class="lbb" id="d1">-</div>
-                    <div style="font-size: 0.75rem; color: #64748b; margin-top: 8px; border-top: 1px dashed #cbd5e1; padding-top: 6px; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;" id="d4">-</div>
+                    <div style="font-size: 0.75rem; color: #64748b; margin-top: 8px; border-top: 1px dashed #cbd5e1; padding-top: 6px; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px; visibility: hidden;" id="d4">-</div>
                 </div>
 
                 <div class="ab">
@@ -1618,8 +1618,40 @@
         window.addEventListener('beforeinstallprompt', (a62) => {
             a62.preventDefault();
             a57 = a62;
-            const a63 = document.getElementById('pwaBanner');
-            if (a63) a63.style.display = 'flex';
+
+            // 1. Zählen aufeinanderfolgender Aktualisierungen mit sessionStorage
+            let refreshCount = parseInt(sessionStorage.getItem('pwa_refresh_count') || '0');
+            const navEntries = performance.getEntriesByType('navigation');
+            const isReload = navEntries.length > 0 && navEntries[0].type === 'reload';
+
+            if (isReload) {
+                refreshCount++;
+            } else {
+                refreshCount = 0;
+            }
+            sessionStorage.setItem('pwa_refresh_count', refreshCount);
+
+            // 2. Bedingungen überprüfen (Anderer Referrer ODER mindestens zweimal in Folge aktualisiert)
+            const isTargetReferrer = document.referrer === 'https://lavu-ooe.github.io/Etiketten-Druckstudio/app';
+            const shouldShow = !isTargetReferrer || refreshCount >= 2;
+
+            if (shouldShow) {
+                const a63 = document.getElementById('pwaBanner');
+                if (a63) {
+                    a63.style.display = 'flex';
+                    a63.style.opacity = '1';
+                    a63.style.transition = 'opacity 1s ease';
+
+                    // 3. Nach 6 Sekunden (6000ms) ausblenden lassen
+                    setTimeout(() => {
+                        a63.style.opacity = '0';
+                        // Nach Beendigung der 1-sekündigen CSS-Transition auf display: none setzen
+                        setTimeout(() => {
+                            a63.style.display = 'none';
+                        }, 1000);
+                    }, 6000);
+                }
+            }
         });
 
         const a64 = document.getElementById('b3');
