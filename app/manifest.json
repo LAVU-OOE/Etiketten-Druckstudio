@@ -1,6 +1,6 @@
 {
   "name": "LAVU OÖ - Etiketten-Druckstudio v8",
-  "short_name": "LAVU Studio v8",
+  "short_name": "Etiketten Studio v8",
   "description": "Etiketten-Druckstudio für das HERMA 4473 Format",
   "start_url": "./index.html",
   "display": "standalone",
