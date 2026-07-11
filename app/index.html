@@ -959,7 +959,7 @@
             <div class="fg" style="margin-bottom: 20px;">
                 <div class="fv">
                     <label for="i2" id="lblCount">Anzahl Etiketten:</label>
-                    <input type="number" id="i2" value="21" min="1" oninput="u1()" />
+                    <input type="number" id="i2" value="24" min="1" oninput="u1()" />
                 </div>
                 <div class="fv">
                     <label for="i3" id="lblStartPos">Start-Position:</label>
@@ -1051,6 +1051,7 @@
         </div>
     </div>
 
+    <!-- PWA Installation Banner Element -->
     <div id="pwaBanner" class="pwb">
         <div style="display: flex; align-items: center; gap: 10px;">
             <div style="font-weight: bold; font-size: 0.95rem;">App installieren für Offline-Nutzung?</div>
@@ -1096,7 +1097,7 @@
 
         let currentFormatKey = "4473";
         let fallbackSortiment = [
-            { artNr: "4040", bez: "Elektro-Kleingeräte (ohne Akku)", geb: "QR-Box" },
+            { artNr: "4040", bez: "Styropor", geb: "Sack" },
             { artNr: "4010", bez: "Elektro-Großgeräte", geb: "Container" }
         ];
 
@@ -1136,8 +1137,8 @@
             document.getElementById('lblStartPos').textContent = `Start-Position (1-${maxLabels}):`;
             i2.max = maxLabels;
             i3.max = maxLabels;
-            if (parseInt(i2.value) > maxLabels) i2.value = maxLabels;
-            if (parseInt(i3.value) > maxLabels) i3.value = 1;
+            i2.value = maxLabels; // Voller Bogen standardmäßig aktiviert
+            i3.value = 1;
             u1();
         }
 
@@ -1184,20 +1185,30 @@
 
         function i1() {
             const a10 = document.getElementById('s2');
-            const a11 = a10.value;
             a10.innerHTML = '';
+            
+            let styroporIndex = -1;
             a2.forEach((a12, a13) => {
                 const a14 = document.createElement('option');
                 a14.value = a13;
                 a14.textContent = `${a12.artNr} - ${a12.bez}`;
                 a10.appendChild(a14);
+                
+                // Prüfe, ob das Element "Styropor" im Namen enthält
+                if (a12.bez.toLowerCase().includes('styropor')) {
+                    styroporIndex = a13;
+                }
             });
-            if (a11 !== "" && a11 < a2.length) {
-                a10.value = a11;
+
+            // Wenn Styropor gefunden wurde, wähle es als Default
+            if (styroporIndex !== -1) {
+                a10.value = styroporIndex;
             } else {
                 a10.value = "0";
             }
+            
             r1();
+            p1();
         }
 
         function x1(a15) {
@@ -1296,6 +1307,7 @@
             const a13 = parseInt(a10.value);
             const a12 = a2[a13];
             if (a12) {
+                // Setze die Werte in die internen Variablen/Inputs für das Druck-Layout
                 document.getElementById('i5').value = a12.artNr;
                 document.getElementById('i6').value = a12.geb || "";
                 document.getElementById('i7').value = a12.bez;
@@ -1304,12 +1316,14 @@
         }
 
         function g1() {
+            const f = formats[currentFormatKey];
+            const maxLabels = f.cols * f.rows;
             return {
                 topText: document.getElementById('i1').value,
                 artNr: document.getElementById('i5').value.trim(),
                 suffix: document.getElementById('i6').value.trim(),
                 bezeichnung: document.getElementById('i7').value.trim(),
-                count: parseInt(document.getElementById('i2').value) || 0,
+                count: parseInt(document.getElementById('i2').value) || maxLabels, // Default voll belegt
                 startPos: parseInt(document.getElementById('i3').value) || 1
             };
         }
@@ -1452,13 +1466,11 @@
             e.preventDefault();
             a57 = e;
             
-            // Fix: Holt das korrekte Element per ID
             const a63 = document.getElementById('pwaBanner');
             if (a63) {
                 a63.style.display = 'flex';
                 a63.style.opacity = '1';
                 a63.style.transition = 'opacity 1s ease';
-                // Timeout entfernt, damit das Banner stabil stehen bleibt
             }
         });
 
@@ -1486,6 +1498,7 @@
         });
     </script>
     
+    <!-- Inputs für Variablenverwaltung -->
     <input type="hidden" id="i5" value="" />
     <input type="hidden" id="i6" value="" />
     <input type="hidden" id="i7" value="" />
