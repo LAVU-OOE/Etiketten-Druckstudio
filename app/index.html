@@ -1200,17 +1200,13 @@
             }
         }, 30000);
 
-        function i1() {
+function i1() {
             const selectArt = document.getElementById('s2_art');
             const selectName = document.getElementById('s2_name');
             if (!selectArt || !selectName) return;
 
-            // Sortiert primär alphabetisch nach Bezeichnung. Bei gleicher Bezeichnung nach Artikelnummer (aufsteigend).
+            // Sortiert das Sortiment primär nach der Artikelnummer von niedrig nach hoch
             a2.sort((a, b) => {
-                const compBez = a.bez.localeCompare(b.bez, 'de', { sensitivity: 'base' });
-                if (compBez !== 0) return compBez;
-                
-                // Fallback: Numerischer Vergleich der ArtNr von niedrig nach hoch
                 const numA = parseInt(a.artNr) || 0;
                 const numB = parseInt(b.artNr) || 0;
                 return numA - numB;
@@ -1223,7 +1219,7 @@
 
             a2.forEach((item, index) => {
                 const optArt = document.createElement('option');
-                optArt.value = index;
+                optArt.value = index; // Der Index sichert die fehlerfreie Zuordnung bei syncDropdowns
                 optArt.textContent = item.artNr;
                 selectArt.appendChild(optArt);
 
