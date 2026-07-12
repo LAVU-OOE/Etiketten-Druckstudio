@@ -1,0 +1,47 @@
+
+{ name: "106 - ASZ Asten", value: "106 - ASZ Asten", region: "Linz-Land & Linz Stadt"
+},
+{ name: "ASZ Ansfelden", value: "ASZ Ansfelden", region: "Linz-Land & Linz Stadt"
+},
+{ name: "ASZ Enns", value: "ASZ Enns", region: "Linz-Land & Linz Stadt"
+},
+{ name: "ASZ Hörsching", value: "ASZ Hörsching", region: "Linz-Land & Linz Stadt"
+},
+{ name: "ASZ Leonding", value: "ASZ Leonding", region: "Linz-Land & Linz Stadt"
+},
+{ name: "ASZ Neuhofen", value: "ASZ Neuhofen", region: "Linz-Land & Linz Stadt"
+},
+{ name: "ASZ Pasching", value: "ASZ Pasching", region: "Linz-Land & Linz Stadt"
+},
+{ name: "ASZ St. Florian", value: "ASZ St. Florian", region: "Linz-Land & Linz Stadt"
+},
+{ name: "ASZ Traun", value: "ASZ Traun", region: "Linz-Land & Linz Stadt"
+},
+{ name: "ASZ Wilhering", value: "ASZ Wilhering", region: "Linz-Land & Linz Stadt"
+},
+{ name: "ASZ Linz-Nebingerstraße", value: "ASZ Linz-Nebingerstraße", region: "Linz-Land & Linz Stadt"
+},
+{ name: "ASZ Linz-Mostnnystraße", value: "ASZ Linz-Mostnnystraße", region: "Linz-Land & Linz Stadt"
+},
+{ name: "ASZ Linz-Wiener Straße", value: "ASZ Linz-Wiener Straße", region: "Linz-Land & Linz Stadt"
+},
+{ name: "ASZ Linz-Dornach", value: "ASZ Linz-Dornach", region: "Linz-Land & Linz Stadt"
+},
+{ name: "ASZ Wels-Nord", value: "ASZ Wels-Nord", region: "Wels & Wels-Land"
+},
+{ name: "ASZ Wels-Kenten", value: "ASZ Wels-Kenten", region: "Wels & Wels-Land"
+},
+{ name: "ASZ Marchtrenk", value: "ASZ Marchtrenk", region: "Wels & Wels-Land"
+},
+{ name: "ASZ Gunskirchen", value: "ASZ Gunskirchen", region: "Wels & Wels-Land"
+},
+{ name: "ASZ Thalheim", value: "ASZ Thalheim", region: "Wels & Wels-Land"
+},
+{ name: "ASZ Steyr", value: "ASZ Steyr", region: "Steyr & Steyr-Land"
+},
+{ name: "ASZ Bad Hall", value: "ASZ Bad Hall", region: "Steyr & Steyr-Land"
+},
+{ name: "ASZ Garsten", value: "ASZ Garsten", region: "Steyr & Steyr-Land"
+},
+{ name: "ASZ Sierning", value: "ASZ Sierning", region: "Steyr & Steyr-Land"
+}
