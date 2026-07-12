@@ -164,7 +164,7 @@
         }
 
         .ps-ttl {
-            font-size: 0.8rem;
+            font-size: clamp(0.6rem, 1.2vw, 0.8rem);
             font-weight: 700;
             color: #475569;
             text-transform: uppercase;
@@ -174,6 +174,9 @@
             align-items: center;
             gap: 5px;
             height: 16px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .tw {
@@ -228,7 +231,6 @@
             background: rgba(39, 174, 96, 0.95);
         }
 
-        /* Zoom Container - Vertikal rechts in mbs fixiert */
         .zoom-container {
             position: absolute;
             right: 12px;
@@ -270,7 +272,6 @@
             border-radius: 3px;
             outline: none;
             cursor: pointer;
-            /* Macht den Slider vertikal (von unten nach oben) */
             writing-mode: vertical-lr;
             direction: rtl;
             width: 6px;
@@ -494,7 +495,8 @@
         }
 
         .mbs {
-            overflow: hidden;
+            position: relative;
+            overflow: auto;
             flex: 1;
             padding: 25px;
             background: #f1f5f9;
@@ -503,7 +505,6 @@
             justify-content: center;
             align-items: center;
             box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: relative;
         }
 
         .mh {
@@ -758,11 +759,11 @@
             border-radius: 12px;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            overflow: hidden;
+            align-items: center;
             box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
             container-type: inline-size;
             position: relative;
+            overflow: auto;
         }
 
         .pc {
@@ -772,6 +773,10 @@
             box-shadow: 0 4px 25px rgba(0, 0, 0, 0.12);
             box-sizing: border-box;
             flex-shrink: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: center center;
         }
 
         .psh {
@@ -902,6 +907,9 @@
             .lb {
                 border: 1px solid transparent !important;
             }
+            .bp svg {
+                display: none;
+            }
         }
 
         #hpc {
@@ -927,9 +935,6 @@
             margin: 0 auto;
             animation: fdin 0.4s ease;
         }
-        #s2_name {
-            font-family: 'Courier New', Courier, monospace;
-        }
     </style>
 </head>
 <body>
@@ -949,7 +954,7 @@
             </div>
             <div class="hdr-r">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                <select id="s1" class="sel-hdr" onchange="x1(this.value)">
+                <select id="s1" class="sel-hdr">
                     <optgroup label="Linz-Land & Linz Stadt" id="opt-linz">
                         <option value="106 - ASZ Asten" selected>106 - ASZ Asten</option>
                         <option value="ASZ Ansfelden">ASZ Ansfelden</option>
@@ -980,7 +985,7 @@
                         <option value="ASZ Sierning">ASZ Sierning</option>
                     </optgroup>
                 </select>
-                <button id="langToggleBtn" class="btn-lang-toggle" onclick="toggleLanguage()">EN</button>
+                <button id="langToggleBtn" class="btn-lang-toggle" aria-label="Toggle language">EN</button>
             </div>
         </div>
 
@@ -990,7 +995,7 @@
                     Format wird geladen...
                 </div>
                 <div class="ps">
-                    <div class="tw" onclick="o1()" id="layout-title-attr" title="Klicken für vollständige A4-Großansicht">
+                    <div class="tw" id="layout-title-attr" title="Klicken für vollständige A4-Großansicht">
                         <div class="sc" id="previewScaleContainer">
                             <div class="psh" id="t1"></div>
                         </div>
@@ -1007,43 +1012,15 @@
                     <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px; width: 100%;">
                         <div>
                             <span id="txt-art-nr" style="font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 4px; height: 16px; line-height: 16px;">Art.Nr.</span>
-                            <select id="s2_art" onchange="syncDropdowns(this.value)"></select>
+                            <select id="s2_art"></select>
                         </div>
                         <div>
                             <span id="txt-bezeichnung" style="font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 4px; height: 16px; line-height: 16px;">Bezeichnung</span>
-                            <select id="s2_name" onchange="syncDropdowns(this.value)"></select>
+                            <select id="s2_name"></select>
                         </div>
-<script>
-(function() {
-    const select = document.getElementById('s2_name');
-    if (!select) return;
-    let currentLetter = '';
-    let alphabetString = '';
-    for (let i = 0; i < select.options.length; i++) {
-        const text = select.options[i].text.trim();
-        const firstChar = text.charAt(0).toUpperCase();
-        if (firstChar >= 'A' && firstChar <= 'Z') {
-            if (firstChar !== currentLetter) {
-                if (alphabetString !== '') {
-                    alphabetString += ' ';
-                }
-                alphabetString += firstChar;
-                currentLetter = firstChar;
-            } else {
-                alphabetString += ' ·';
-            }
-        }
-    }
-    for (let i = 0; i < select.options.length; i++) {
-        const originalText = select.options[i].text;
-        if (!originalText.includes(' | ')) { 
-            select.options[i].text = alphabetString + ' | ' + originalText;
-        }
-    }
-})();
-</script>
                     </div>
                 </div>
+
                 <div class="sb">
                     <div class="lbt" id="d0">-</div>
                     <div class="lbm">
@@ -1056,11 +1033,11 @@
                 </div>
 
                 <div class="ab">
-                    <button class="bp" onclick="window.print()" id="btn-print-now">
+                    <button class="bp" id="btn-print-now">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
                         Jetzt Drucken
                     </button>
-                    <button class="bs" onclick="o2()" id="btn-options">
+                    <button class="bs" id="btn-options">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                         Optionen
                     </button>
@@ -1079,11 +1056,11 @@
         </a>
     </div>
 
-    <div id="m1" class="mb" onclick="c1(event)">
+    <div id="m1" class="mb">
         <div class="mc">
             <div class="mh">
                 <span id="txt-modal1-title">Druck- & Standorteinstellungen</span>
-                <button class="bx" onclick="c2()">&times;</button>
+                <button class="bx" id="modal1CloseBtn" aria-label="Close modal">&times;</button>
             </div>
 
             <div class="fv" style="margin-bottom: 15px;">
@@ -1091,7 +1068,7 @@
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                     Standort (ASZ Niederlassung OÖ):
                 </label>
-                <select id="i1" onchange="x2(this.value)"></select>
+                <select id="i1"></select>
             </div>
 
             <div class="fv" style="margin-bottom: 15px;">
@@ -1099,26 +1076,26 @@
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
                     Etiketten-Hersteller & Format:
                 </label>
-                <select id="labelFormatSelect" onchange="changeFormat(this.value)"></select>
+                <select id="labelFormatSelect"></select>
             </div>
 
             <div class="fg" style="margin-bottom: 20px;">
                 <div class="fv">
                     <label for="i2" id="lblCount">Anzahl Etiketten:</label>
-                    <input type="number" id="i2" value="21" min="1" oninput="u1(); s7();" />
+                    <input type="number" id="i2" value="21" min="1" />
                 </div>
                 <div class="fv">
                     <label for="i3" id="lblStartPos">Start-Position:</label>
-                    <input type="number" id="i3" value="1" min="1" oninput="u1(); s7();" />
+                    <input type="number" id="i3" value="1" min="1" />
                 </div>
             </div>
 
             <div class="ms">
-                <div id="t2" class="mt a" onclick="m2('select')">
+                <div id="t2" class="mt a">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
                     <span id="txt-tab-select">Sortiment wählen</span>
                 </div>
-                <div id="t3" class="mt" onclick="m2('input')">
+                <div id="t3" class="mt">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
                     <span id="txt-tab-manage">Datenbank verwalten</span>
                 </div>
@@ -1132,7 +1109,7 @@
                     </label>
                     <div style="display: flex; gap: 8px;">
                         <input type="text" id="i4" placeholder="https://..." style="flex: 1;" />
-                        <button class="bc bsd" style="padding: 11px 16px;" onclick="localStorage.setItem('lavu_sortiment_url', document.getElementById('i4').value.trim()); f2();" id="btn-update">Aktualisieren</button>
+                        <button class="bc bsd" style="padding: 11px 16px;" id="btn-update">Aktualisieren</button>
                     </div>
                     <span id="n1" style="font-size: 0.8rem; font-weight: bold; margin-top: 6px; display: block;"></span>
                 </div>
@@ -1156,13 +1133,13 @@
                 </div>
 
                 <div style="display: flex; gap: 8px; margin-bottom: 20px;">
-                    <button id="b1" class="bc bsd" style="display: none; background: #e67e22;" onclick="s4()">💾 Ändern</button>
-                    <button class="bc bsd" style="background: #27ae60; flex: 1;" onclick="s3()" id="btn-add-new">➕ Neu hinzufügen</button>
-                    <button class="bc bcn" onclick="e1()" id="btn-cancel">Abbrechen</button>
+                    <button id="b1" class="bc bsd" style="display: none; background: #e67e22;">💾 Ändern</button>
+                    <button class="bc bsd" style="background: #27ae60; flex: 1;" id="btn-add-new">➕ Neu hinzufügen</button>
+                    <button class="bc bcn" id="btn-cancel">Abbrechen</button>
                 </div>
 
                 <div style="margin-bottom: 15px;">
-                    <button class="bc" style="background: #2c3e50; color: white; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px;" onclick="e2()" id="btn-download-json"> 📥 Aktuelle Datenbank als JSON herunterladen </button>
+                    <button class="bc" style="background: #2c3e50; color: white; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px;" id="btn-download-json"> 📥 Aktuelle Datenbank als JSON herunterladen </button>
                 </div>
 
                 <label id="lbl-current-entries">Aktuelle Einträge im lokalen Workspace:</label>
@@ -1170,23 +1147,23 @@
             </div>
 
             <div class="mf">
-                <button id="b2" class="bsd" onclick="s6()">
+                <button id="b2" class="bsd">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                     <span id="btn-save-default">Standard sichern</span>
                 </button>
-                <button class="bcn" onclick="c2()" id="btn-done">Fertig</button>
+                <button class="bcn" id="btn-done">Fertig</button>
             </div>
         </div>
     </div>
 
-    <div id="m2" class="mb" onclick="c4(event)">
+    <div id="m2" class="mb">
         <div class="mc mpc">
             <div class="mh">
                 <span id="modalTitle" style="display: flex; flex-direction: column; gap: 4px;">
                     Interaktiver A4-Druckbogen
                 </span>
-                <select id="modalLabelFormatSelect" class="sel-modal-hdr" onchange="changeFormat(this.value)"></select>
-                <button class="bx" onclick="c5()">&times;</button>
+                <select id="modalLabelFormatSelect" class="sel-modal-hdr"></select>
+                <button class="bx" id="modal2CloseBtn" aria-label="Close modal">&times;</button>
             </div>
             <div class="mbs">
                 <div class="pc" id="p1">
@@ -1196,7 +1173,7 @@
                 <div class="zoom-container">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a4b60" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
                     <div class="zoom-slider-wrapper">
-                        <input type="range" id="zoomSlider" class="zoom-slider" min="50" max="300" value="100" oninput="applyFastZoom(this.value)" />
+                        <input type="range" id="zoomSlider" class="zoom-slider" min="50" max="300" value="100" />
                     </div>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a4b60" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
                     <div class="zoom-label">
@@ -1205,11 +1182,11 @@
                 </div>
             </div>
             <div class="mf">
-                <button class="bp" onclick="window.print()" id="btn-modal-print">
+                <button class="bp" id="btn-modal-print">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
                     Drucken
                 </button>
-                <button class="bcn" onclick="c5()" id="btn-modal-close">Schließen</button>
+                <button class="bcn" id="btn-modal-close">Schließen</button>
             </div>
         </div>
     </div>
@@ -1274,6 +1251,7 @@
                 confirmDelete: "Möchten Sie diesen Eintrag wirklich löschen?",
                 alertFillForm: "Bitte zumindest Art.Nr. und Bezeichnung ausfüllen.",
                 alertErrorChange: "Fehler beim Ändern.",
+                alertDuplicate: "Diese Artikelnummer existiert bereits!",
                 netLoading: "⏳ Verbinde...",
                 netSuccessLocal: "🟢 Lokale sortiment.json erfolgreich aktiv",
                 netSuccessRemote: "🟢 Verbunden mit externem JSON Repository",
@@ -1318,6 +1296,7 @@
                 confirmDelete: "Do you really want to delete this entry?",
                 alertFillForm: "Please fill in at least Item No. and Description.",
                 alertErrorChange: "Error applying changes.",
+                alertDuplicate: "This Article Number already exists!",
                 netLoading: "⏳ Connecting...",
                 netSuccessLocal: "🟢 Local sortiment.json active successfully",
                 netSuccessRemote: "🟢 Connected to remote JSON Repository",
@@ -1367,13 +1346,14 @@
             { artNr: "5530", bez: "Baustellenabfälle gemischt", geb: "Großcontainer" }
         ];
 
-        window.addEventListener('DOMContentLoaded', async () => {
+        // DOMContentLoaded event
+        document.addEventListener('DOMContentLoaded', function() {
             initFormatSelects();
             initHeaderSelects();
             applyLanguage();
             l1();
+            setupEventListeners();
 
-            // Gewünschte Standard-Repository-URL als Default hinterlegen
             let a4 = localStorage.getItem('lavu_sortiment_url');
             if (a4 === null) {
                 a4 = "https://raw.githubusercontent.com/LAVU-OOE/Etiketten-Druckstudio/refs/heads/main/sortiment.json";
@@ -1384,14 +1364,147 @@
             const t = i18n[currentLang];
             document.getElementById('n1').innerHTML = t.netLoading;
             document.getElementById('n1').style.color = '#f39c12';
-            await f2();
+            f2();
             u1();
             
-            // Geladenes Zoom-Level anwenden
             const savedZoom = localStorage.getItem('lavu_preview_zoom') || '100';
             document.getElementById('zoomSlider').value = savedZoom;
             applyFastZoom(savedZoom);
         });
+
+        // Setup all event listeners
+        function setupEventListeners() {
+            // Language toggle
+            document.getElementById('langToggleBtn').addEventListener('click', toggleLanguage);
+            
+            // Header select
+            document.getElementById('s1').addEventListener('change', function() {
+                x1(this.value);
+                s7();
+            });
+            
+            // Location select in modal
+            document.getElementById('i1').addEventListener('change', function() {
+                x2(this.value);
+            });
+            
+            // Print button
+            document.getElementById('btn-print-now').addEventListener('click', function() {
+                window.print();
+            });
+            
+            // Options button
+            document.getElementById('btn-options').addEventListener('click', o2);
+            
+            // Modal 1 close
+            document.getElementById('modal1CloseBtn').addEventListener('click', c2);
+            document.getElementById('m1').addEventListener('click', function(e) {
+                if (e.target.id === 'm1') c2();
+            });
+            
+            // Modal 2 close
+            document.getElementById('modal2CloseBtn').addEventListener('click', c5);
+            document.getElementById('m2').addEventListener('click', function(e) {
+                if (e.target.id === 'm2') c5();
+            });
+            
+            // Modal print
+            document.getElementById('btn-modal-print').addEventListener('click', function() {
+                window.print();
+            });
+            
+            // Modal close
+            document.getElementById('btn-modal-close').addEventListener('click', c5);
+            
+            // Format select
+            document.getElementById('labelFormatSelect').addEventListener('change', function() {
+                changeFormat(this.value);
+                s7();
+            });
+            
+            document.getElementById('modalLabelFormatSelect').addEventListener('change', function() {
+                changeFormat(this.value);
+            });
+            
+            // Preview click
+            document.getElementById('layout-title-attr').addEventListener('click', o1);
+            
+            // Input changes
+            document.getElementById('i2').addEventListener('input', function() {
+                u1();
+                s7();
+            });
+            
+            document.getElementById('i3').addEventListener('input', function() {
+                u1();
+                s7();
+            });
+            
+            // Tab switching
+            document.getElementById('t2').addEventListener('click', function() {
+                m2('select');
+            });
+            
+            document.getElementById('t3').addEventListener('click', function() {
+                m2('input');
+            });
+            
+            // Update button
+            document.getElementById('btn-update').addEventListener('click', function() {
+                localStorage.setItem('lavu_sortiment_url', document.getElementById('i4').value.trim());
+                f2();
+            });
+            
+            // Database management
+            document.getElementById('btn-add-new').addEventListener('click', s3);
+            document.getElementById('btn-cancel').addEventListener('click', e1);
+            document.getElementById('btn-download-json').addEventListener('click', e2);
+            document.getElementById('b1').addEventListener('click', s4);
+            
+            // Save defaults
+            document.getElementById('b2').addEventListener('click', s6);
+            
+            // Done button
+            document.getElementById('btn-done').addEventListener('click', function() {
+                document.getElementById('m1').style.display = 'none';
+            });
+            
+            // Zoom slider
+            document.getElementById('zoomSlider').addEventListener('input', function() {
+                applyFastZoom(this.value);
+            });
+            
+            // Art dropdown sync
+            document.getElementById('s2_art').addEventListener('change', function() {
+                syncDropdowns(this.value);
+            });
+            
+            document.getElementById('s2_name').addEventListener('change', function() {
+                syncDropdowns(this.value);
+            });
+            
+            // PWA install
+            document.getElementById('b3').addEventListener('click', function() {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then(function(choiceResult) {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('User accepted the install prompt');
+                        }
+                        document.getElementById('pwaBanner').style.display = 'none';
+                        deferredPrompt = null;
+                    });
+                }
+            });
+            
+            // Window resize
+            window.addEventListener('resize', function() {
+                if (document.getElementById('m2').style.display === 'flex') {
+                    const zoomVal = document.getElementById('zoomSlider').value;
+                    s8(parseFloat(zoomVal) / 100);
+                }
+            });
+        }
 
         function toggleLanguage() {
             currentLang = currentLang === 'de' ? 'en' : 'de';
@@ -1407,19 +1520,25 @@
             document.getElementById('langToggleBtn').textContent = currentLang === 'de' ? 'EN' : 'DE';
             
             document.getElementById('txt-studio-v9').textContent = t.studioV9;
-            document.getElementById('txt-print-layout').childNodes[1].nodeValue = " " + t.printLayout;
+            const printLayoutEl = document.getElementById('txt-print-layout');
+            printLayoutEl.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 2px;"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> ${t.printLayout}`;
+            
             document.getElementById('txt-art-nr').textContent = t.artNr;
             document.getElementById('txt-bezeichnung').textContent = t.bezeichnung;
-            document.getElementById('btn-print-now').childNodes[1].nodeValue = " " + t.printNow;
-            document.getElementById('btn-options').childNodes[1].nodeValue = " " + t.options;
+            
+            const printBtn = document.getElementById('btn-print-now');
+            printBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> ${t.printNow}`;
+            
+            const optionsBtn = document.getElementById('btn-options');
+            optionsBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> ${t.options}`;
             
             document.getElementById('txt-modal1-title').textContent = t.modal1Title;
-            document.getElementById('lbl-location').childNodes[1].nodeValue = " " + t.lblLocation;
-            document.getElementById('lbl-format').childNodes[1].nodeValue = " " + t.lblFormat;
+            document.getElementById('lbl-location').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> ${t.lblLocation}`;
+            document.getElementById('lbl-format').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg> ${t.lblFormat}`;
             
             document.getElementById('txt-tab-select').textContent = t.tabSelect;
             document.getElementById('txt-tab-manage').textContent = t.tabManage;
-            document.getElementById('lbl-url').childNodes[1].nodeValue = " " + t.lblUrl;
+            document.getElementById('lbl-url').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> ${t.lblUrl}`;
             document.getElementById('btn-update').textContent = t.btnUpdate;
             document.getElementById('lbl-db-suffix').textContent = t.lblDbSuffix;
             document.getElementById('lbl-db-bez').textContent = t.lblDbBez;
@@ -1428,11 +1547,13 @@
             document.getElementById('btn-download-json').textContent = t.btnDownloadJson;
             document.getElementById('lbl-current-entries').textContent = t.lblCurrentEntries;
             
-            document.getElementById('btn-save-default').childNodes[1].nodeValue = " " + t.btnSaveDefault;
+            document.getElementById('btn-save-default').innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> ${t.btnSaveDefault}`;
             document.getElementById('btn-done').textContent = t.btnDone;
             
             document.getElementById('modalTitle').textContent = t.modal2Title;
-            document.getElementById('btn-modal-print').childNodes[1].nodeValue = " " + t.btnModalPrint;
+            
+            const modalPrintBtn = document.getElementById('btn-modal-print');
+            modalPrintBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> ${t.btnModalPrint}`;
             document.getElementById('btn-modal-close').textContent = t.btnModalClose;
             
             document.getElementById('txt-pwa-title').textContent = t.txtPwaTitle;
@@ -1441,16 +1562,19 @@
             
             document.getElementById('layout-title-attr').setAttribute('title', t.layoutTitleAttr);
 
+            // Update count and start position labels with max values
+            const f = formats[currentFormatKey];
+            const maxLabels = f.cols * f.rows;
+            document.getElementById('lblCount').textContent = `${t.lblCount} (max. ${maxLabels}):`;
+            document.getElementById('lblStartPos').textContent = `${t.lblStartPos} (1-${maxLabels}):`;
+
             changeFormat(currentFormatKey);
         }
 
-        // Schnelles Zoomen über CSS Transforms
         function applyFastZoom(value) {
             document.getElementById('zoomVal').textContent = value + '%';
-            
             const element = document.getElementById('p1');
             if (element) {
-                // Führt s8 mit dem Multiplikator aus, um Skalierungsausbrüche zu verhindern
                 s8(parseFloat(value) / 100);
             }
             localStorage.setItem('lavu_preview_zoom', value);
@@ -1460,7 +1584,7 @@
             const selectSettings = document.getElementById('labelFormatSelect');
             const selectModal = document.getElementById('modalLabelFormatSelect');
             
-            [selectSettings, selectModal].forEach(select => {
+            [selectSettings, selectModal].forEach(function(select) {
                 if (!select) return;
                 select.innerHTML = '';
                 for (const key in formats) {
@@ -1504,54 +1628,50 @@
             u1();
         }
 
-        async function f2() {
+        function f2() {
             let a4 = localStorage.getItem('lavu_sortiment_url') || "https://raw.githubusercontent.com/LAVU-OOE/Etiketten-Druckstudio/refs/heads/main/sortiment.json";
             const t = i18n[currentLang];
-            try {
-                const a5 = await fetch(a4, { cache: "no-store" });
-                if (!a5.ok) throw new Error("Netzwerkantwort war fehlerhaft");
-                const a6 = await a5.json();
-                if (Array.isArray(a6) && a6.length > 0) {
-                    a2 = a6;
-                    localStorage.setItem('lavu_studio_sortiment_v8', JSON.stringify(a2));
-                    if (a4 === "sortiment.json") {
-                        document.getElementById('n1').innerHTML = t.netSuccessLocal;
-                    } else {
-                        document.getElementById('n1').innerHTML = t.netSuccessRemote;
+            
+            fetch(a4, { cache: "no-store" })
+                .then(function(response) {
+                    if (!response.ok) throw new Error("Netzwerkantwort war fehlerhaft");
+                    return response.json();
+                })
+                .then(function(data) {
+                    if (Array.isArray(data) && data.length > 0) {
+                        a2 = data;
+                        localStorage.setItem('lavu_studio_sortiment_v8', JSON.stringify(a2));
+                        if (a4 === "sortiment.json") {
+                            document.getElementById('n1').innerHTML = t.netSuccessLocal;
+                        } else {
+                            document.getElementById('n1').innerHTML = t.netSuccessRemote;
+                        }
+                        document.getElementById('n1').style.color = '#27ae60';
+                        i1();
                     }
-                    document.getElementById('n1').style.color = '#27ae60';
+                })
+                .catch(function(e) {
+                    console.warn("Fehler beim Abrufen der JSON-Quelle, weiche auf cache / localStorage aus.", e);
+                    if (a4 === "sortiment.json") {
+                        document.getElementById('n1').innerHTML = t.netFallbackLocal;
+                    } else {
+                        document.getElementById('n1').innerHTML = t.netFallbackRemote;
+                    }
+                    document.getElementById('n1').style.color = '#e74c3c';
+                    
+                    const a7 = localStorage.getItem('lavu_studio_sortiment_v8');
+                    if (a7) {
+                        try {
+                            a2 = JSON.parse(a7);
+                        } catch(e) {
+                            a2 = fallbackSortiment.slice();
+                        }
+                    } else {
+                        a2 = fallbackSortiment.slice();
+                    }
                     i1();
-                    return;
-                }
-            } catch (e) {
-                console.warn("Fehler beim Abrufen der JSON-Quelle, weiche auf cache / localStorage aus.", e);
-                if (a4 === "sortiment.json") {
-                    document.getElementById('n1').innerHTML = t.netFallbackLocal;
-                } else {
-                    document.getElementById('n1').innerHTML = t.netFallbackRemote;
-                }
-                document.getElementById('n1').style.color = '#e74c3c';
-            }
-
-            const a7 = localStorage.getItem('lavu_studio_sortiment_v8');
-            if (a7) {
-                try {
-                    a2 = JSON.parse(a7);
-                } catch(e) {
-                    a2 = [...fallbackSortiment];
-                }
-            } else {
-                a2 = [...fallbackSortiment];
-            }
-            i1();
+                });
         }
-
-        setInterval(() => {
-            const a4 = localStorage.getItem('lavu_sortiment_url');
-            if (a4 && a3 === 'select') {
-                f2();
-            }
-        }, 30000);
 
         function i1() {
             const selectArt = document.getElementById('s2_art');
@@ -1564,25 +1684,25 @@
                 currentArtNr = a2[currentSelectedIdx].artNr;
             }
 
-            const sortedByArt = [...a2].sort((a, b) => {
+            const sortedByArt = a2.slice().sort(function(a, b) {
                 return (parseInt(a.artNr) || 0) - (parseInt(b.artNr) || 0);
             });
 
-            const sortedByName = [...a2].sort((a, b) => {
+            const sortedByName = a2.slice().sort(function(a, b) {
                 return a.bez.localeCompare(b.bez, 'de', { sensitivity: 'base' });
             });
 
             selectArt.innerHTML = '';
             selectName.innerHTML = '';
 
-            sortedByArt.forEach((item) => {
+            sortedByArt.forEach(function(item) {
                 const optArt = document.createElement('option');
                 optArt.value = item.artNr; 
                 optArt.textContent = item.artNr;
                 selectArt.appendChild(optArt);
             });
 
-            sortedByName.forEach((item) => {
+            sortedByName.forEach(function(item) {
                 const optName = document.createElement('option');
                 optName.value = item.artNr; 
                 optName.textContent = item.bez;
@@ -1590,8 +1710,12 @@
             });
 
             if (currentArtNr !== "") {
-                selectArt.value = currentArtNr;
-                selectName.value = currentArtNr;
+                if (selectArt.querySelector('option[value="' + currentArtNr + '"]')) {
+                    selectArt.value = currentArtNr;
+                }
+                if (selectName.querySelector('option[value="' + currentArtNr + '"]')) {
+                    selectName.value = currentArtNr;
+                }
             } else if (sortedByArt.length > 0) {
                 selectArt.value = sortedByArt[0].artNr;
                 selectName.value = sortedByArt[0].artNr;
@@ -1605,8 +1729,12 @@
             const selectArt = document.getElementById('s2_art');
             const selectName = document.getElementById('s2_name');
             
-            if (selectArt) selectArt.value = selectedArtNr;
-            if (selectName) selectName.value = selectedArtNr;
+            if (selectArt && selectArt.querySelector('option[value="' + selectedArtNr + '"]')) {
+                selectArt.value = selectedArtNr;
+            }
+            if (selectName && selectName.querySelector('option[value="' + selectedArtNr + '"]')) {
+                selectName.value = selectedArtNr;
+            }
             
             p1();
             s7();
@@ -1617,7 +1745,7 @@
             if (!selectArt || selectArt.value === "") return;
 
             const currentArtNr = selectArt.value;
-            const item = a2.find(i => i.artNr === currentArtNr);
+            const item = a2.find(function(i) { return i.artNr === currentArtNr; });
             
             if (item) {
                 document.getElementById('i5').value = item.artNr;
@@ -1632,13 +1760,6 @@
             u1();
             s7();
         }
-
-        document.getElementById('s1').addEventListener('change', function() {
-            s7();
-        });
-        document.getElementById('labelFormatSelect').addEventListener('change', function() {
-            s7();
-        });
 
         function x2(a15) {
             document.getElementById('s1').value = a15;
@@ -1658,7 +1779,7 @@
             const a17 = document.getElementById('c4');
             if (!a17) return;
             a17.innerHTML = '';
-            a2.forEach((a12, a13) => {
+            a2.forEach(function(a12, a13) {
                 const a18 = document.createElement('div');
                 a18.className = 'cir';
                 a18.innerHTML = `
@@ -1666,11 +1787,19 @@
                         <b>${a12.artNr}</b> - ${a12.bez} <span style="color:#7f8c8d; font-size:0.75rem;">(${a12.geb || '-'})</span>
                     </div>
                     <div style="display: flex; gap: 4px;">
-                        <button class="bc" style="padding: 3px 6px; background: #3498db; color: white; font-size: 0.75rem;" onclick="e3(${a13})" title="Bearbeiten">✏️</button>
-                        <button class="bc" style="padding: 3px 6px; background: #e74c3c; color: white; font-size: 0.75rem;" onclick="d1(${a13})" title="Löschen">🗑️</button>
+                        <button class="bc" style="padding: 3px 6px; background: #3498db; color: white; font-size: 0.75rem;" data-index="${a13}" data-action="edit">✏️</button>
+                        <button class="bc" style="padding: 3px 6px; background: #e74c3c; color: white; font-size: 0.75rem;" data-index="${a13}" data-action="delete">🗑️</button>
                     </div>
                 `;
                 a17.appendChild(a18);
+                
+                // Add event listeners for edit and delete buttons
+                a18.querySelector('[data-action="edit"]').addEventListener('click', function() {
+                    e3(parseInt(this.dataset.index));
+                });
+                a18.querySelector('[data-action="delete"]').addEventListener('click', function() {
+                    d1(parseInt(this.dataset.index));
+                });
             });
         }
 
@@ -1869,28 +1998,27 @@
             s7();
         }
 
-        // Berechnet das responsive Layout & wendet den schnellen Zoom-Faktor an
-        function s8(customZoomFactor = 1) {
-            const a44 = document.querySelector('.mbs');
-            const a45 = document.getElementById('p1');
-            if (!a44 || !a45) return;
-            a45.style.transform = 'none';
-            a45.style.position = 'static';
-            const a46 = a45.offsetWidth;
-            const a47 = a45.offsetHeight;
-            const a48 = a44.clientWidth - 80; // Puffer für den rechten Slider-Container vergrößert
-            const a49 = a44.clientHeight - 40;
-            const a50 = a48 / a46;
-            const a51 = a49 / a47;
-            const baseScale = Math.min(a50, a51, 1);
+        function s8(customZoomFactor) {
+            customZoomFactor = customZoomFactor || 1;
+            const container = document.querySelector('.mbs');
+            const element = document.getElementById('p1');
+            if (!container || !element) return;
             
-            const finalScale = baseScale * customZoomFactor;
+            const containerWidth = container.clientWidth - 80;
+            const containerHeight = container.clientHeight - 40;
+            const elementWidth = element.scrollWidth || 794;
+            const elementHeight = element.scrollHeight || 1123;
             
-            a45.style.position = 'absolute';
-            a45.style.top = '50%';
-            a45.style.left = '45%'; // Leicht links zentriert, damit der Slider rechts Platz hat
-            a45.style.transformOrigin = 'center center';
-            a45.style.transform = `translate(-50%, -50%) scale(${finalScale})`;
+            const scaleX = containerWidth / elementWidth;
+            const scaleY = containerHeight / elementHeight;
+            const baseScale = Math.min(scaleX, scaleY, 1);
+            const finalScale = Math.min(baseScale * customZoomFactor, 2);
+            
+            element.style.position = 'absolute';
+            element.style.top = '50%';
+            element.style.left = '50%';
+            element.style.transformOrigin = 'center center';
+            element.style.transform = 'translate(-50%, -50%) scale(' + finalScale + ')';
         }
 
         function o2() {
@@ -1902,31 +2030,18 @@
             document.getElementById('m1').style.display = 'none';
         }
 
-        function c1(a53) {
-            if (a53.target.id === 'm1') c2();
-        }
-
         function o1() {
             u1();
             document.getElementById('m2').style.display = 'flex';
             const zoomVal = document.getElementById('zoomSlider').value;
-            setTimeout(() => s8(parseFloat(zoomVal) / 100), 50);
+            setTimeout(function() {
+                s8(parseFloat(zoomVal) / 100);
+            }, 50);
         }
 
         function c5() {
             document.getElementById('m2').style.display = 'none';
         }
-
-        function c4(a53) {
-            if (a53.target.id === 'm2') c5();
-        }
-
-        window.addEventListener('resize', () => {
-            if (document.getElementById('m2').style.display === 'flex') {
-                const zoomVal = document.getElementById('zoomSlider').value;
-                s8(parseFloat(zoomVal) / 100);
-            }
-        });
 
         function s6() {
             const f = formats[currentFormatKey];
@@ -1979,7 +2094,7 @@
                     if (a54.suffix !== undefined) document.getElementById('i6').value = a54.suffix;
                     if (a54.bezeichnung !== undefined) document.getElementById('i7').value = a54.bezeichnung;
                     if (a54.sortimentIndex !== undefined) {
-                        setTimeout(() => {
+                        setTimeout(function() {
                             syncDropdowns(a54.sortimentIndex);
                         }, 100);
                     }
@@ -2003,27 +2118,33 @@
                 return;
             }
 
-            a2.push({ artNr: c1, geb: c2, bez: c3 });
+            // Check for duplicates
+            if (a2.some(function(item) { return item.artNr === c1; })) {
+                alert(t.alertDuplicate);
+                return;
+            }
+
+            a2.push({ artNr: c1, geb: c2 || '-', bez: c3 });
             localStorage.setItem('lavu_studio_sortiment_v8', JSON.stringify(a2));
             i1();
             e1();
             s7();
         }
 
-        let a57;
+        let deferredPrompt;
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').then((a58) => {
-                    console.log('LAVU ServiceWorker erfolgreich registriert mit Scope: ', a58.scope);
-                }, (a59) => {
-                    console.log('LAVU ServiceWorker Registrierung fehlgeschlagen: ', a59);
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js').then(function(registration) {
+                    console.log('LAVU ServiceWorker erfolgreich registriert mit Scope: ', registration.scope);
+                }).catch(function(error) {
+                    console.log('LAVU ServiceWorker Registrierung fehlgeschlagen: ', error);
                 });
             });
         }
 
-        window.addEventListener('beforeinstallprompt', (e) => {
+        window.addEventListener('beforeinstallprompt', function(e) {
             e.preventDefault();
-            a57 = e;
+            deferredPrompt = e;
             const a60Str = localStorage.getItem('lavu_studio_defaults_v8');
             let a61 = true;
             if (a60Str) {
@@ -2041,9 +2162,9 @@
                     a63.style.opacity = '1';
                     a63.style.transition = 'opacity 1s ease';
 
-                    setTimeout(() => {
+                    setTimeout(function() {
                         a63.style.opacity = '0';
-                        setTimeout(() => {
+                        setTimeout(function() {
                             a63.style.display = 'none';
                         }, 1000);
                     }, 6000);
@@ -2051,23 +2172,7 @@
             }
         });
 
-        const a64 = document.getElementById('b3');
-        if (a64) {
-            a64.addEventListener('click', () => {
-                if (a57) {
-                    a57.prompt();
-                    a57.userChoice.then((a65) => {
-                        if (a65.outcome === 'accepted') {
-                            console.log('User hat die Installation von LAVU Etiketten-Druckstudio akzeptiert.');
-                        }
-                        const a63 = document.getElementById('pwaBanner');
-                        if (a63) a63.style.display = 'none';
-                        a57 = null;
-                    });
-                }
-            });
-        }
-        window.addEventListener('appinstalled', () => {
+        window.addEventListener('appinstalled', function() {
             console.log('LAVU Etiketten-Druckstudio wurde erfolgreich installiert.');
             const a63 = document.getElementById('pwaBanner');
             if (a63) a63.style.display = 'none';
