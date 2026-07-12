@@ -1,47 +1,140 @@
-
-{ name: "106 - ASZ Asten", value: "106 - ASZ Asten", region: "Linz-Land & Linz Stadt"
-},
-{ name: "ASZ Ansfelden", value: "ASZ Ansfelden", region: "Linz-Land & Linz Stadt"
-},
-{ name: "ASZ Enns", value: "ASZ Enns", region: "Linz-Land & Linz Stadt"
-},
-{ name: "ASZ Hörsching", value: "ASZ Hörsching", region: "Linz-Land & Linz Stadt"
-},
-{ name: "ASZ Leonding", value: "ASZ Leonding", region: "Linz-Land & Linz Stadt"
-},
-{ name: "ASZ Neuhofen", value: "ASZ Neuhofen", region: "Linz-Land & Linz Stadt"
-},
-{ name: "ASZ Pasching", value: "ASZ Pasching", region: "Linz-Land & Linz Stadt"
-},
-{ name: "ASZ St. Florian", value: "ASZ St. Florian", region: "Linz-Land & Linz Stadt"
-},
-{ name: "ASZ Traun", value: "ASZ Traun", region: "Linz-Land & Linz Stadt"
-},
-{ name: "ASZ Wilhering", value: "ASZ Wilhering", region: "Linz-Land & Linz Stadt"
-},
-{ name: "ASZ Linz-Nebingerstraße", value: "ASZ Linz-Nebingerstraße", region: "Linz-Land & Linz Stadt"
-},
-{ name: "ASZ Linz-Mostnnystraße", value: "ASZ Linz-Mostnnystraße", region: "Linz-Land & Linz Stadt"
-},
-{ name: "ASZ Linz-Wiener Straße", value: "ASZ Linz-Wiener Straße", region: "Linz-Land & Linz Stadt"
-},
-{ name: "ASZ Linz-Dornach", value: "ASZ Linz-Dornach", region: "Linz-Land & Linz Stadt"
-},
-{ name: "ASZ Wels-Nord", value: "ASZ Wels-Nord", region: "Wels & Wels-Land"
-},
-{ name: "ASZ Wels-Kenten", value: "ASZ Wels-Kenten", region: "Wels & Wels-Land"
-},
-{ name: "ASZ Marchtrenk", value: "ASZ Marchtrenk", region: "Wels & Wels-Land"
-},
-{ name: "ASZ Gunskirchen", value: "ASZ Gunskirchen", region: "Wels & Wels-Land"
-},
-{ name: "ASZ Thalheim", value: "ASZ Thalheim", region: "Wels & Wels-Land"
-},
-{ name: "ASZ Steyr", value: "ASZ Steyr", region: "Steyr & Steyr-Land"
-},
-{ name: "ASZ Bad Hall", value: "ASZ Bad Hall", region: "Steyr & Steyr-Land"
-},
-{ name: "ASZ Garsten", value: "ASZ Garsten", region: "Steyr & Steyr-Land"
-},
-{ name: "ASZ Sierning", value: "ASZ Sierning", region: "Steyr & Steyr-Land"
-}
+[
+  {
+    "siteCode": "106",
+    "name": "ASZ Asten",
+    "zipCode": "4481",
+    "region": "Linz-Land & Linz Stadt"
+  },
+  {
+    "siteCode": "N/G",
+    "name": "ASZ Ansfelden",
+    "zipCode": "4053",
+    "region": "Linz-Land & Linz Stadt"
+  },
+  {
+    "siteCode": "N/G",
+    "name": "ASZ Enns",
+    "zipCode": "4470",
+    "region": "Linz-Land & Linz Stadt"
+  },
+  {
+    "siteCode": "N/G",
+    "name": "ASZ Hörsching",
+    "zipCode": "4063",
+    "region": "Linz-Land & Linz Stadt"
+  },
+  {
+    "siteCode": "N/G",
+    "name": "ASZ Leonding",
+    "zipCode": "4060",
+    "region": "Linz-Land & Linz Stadt"
+  },
+  {
+    "siteCode": "N/G",
+    "name": "ASZ Neuhofen",
+    "zipCode": "4501",
+    "region": "Linz-Land & Linz Stadt"
+  },
+  {
+    "siteCode": "N/G",
+    "name": "ASZ Pasching",
+    "zipCode": "4061",
+    "region": "Linz-Land & Linz Stadt"
+  },
+  {
+    "siteCode": "N/G",
+    "name": "ASZ St. Florian",
+    "zipCode": "4490",
+    "region": "Linz-Land & Linz Stadt"
+  },
+  {
+    "siteCode": "N/G",
+    "name": "ASZ Traun",
+    "zipCode": "4050",
+    "region": "Linz-Land & Linz Stadt"
+  },
+  {
+    "siteCode": "N/G",
+    "name": "ASZ Wilhering",
+    "zipCode": "4073",
+    "region": "Linz-Land & Linz Stadt"
+  },
+  {
+    "siteCode": "N/G",
+    "name": "ASZ Linz-Nebingerstraße",
+    "zipCode": "4020",
+    "region": "Linz-Land & Linz Stadt"
+  },
+  {
+    "siteCode": "N/G",
+    "name": "ASZ Linz-Mostnnystraße",
+    "zipCode": "4040",
+    "region": "Linz-Land & Linz Stadt"
+  },
+  {
+    "siteCode": "N/G",
+    "name": "ASZ Linz-Wiener Straße",
+    "zipCode": "4030",
+    "region": "Linz-Land & Linz Stadt"
+  },
+  {
+    "siteCode": "N/G",
+    "name": "ASZ Linz-Dornach",
+    "zipCode": "4040",
+    "region": "Linz-Land & Linz Stadt"
+  },
+  {
+    "siteCode": "N/G",
+    "name": "ASZ Wels-Nord",
+    "zipCode": "4600",
+    "region": "Wels & Wels-Land"
+  },
+  {
+    "siteCode": "N/G",
+    "name": "ASZ Wels-Kenten",
+    "zipCode": "4600",
+    "region": "Wels & Wels-Land"
+  },
+  {
+    "siteCode": "N/G",
+    "name": "ASZ Marchtrenk",
+    "zipCode": "4614",
+    "region": "Wels & Wels-Land"
+  },
+  {
+    "siteCode": "N/G",
+    "name": "ASZ Gunskirchen",
+    "zipCode": "4623",
+    "region": "Wels & Wels-Land"
+  },
+  {
+    "siteCode": "N/G",
+    "name": "ASZ Thalheim",
+    "zipCode": "4600",
+    "region": "Wels & Wels-Land"
+  },
+  {
+    "siteCode": "N/G",
+    "name": "ASZ Steyr",
+    "zipCode": "4400",
+    "region": "Steyr & Steyr-Land"
+  },
+  {
+    "siteCode": "N/G",
+    "name": "ASZ Bad Hall",
+    "zipCode": "4540",
+    "region": "Steyr & Steyr-Land"
+  },
+  {
+    "siteCode": "N/G",
+    "name": "ASZ Garsten",
+    "zipCode": "4451",
+    "region": "Steyr & Steyr-Land"
+  },
+  {
+    "siteCode": "N/G",
+    "name": "ASZ Sierning",
+    "zipCode": "4522",
+    "region": "Steyr & Steyr-Land"
+  }
+]
