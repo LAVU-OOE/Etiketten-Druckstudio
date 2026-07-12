@@ -350,7 +350,34 @@
         .fps select:focus {
             outline: none;
             border-color: #1a4b60;
-            box-shadow: 0 0 0 3px rgba(26, 75, 96, 0.15);
+            box-shadow: 0 0 0 3px rgba(26, 75, 60, 0.15);
+        }
+
+        /* Styling für alphabetische Gruppierungen im Dropdown */
+        .fps select optgroup {
+            font-weight: 800;
+            color: #1a4b60;
+            background: #e8f0f5;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 1.1rem;
+        }
+
+        .fps select optgroup option {
+            font-weight: 400;
+            color: #2c3e50;
+            background: white;
+            padding: 6px 8px 6px 25px;
+        }
+
+        .fps select optgroup option::before {
+            content: "· ";
+            color: #6cb4db;
+            font-weight: 300;
+        }
+
+        .fps select optgroup option:hover {
+            background: #e8f8f5;
         }
 
         .sb {
@@ -1213,6 +1240,90 @@
         let a3 = 'select';
         let currentLang = localStorage.getItem('lavu_lang') || 'de';
 
+        // Sortiment mit Art.Nr. und Bezeichnung
+        const sortimentData = [
+            { artNr: "3315", bez: "Altfenste PVC" },
+            { artNr: "3310", bez: "Altfenster PVC" },
+            { artNr: "3700", bez: "Altholz" },
+            { artNr: "4300", bez: "Altlacke & Werkstättenabfälle" },
+            { artNr: "4340", bez: "Altmedikamente (ungsortierte Arzneien)" },
+            { artNr: "4460", bez: "Altmedikamente (vorsortiert)" },
+            { artNr: "4461", bez: "Altmedikamente (vorsortiert/Apotheken)" },
+            { artNr: "4250", bez: "Altöl" },
+            { artNr: "4200", bez: "Altöle" },
+            { artNr: "3000", bez: "Altpapier (Deinking-Qualität)" },
+            { artNr: "3500", bez: "Altreifen" },
+            { artNr: "3212", bez: "Alu-Kaffeekapseln" },
+            { artNr: "3211", bez: "Armaturen & Messing" },
+            { artNr: "2555", bez: "Big-Bags" },
+            { artNr: "4030", bez: "Bildschirmgeräte" },
+            { artNr: "3572", bez: "Compact-Disk (CD)" },
+            { artNr: "3005", bez: "Datenschutzpapier" },
+            { artNr: "4450", bez: "Dispersionsfarben" },
+            { artNr: "2520", bez: "Eimer & Kanister" },
+            { artNr: "4010", bez: "Elektro-Großgeräte" },
+            { artNr: "4040", bez: "Elektro-Kleingeräte" },
+            { artNr: "4041", bez: "Elektro-Kleingeräte,schadst. f." },
+            { artNr: "2565", bez: "EPS-Styropor" },
+            { artNr: "3805", bez: "Ersatzbrennstoff" },
+            { artNr: "4110", bez: "Fahrzeugbatterien" },
+            { artNr: "4221", bez: "Feuerlöscher" },
+            { artNr: "3560", bez: "Filmmaterial" },
+            { artNr: "4031", bez: "Flachbildschirmgeräte" },
+            { artNr: "3300", bez: "Flachglas" },
+            { artNr: "3320", bez: "Flachglas" },
+            { artNr: "4050", bez: "Gasentladungslampen" },
+            { artNr: "4051", bez: "Gasentladungslampen Sonderformen" },
+            { artNr: "4230", bez: "Gasflaschen" },
+            { artNr: "4100", bez: "Gerätebatterien" },
+            { artNr: "2400", bez: "Getränke-Verbundkartons" },
+            { artNr: "3610", bez: "Gipskarton" },
+            { artNr: "2300", bez: "Glasverpackungen" },
+            { artNr: "3520", bez: "Hartkunststoffe" },
+            { artNr: "9900", bez: "Hilfsgebinde" },
+            { artNr: "2580", bez: "Holzverpackungen" },
+            { artNr: "4464", bez: "Injektionsnadeln" },
+            { artNr: "4465", bez: "Injektionsnadeln (aus Spitälern)" },
+            { artNr: "3220", bez: "Kabelschrott" },
+            { artNr: "2100", bez: "Kartonagen (ARA-lizenziert)" },
+            { artNr: "2590", bez: "Keramikverpackungen" },
+            { artNr: "3430", bez: "Kerzen" },
+            { artNr: "4380", bez: "Kondensatoren" },
+            { artNr: "4020", bez: "Kühlgeräte" },
+            { artNr: "2540", bez: "Kunststoff Verpackungsfolien" },
+            { artNr: "3526", bez: "Kunststoff-Mülltonnen" },
+            { artNr: "3540", bez: "Kunststoff-Sonstige Folien" },
+            { artNr: "4310", bez: "Kunststoffemballagen (mit schädlichen Restinhalten)" },
+            { artNr: "4305", bez: "Lack- & Farbschlamm" },
+            { artNr: "4275", bez: "Laugengemische" },
+            { artNr: "4111", bez: "Lithium-Batterien" },
+            { artNr: "4260", bez: "Lösemittel-Wassergemische" },
+            { artNr: "2200", bez: "Metallverpackungen" },
+            { artNr: "2210", bez: "Metallverpackungen - geöffnete Gasbehältnisse" },
+            { artNr: "3600", bez: "Mineralischer Bauschutt" },
+            { artNr: "4395", bez: "Mineralwolle" },
+            { artNr: "4015", bez: "Nachtspeicheröfen" },
+            { artNr: "4430", bez: "Netze & Schnüre" },
+            { artNr: "4120", bez: "Ni-Cd Akkumulatoren" },
+            { artNr: "3210", bez: "Nichteisen-Metalle" },
+            { artNr: "4320", bez: "Öl-/Wassergemische & Emulsionen" },
+            { artNr: "4325", bez: "Ölschlamm & Ölgatsch" },
+            { artNr: "4280", bez: "Ölverunreinigtes Erdmaterial" },
+            { artNr: "3585", bez: "Reifen m. Felgen" },
+            { artNr: "4270", bez: "Säurengemische" },
+            { artNr: "4330", bez: "Schädlingsbekämpfungs- & Chemikalienreste" },
+            { artNr: "3580", bez: "Sonderreifen" },
+            { artNr: "3405", bez: "Speisefett/-öl (Gastro-Öl)" },
+            { artNr: "3400", bez: "Speisefett/-öl (Haushalts-Öl)" },
+            { artNr: "3410", bez: "Speisefett/-öl (in Kleingebinden)" },
+            { artNr: "4350", bez: "Spraydosen (mit Restinhalt)" },
+            { artNr: "4360", bez: "Spraydosen (mit Restinhalt)" },
+            { artNr: "1000", bez: "Textilen" },
+            { artNr: "4125", bez: "Traktionsbatterien" },
+            { artNr: "5100", bez: "Ungefährliche medizinische Abfälle" },
+            { artNr: "4390", bez: "XPS-Dämmplatten" }
+        ];
+
         const i18n = {
             de: {
                 studioV9: "Etiketten-Studio v9",
@@ -1346,8 +1457,112 @@
             { artNr: "5530", bez: "Baustellenabfälle gemischt", geb: "Großcontainer" }
         ];
 
-        // DOMContentLoaded event
+        // Helper: Get first letter, handle special chars (Ä, Ö, Ü, etc.)
+        function getFirstLetter(text) {
+            if (!text) return '';
+            const first = text.charAt(0).toUpperCase();
+            // Map German umlauts to base letters for grouping
+            const map = {
+                'Ä': 'A', 'Ö': 'O', 'Ü': 'U', 'ẞ': 'S'
+            };
+            return map[first] || first;
+        }
+
+        // Gruppiere die Sortiment-Daten nach Anfangsbuchstaben
+        function groupByFirstLetter(items) {
+            const groups = {};
+            items.forEach(item => {
+                const letter = getFirstLetter(item.bez);
+                if (!groups[letter]) {
+                    groups[letter] = [];
+                }
+                groups[letter].push(item);
+            });
+            return groups;
+        }
+
+        // Befülle das Dropdown mit alphabetischen Gruppen
+        function populateDropdownWithGroups(selectElement, items) {
+            if (!selectElement) return;
+            
+            const groups = groupByFirstLetter(items);
+            const sortedLetters = Object.keys(groups).sort();
+            
+            selectElement.innerHTML = '';
+            
+            // Für jeden Buchstaben eine Gruppe erstellen
+            sortedLetters.forEach((letter) => {
+                const optgroup = document.createElement('optgroup');
+                
+                // Label ist nur der Buchstabe
+                optgroup.label = letter;
+                
+                // Optionen in dieser Gruppe sortieren
+                const sortedItems = groups[letter].sort((a, b) => a.bez.localeCompare(b.bez, 'de'));
+                sortedItems.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.artNr;
+                    // Jeder Eintrag beginnt mit "· " (Punkt und Leerzeichen)
+                    option.textContent = '· ' + item.bez;
+                    optgroup.appendChild(option);
+                });
+                
+                selectElement.appendChild(optgroup);
+            });
+        }
+
+        // Überschreibe die i1() Funktion für alphabetische Gruppierung
+        function i1() {
+            const selectArt = document.getElementById('s2_art');
+            const selectName = document.getElementById('s2_name');
+            if (!selectArt || !selectName) return;
+
+            const currentSelectedArtNr = selectArt.value;
+
+            // Sortiment nach Art.Nr. sortieren für das Art.Nr. Dropdown
+            const sortedByArt = a2.slice().sort(function(a, b) {
+                return (parseInt(a.artNr) || 0) - (parseInt(b.artNr) || 0);
+            });
+
+            // Art.Nr. Dropdown - einfache Liste
+            selectArt.innerHTML = '';
+            sortedByArt.forEach(function(item) {
+                const optArt = document.createElement('option');
+                optArt.value = item.artNr; 
+                optArt.textContent = item.artNr;
+                selectArt.appendChild(optArt);
+            });
+
+            // Bezeichnung Dropdown - mit alphabetischen Gruppen
+            populateDropdownWithGroups(selectName, a2);
+
+            // Aktuelle Auswahl wiederherstellen
+            if (currentSelectedArtNr !== "") {
+                if (selectArt.querySelector('option[value="' + currentSelectedArtNr + '"]')) {
+                    selectArt.value = currentSelectedArtNr;
+                }
+                if (selectName.querySelector('option[value="' + currentSelectedArtNr + '"]')) {
+                    selectName.value = currentSelectedArtNr;
+                }
+            } else if (sortedByArt.length > 0) {
+                selectArt.value = sortedByArt[0].artNr;
+                // Finde den passenden Eintrag im gruppierten Dropdown
+                const firstItem = sortedByArt[0];
+                if (selectName.querySelector('option[value="' + firstItem.artNr + '"]')) {
+                    selectName.value = firstItem.artNr;
+                }
+            }
+
+            r1();
+            p1();
+        }
+
+        // Event Listeners Setup
         document.addEventListener('DOMContentLoaded', function() {
+            // Setze a2 auf die Sortiment-Daten
+            a2 = sortimentData.slice();
+            localStorage.setItem('lavu_studio_sortiment_v8', JSON.stringify(a2));
+            
             initFormatSelects();
             initHeaderSelects();
             applyLanguage();
@@ -1374,49 +1589,39 @@
 
         // Setup all event listeners
         function setupEventListeners() {
-            // Language toggle
             document.getElementById('langToggleBtn').addEventListener('click', toggleLanguage);
             
-            // Header select
             document.getElementById('s1').addEventListener('change', function() {
                 x1(this.value);
                 s7();
             });
             
-            // Location select in modal
             document.getElementById('i1').addEventListener('change', function() {
                 x2(this.value);
             });
             
-            // Print button
             document.getElementById('btn-print-now').addEventListener('click', function() {
                 window.print();
             });
             
-            // Options button
             document.getElementById('btn-options').addEventListener('click', o2);
             
-            // Modal 1 close
             document.getElementById('modal1CloseBtn').addEventListener('click', c2);
             document.getElementById('m1').addEventListener('click', function(e) {
                 if (e.target.id === 'm1') c2();
             });
             
-            // Modal 2 close
             document.getElementById('modal2CloseBtn').addEventListener('click', c5);
             document.getElementById('m2').addEventListener('click', function(e) {
                 if (e.target.id === 'm2') c5();
             });
             
-            // Modal print
             document.getElementById('btn-modal-print').addEventListener('click', function() {
                 window.print();
             });
             
-            // Modal close
             document.getElementById('btn-modal-close').addEventListener('click', c5);
             
-            // Format select
             document.getElementById('labelFormatSelect').addEventListener('change', function() {
                 changeFormat(this.value);
                 s7();
@@ -1426,10 +1631,8 @@
                 changeFormat(this.value);
             });
             
-            // Preview click
             document.getElementById('layout-title-attr').addEventListener('click', o1);
             
-            // Input changes
             document.getElementById('i2').addEventListener('input', function() {
                 u1();
                 s7();
@@ -1440,7 +1643,6 @@
                 s7();
             });
             
-            // Tab switching
             document.getElementById('t2').addEventListener('click', function() {
                 m2('select');
             });
@@ -1449,32 +1651,26 @@
                 m2('input');
             });
             
-            // Update button
             document.getElementById('btn-update').addEventListener('click', function() {
                 localStorage.setItem('lavu_sortiment_url', document.getElementById('i4').value.trim());
                 f2();
             });
             
-            // Database management
             document.getElementById('btn-add-new').addEventListener('click', s3);
             document.getElementById('btn-cancel').addEventListener('click', e1);
             document.getElementById('btn-download-json').addEventListener('click', e2);
             document.getElementById('b1').addEventListener('click', s4);
             
-            // Save defaults
             document.getElementById('b2').addEventListener('click', s6);
             
-            // Done button
             document.getElementById('btn-done').addEventListener('click', function() {
                 document.getElementById('m1').style.display = 'none';
             });
             
-            // Zoom slider
             document.getElementById('zoomSlider').addEventListener('input', function() {
                 applyFastZoom(this.value);
             });
             
-            // Art dropdown sync
             document.getElementById('s2_art').addEventListener('change', function() {
                 syncDropdowns(this.value);
             });
@@ -1483,7 +1679,6 @@
                 syncDropdowns(this.value);
             });
             
-            // PWA install
             document.getElementById('b3').addEventListener('click', function() {
                 if (deferredPrompt) {
                     deferredPrompt.prompt();
@@ -1497,7 +1692,6 @@
                 }
             });
             
-            // Window resize
             window.addEventListener('resize', function() {
                 if (document.getElementById('m2').style.display === 'flex') {
                     const zoomVal = document.getElementById('zoomSlider').value;
@@ -1673,58 +1867,6 @@
                 });
         }
 
-        function i1() {
-            const selectArt = document.getElementById('s2_art');
-            const selectName = document.getElementById('s2_name');
-            if (!selectArt || !selectName) return;
-
-            const currentSelectedIdx = selectArt.value;
-            let currentArtNr = "";
-            if (currentSelectedIdx !== "" && a2[currentSelectedIdx]) {
-                currentArtNr = a2[currentSelectedIdx].artNr;
-            }
-
-            const sortedByArt = a2.slice().sort(function(a, b) {
-                return (parseInt(a.artNr) || 0) - (parseInt(b.artNr) || 0);
-            });
-
-            const sortedByName = a2.slice().sort(function(a, b) {
-                return a.bez.localeCompare(b.bez, 'de', { sensitivity: 'base' });
-            });
-
-            selectArt.innerHTML = '';
-            selectName.innerHTML = '';
-
-            sortedByArt.forEach(function(item) {
-                const optArt = document.createElement('option');
-                optArt.value = item.artNr; 
-                optArt.textContent = item.artNr;
-                selectArt.appendChild(optArt);
-            });
-
-            sortedByName.forEach(function(item) {
-                const optName = document.createElement('option');
-                optName.value = item.artNr; 
-                optName.textContent = item.bez;
-                selectName.appendChild(optName);
-            });
-
-            if (currentArtNr !== "") {
-                if (selectArt.querySelector('option[value="' + currentArtNr + '"]')) {
-                    selectArt.value = currentArtNr;
-                }
-                if (selectName.querySelector('option[value="' + currentArtNr + '"]')) {
-                    selectName.value = currentArtNr;
-                }
-            } else if (sortedByArt.length > 0) {
-                selectArt.value = sortedByArt[0].artNr;
-                selectName.value = sortedByArt[0].artNr;
-            }
-
-            r1();
-            p1();
-        }
-
         function syncDropdowns(selectedArtNr) {
             const selectArt = document.getElementById('s2_art');
             const selectName = document.getElementById('s2_name');
@@ -1793,7 +1935,6 @@
                 `;
                 a17.appendChild(a18);
                 
-                // Add event listeners for edit and delete buttons
                 a18.querySelector('[data-action="edit"]').addEventListener('click', function() {
                     e3(parseInt(this.dataset.index));
                 });
