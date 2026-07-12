@@ -1,26 +1,21 @@
-// sw.js - LAVU Etiketten-Druckstudio
 const CACHE_VERSION = 'lavu-studio-v9';
 const CACHE_NAME = `lavu-studio-${CACHE_VERSION}`;
-
-// Static assets that are part of the app
 const STATIC_ASSETS = [
-    '/',
-    '/index.html',
-    '/assets/icons/favicon.svg',
-    '/assets/icons/logo.png',
-    '/assets/icons/favicon-96x96.png',
-    '/assets/icons/apple-touch-icon.png',
-    '/assets/icons/web-app-manifest-192x192.png',
-    '/assets/icons/web-app-manifest-512x512.png'
+    '.',
+    'index.html',
+    'manifest.json',
+    'site.webmanifest',
+    'assets/icons/favicon.svg',
+    'assets/icons/logo.png',
+    'assets/icons/favicon-96x96.png',
+    'assets/icons/apple-touch-icon.png',
+    'assets/icons/web-app-manifest-192x192.png',
+    'assets/icons/web-app-manifest-512x512.png'
 ];
-
-// External JSON databases
 const DYNAMIC_JSON_URLS = [
-    'https://raw.githubusercontent.com/LAVU-OOE/Etiketten-Druckstudio/refs/heads/main/locations.json',
-    'https://raw.githubusercontent.com/LAVU-OOE/Etiketten-Druckstudio/refs/heads/main/sortiment.json'
+    'https://raw.githubusercontent.com/LAVU-OOE/Etiketten-Druckstudio/refs/heads/main/app/assets/js/locations.json',
+    'https://raw.githubusercontent.com/LAVU-OOE/Etiketten-Druckstudio/refs/heads/main/app/assets/js/sortiment.json'
 ];
-
-// Install event - cache static assets
 self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
@@ -37,8 +32,6 @@ self.addEventListener('install', event => {
             })
     );
 });
-
-// Activate event - clean up old caches
 self.addEventListener('activate', event => {
     event.waitUntil(
         caches.keys()
@@ -58,16 +51,10 @@ self.addEventListener('activate', event => {
             })
     );
 });
-
-// Fetch event - intercept network requests
 self.addEventListener('fetch', event => {
     const request = event.request;
     const url = new URL(request.url);
-
-    // Skip non-GET requests
     if (request.method !== 'GET') return;
-
-    // --- Strategy for JSON databases: Network-First ---
     if (DYNAMIC_JSON_URLS.some(jsonUrl => url.href === jsonUrl)) {
         event.respondWith(
             fetch(request, { cache: 'no-store' })
@@ -96,8 +83,6 @@ self.addEventListener('fetch', event => {
         );
         return;
     }
-
-    // --- Strategy for HTML pages (navigation requests): Network-First ---
     if (request.mode === 'navigate') {
         event.respondWith(
             fetch(request)
@@ -126,8 +111,6 @@ self.addEventListener('fetch', event => {
         );
         return;
     }
-
-    // --- Strategy for all other assets: Cache-First ---
     event.respondWith(
         caches.match(request)
             .then(cachedResponse => {
@@ -143,7 +126,7 @@ self.addEventListener('fetch', event => {
                                     .catch(err => console.warn('[SW] Background cache update failed:', err));
                             }
                         })
-                        .catch(() => { /* Silent fail */ });
+                        .catch(() => { });
                     return cachedResponse;
                 }
                 return fetch(request)
@@ -165,8 +148,6 @@ self.addEventListener('fetch', event => {
             })
     );
 });
-
-// Handle messages from the main thread
 self.addEventListener('message', event => {
     if (event.data && event.data.action === 'skipWaiting') {
         self.skipWaiting();
