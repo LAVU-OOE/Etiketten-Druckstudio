@@ -6,12 +6,12 @@ const CACHE_NAME = `lavu-studio-${CACHE_VERSION}`;
 const STATIC_ASSETS = [
     '/app/',
     '/app/index.html',
-    '/assets/favicon.svg',
-    '/assets/logo.png',
-    '/assets/favicon-96x96.png',
-    '/assets/apple-touch-icon.png',
-    '/assets/web-app-manifest-192x192.png',
-    '/assets/web-app-manifest-512x512.png'
+    '/assets/icons/favicon.svg',
+    '/assets/icons/logo.png',
+    '/assets/icons/favicon-96x96.png',
+    '/assets/icons/apple-touch-icon.png',
+    '/assets/icons/web-app-manifest-192x192.png',
+    '/assets/icons/web-app-manifest-512x512.png'
 ];
 
 // External JSON databases
