@@ -35,7 +35,7 @@ Diese Dateien werden über die GitHub-Raw-URLs geladen und können unabhängig v
 *   **Speicherung:** Verwendet `localStorage` für benutzerspezifische Einstellungen, den Sortiments-Cache und den Standort-Cache.
 *   **Netzwerk:** Nutzt die `fetch`-API mit "no-store"-Cache-Strategie für die JSON-Daten, um immer aktuelle Daten zu priorisieren.
 *   **Service Worker:** Der `sw.js` implementiert eine **Network-First-Strategie** für die JSON-Datenbanken und eine **Cache-First-Strategie** für statische Assets, was eine robuste Offline-Nutzung ermöglicht.
-*   **Ordnerstruktur:** Die Hauptanwendung befindet sich im `/app/`-Ordner, alle Assets (Icons, Bilder) im `/app/assets/`-Ordner. Eine `index.html` im Root leitet auf die App weiter.
+*   **Ordnerstruktur:** Die Hauptanwendung befindet sich im `/`-Ordner, alle Assets (Icons, Bilder) im `/assets/`-Ordner. Eine `index.html` im Root leitet auf die App weiter.
 
 ## 🤝 Beitrag leisten
 
