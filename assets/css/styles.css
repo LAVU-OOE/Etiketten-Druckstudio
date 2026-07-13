@@ -811,6 +811,16 @@ select:focus {
     height: 2.4em;
     text-transform: uppercase;
 }
+/* Fallback for browsers that don't support line-clamp */
+@supports not (display: -webkit-box) {
+    .lbb {
+        height: auto;
+        max-height: 2.4em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
 .lb.e {
     border: 1px dashed #e2e8f0;
     background: #fafafa;
